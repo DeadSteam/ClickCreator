@@ -118,7 +118,7 @@ export default function BusinessLanding() {
         />
       </div>
 
-      <main>
+      <main id="main" tabIndex={-1}>
         {/* COLD. The site sits at 47 and nothing is moving. */}
         <section className="zone-cold relative isolate overflow-hidden px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
           <HeatSurface className="[mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)]" />
@@ -129,7 +129,7 @@ export default function BusinessLanding() {
               </Reveal>
 
               <HeatReveal delay={0.1}>
-                <h1 className="mt-7 text-[33px] sm:text-[52px] lg:text-[62px]">
+                <h1 className="mt-7 text-[34px] sm:text-[56px] lg:text-[72px]">
                   Разогреваем сайт
                   <br className="hidden sm:block" />{" "}
                   до <span className="text-[var(--hot)]">ТОП-1</span> Яндекса
@@ -176,7 +176,7 @@ export default function BusinessLanding() {
                   lg:border-b-0 lg:border-l lg:px-7 lg:first:border-l-0 lg:first:pl-0`}
               >
                 <p className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="num text-[26px] leading-none font-medium text-[var(--ink)] sm:text-[40px]">
+                  <span className="num text-[26px] leading-none font-semibold text-[var(--ink)] sm:text-[40px]">
                     {m.v}
                   </span>
                   <span className="label text-[var(--ink-faint)]">{m.u}</span>
@@ -188,7 +188,7 @@ export default function BusinessLanding() {
         </section>
 
         {/* WARMING. Two columns, opposite temperatures. */}
-        <section className="zone-warm px-5 py-24 sm:px-8 sm:py-32">
+        <section className="zone-warm px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[16ch] text-[32px] sm:text-[46px]">
@@ -233,7 +233,7 @@ export default function BusinessLanding() {
                         <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        <span className="text-[15px] leading-snug font-medium text-[var(--ink)]">
+                        <span className="text-[15px] leading-snug font-semibold text-[var(--ink)]">
                           {t}
                         </span>
                       </li>
@@ -246,7 +246,7 @@ export default function BusinessLanding() {
         </section>
 
         {/* Phases named after the mechanism the brand is named for. */}
-        <section id="how" className="zone-warm scroll-mt-8 px-5 py-24 sm:px-8 sm:py-32">
+        <section id="how" className="zone-warm scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[14ch] text-[32px] sm:text-[46px]">
@@ -275,7 +275,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="calc" className="zone-warm scroll-mt-8 px-5 py-24 sm:px-8 sm:py-32">
+        <section id="calc" className="zone-warm scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>прозрачная цена</Kicker>
@@ -295,7 +295,7 @@ export default function BusinessLanding() {
           after beats abstract percentages, so this gets the widest frame on the
           page and breaks the stacked rhythm everything else follows.
         */}
-        <section className="zone-warm px-5 py-24 sm:px-8 sm:py-32">
+        <section className="zone-warm px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <div className="flex flex-wrap items-end justify-between gap-6">
@@ -319,7 +319,7 @@ export default function BusinessLanding() {
         </section>
 
         {/* HOT. Results read as a gauge bank. */}
-        <section id="cases" className="zone-hot scroll-mt-8 px-5 py-24 sm:px-8 sm:py-32">
+        <section id="cases" className="zone-hot scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <div className="flex flex-wrap items-baseline justify-between gap-4">
@@ -337,7 +337,7 @@ export default function BusinessLanding() {
                 <Reveal key={c.niche} delay={i * 0.05}>
                   <article className="grid items-center gap-4 border-b border-[var(--rule-soft)] py-7 sm:grid-cols-[1.3fr_1fr_auto] sm:gap-8">
                     <div>
-                      <h3 className="text-[19px] leading-tight font-bold tracking-[-0.02em]">
+                      <h3 className="text-[19px] leading-tight font-semibold tracking-[-0.02em]">
                         {c.niche}
                       </h3>
                       <p className="mt-1.5 text-[13px] text-[var(--ink-soft)]">
@@ -362,7 +362,7 @@ export default function BusinessLanding() {
                       </p>
                     </div>
 
-                    <p className="num text-right text-[30px] leading-none font-medium sm:text-[36px]">
+                    <p className="num text-right text-[30px] leading-none font-semibold sm:text-[36px]">
                       {c.top}
                       <span className="text-[16px]">%</span>
                     </p>
@@ -377,7 +377,7 @@ export default function BusinessLanding() {
           Named proof. Anonymous quotes are the category's defining credibility
           gap, so shipping them anonymously here would undercut the whole pitch.
         */}
-        <section id="voices" className="zone-hot scroll-mt-8 px-5 py-24 sm:px-8 sm:py-32">
+        <section id="voices" className="zone-hot scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[14ch] text-[32px] sm:text-[46px]">
@@ -391,7 +391,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="pricing" className="zone-hot scroll-mt-8 px-5 py-24 sm:px-8 sm:py-32">
+        <section id="pricing" className="zone-hot scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[18ch] text-[32px] sm:text-[46px]">
@@ -403,11 +403,11 @@ export default function BusinessLanding() {
               {RATES.map((r, i) => (
                 <Reveal key={r.plan} delay={i * 0.05}>
                   <div className="grid items-baseline gap-3 border-b border-[var(--rule-soft)] py-7 sm:grid-cols-[auto_1fr_1fr_1.4fr] sm:gap-8">
-                    <span className="num text-[32px] leading-none font-medium sm:text-[38px]">
+                    <span className="num text-[32px] leading-none font-semibold sm:text-[38px]">
                       {r.rate}
                       <span className="ml-1 text-[14px]">₽</span>
                     </span>
-                    <span className="text-[18px] font-bold tracking-[-0.02em]">{r.plan}</span>
+                    <span className="text-[18px] font-semibold tracking-[-0.02em]">{r.plan}</span>
                     <span className="text-[14px] text-[var(--ink-soft)]">
                       сдвиги от {r.win}
                     </span>
@@ -438,7 +438,7 @@ export default function BusinessLanding() {
               <div className="mt-16 grid gap-px border-t border-[var(--rule)] bg-[var(--rule-soft)] sm:grid-cols-2">
                 <div className="bg-[var(--inset)] p-7 sm:p-8">
                   <span className="label text-[var(--ink-faint)]">переход от конкурента</span>
-                  <p className="mt-5 max-w-[34ch] text-[17px] leading-snug font-bold tracking-[-0.02em]">
+                  <p className="mt-5 max-w-[34ch] text-[17px] leading-snug font-semibold tracking-[-0.02em]">
                     Удвоим первое пополнение, если приходите от другого сервиса
                   </p>
                   <p className="mt-3 max-w-[42ch] text-[14px] leading-relaxed text-[var(--ink-soft)]">
@@ -448,7 +448,7 @@ export default function BusinessLanding() {
                 </div>
                 <div className="bg-[var(--inset)] p-7 sm:p-8">
                   <span className="label text-[var(--ink-faint)]">реферальная программа</span>
-                  <p className="mt-5 max-w-[34ch] text-[17px] leading-snug font-bold tracking-[-0.02em]">
+                  <p className="mt-5 max-w-[34ch] text-[17px] leading-snug font-semibold tracking-[-0.02em]">
                     10 процентов с пополнений тех, кого привели
                   </p>
                   <p className="mt-3 max-w-[42ch] text-[14px] leading-relaxed text-[var(--ink-soft)]">
@@ -462,7 +462,7 @@ export default function BusinessLanding() {
         </section>
 
         {/* COMBUSTION. One promise, one action. */}
-        <section id="start" className="zone-hot scroll-mt-8 px-5 py-28 sm:px-8 sm:py-40">
+        <section id="start" className="zone-hot scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-44 sm:pb-28">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>гарантия</Kicker>
@@ -489,7 +489,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="faq" className="zone-burn scroll-mt-8 px-5 pt-16 pb-24 sm:px-8 sm:pb-32">
+        <section id="faq" className="zone-burn scroll-mt-8 px-5 pt-16 pb-24 sm:px-8 sm:pt-20 sm:pb-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="text-[28px] sm:text-[36px]">Честные ответы</h2>
@@ -503,7 +503,7 @@ export default function BusinessLanding() {
                       <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="flex-1 text-[17px] leading-snug font-bold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--hot)] sm:text-[19px]">
+                      <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--hot)] sm:text-[19px]">
                         {item.q}
                       </span>
                       <span className="num shrink-0 text-[16px] text-[var(--ink-faint)] [transition:transform_var(--t-hover)_var(--ease-micro)] group-open:rotate-45">

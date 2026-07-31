@@ -68,7 +68,7 @@ export function RankClimb() {
 
       <div className="flex items-end justify-between gap-4 py-6">
         <div className="flex items-baseline gap-2.5">
-          <motion.span className="num text-[64px] leading-[0.8] font-medium text-[var(--ink)] tabular-nums">
+          <motion.span className="num text-[64px] leading-[0.8] font-semibold text-[var(--ink)] tabular-nums">
             {shown}
           </motion.span>
           <span className="label text-[var(--ink-faint)]">позиция</span>
@@ -79,7 +79,7 @@ export function RankClimb() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.3, delay: 1.35 }}
         >
-          <span className="num text-[20px] leading-none font-medium text-[var(--hot)]">
+          <span className="num text-[20px] leading-none font-semibold text-[var(--hot)]">
             +44
           </span>
           <p className="label mt-1.5 text-[var(--ink-faint)]">за 14 дней</p>

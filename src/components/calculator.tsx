@@ -24,7 +24,7 @@ export function Calculator() {
       <div className="p-6 sm:p-8">
         <label htmlFor="phrases" className="flex items-baseline justify-between gap-4">
           <span className="label text-[var(--ink-faint)]">ключевых фраз</span>
-          <span className="num text-[22px] leading-none font-medium text-[var(--ink)]">
+          <span className="num text-[22px] leading-none font-semibold text-[var(--ink)]">
             {phrases}
           </span>
         </label>
@@ -36,8 +36,7 @@ export function Calculator() {
           step={5}
           value={phrases}
           onChange={(e) => setPhrases(Number(e.target.value))}
-          className="mt-4 h-1 w-full cursor-pointer appearance-none bg-[var(--rule)]
-            accent-[var(--hot)]"
+          className="mt-1 w-full"
         />
         <div className="ticks mt-2 h-2" aria-hidden="true" />
         <div className="mt-1 flex justify-between">
@@ -85,7 +84,7 @@ export function Calculator() {
       <div className="flex flex-col justify-between gap-8 border-t border-[var(--rule)] bg-[var(--inset)] p-6 sm:p-8 lg:border-t-0 lg:border-l">
         <div>
           <span className="label text-[var(--ink-faint)]">бюджет в месяц</span>
-          <p className="num mt-3 text-[38px] leading-none font-medium text-[var(--ink)]">
+          <p className="num mt-3 text-[38px] leading-none font-semibold text-[var(--ink)]">
             {money(monthly)}
             <span className="ml-1.5 text-[18px] text-[var(--ink-faint)]">₽</span>
           </p>

@@ -22,20 +22,20 @@ export function Footer({
             </p>
           </div>
 
-          <nav className="flex flex-col gap-3">
+          <nav className="flex flex-col gap-4">
             <span className="label text-[var(--ink-faint)]">сервис</span>
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
+                className="-my-1 py-1 text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
               >
                 {l.label}
               </Link>
             ))}
             <Link
               href={crossHref}
-              className="text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
+              className="-my-1 py-1 text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
             >
               {crossLabel}
             </Link>
@@ -45,13 +45,13 @@ export function Footer({
             <span className="label text-[var(--ink-faint)]">связь</span>
             <a
               href="https://t.me/topinjector"
-              className="text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
+              className="-my-1 py-1 text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
             >
               Telegram
             </a>
             <a
               href="mailto:hi@topinjector.ru"
-              className="text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
+              className="-my-1 py-1 text-[13px] text-[var(--ink-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
             >
               hi@topinjector.ru
             </a>

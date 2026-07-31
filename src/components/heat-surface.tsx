@@ -235,7 +235,9 @@ export function HeatSurface({ className = "" }: { className?: string }) {
 
       if (now - lastInput > 1500) {
         /*
-          With no cursor to follow, the steel breathes along a slow drift.
+          With no cursor to follow, the steel breathes along a slow drift. Kept
+        far weaker than a real cursor: at rest this should read as a faint warmth
+        in the metal, not as a shape parked behind the headline.
           Driven by input recency rather than device class, so a phone gets
           motion and a desktop hands control straight back to the pointer.
         */
@@ -243,7 +245,7 @@ export function HeatSurface({ className = "" }: { className?: string }) {
         const i = head * 3;
         pts[i] = 0.5 + Math.cos(drift) * 0.28;
         pts[i + 1] = 0.55 + Math.sin(drift * 0.8) * 0.22;
-        pts[i + 2] = 0.3;
+        pts[i + 2] = 0.13;
         head = (head + 1) % TRAIL;
       }
 

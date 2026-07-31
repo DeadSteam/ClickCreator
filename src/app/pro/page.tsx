@@ -109,7 +109,7 @@ export default function ProLanding() {
         />
       </div>
 
-      <main>
+      <main id="main" tabIndex={-1}>
         {/* COLD. Type-led opening, deliberately unlike the business page. */}
         <section className="zone-cold px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
           <div className="mx-auto max-w-[76rem]">
@@ -144,7 +144,7 @@ export default function ProLanding() {
 
               <Reveal delay={0.18} className="shrink-0">
                 <div className="flex items-baseline gap-3">
-                  <span className="num text-[64px] leading-none font-medium sm:text-[84px]">
+                  <span className="num text-[64px] leading-none font-semibold sm:text-[84px]">
                     68
                   </span>
                   <span className="num text-[24px] text-[var(--hot)]">%</span>
@@ -158,7 +158,7 @@ export default function ProLanding() {
         </section>
 
         {/* Roles as a bank of readings. */}
-        <section className="zone-warm px-5 py-24 sm:px-8 sm:py-32">
+        <section className="zone-warm px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[16ch] text-[32px] sm:text-[46px]">Кому это считается</h2>
@@ -169,14 +169,14 @@ export default function ProLanding() {
                 <Reveal key={a.role} delay={i * 0.06}>
                   <article className="grid items-baseline gap-4 border-b border-[var(--rule-soft)] py-8 sm:grid-cols-[auto_1fr_1.5fr] sm:gap-10">
                     <div>
-                      <span className="num text-[34px] leading-none font-medium sm:text-[42px]">
+                      <span className="num text-[34px] leading-none font-semibold sm:text-[42px]">
                         {a.figure}
                       </span>
                       <p className="label mt-2 max-w-[16ch] text-[var(--ink-faint)]">
                         {a.note}
                       </p>
                     </div>
-                    <h3 className="text-[20px] font-bold tracking-[-0.02em] sm:text-[22px]">
+                    <h3 className="text-[20px] font-semibold tracking-[-0.02em] sm:text-[22px]">
                       {a.role}
                     </h3>
                     <p className="max-w-[52ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
@@ -189,7 +189,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="economics" className="zone-warm scroll-mt-8 px-5 py-24 sm:px-8 sm:py-32">
+        <section id="economics" className="zone-warm scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>экономика</Kicker>
@@ -208,7 +208,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="tools" className="zone-hot scroll-mt-8 px-5 py-24 sm:px-8 sm:py-32">
+        <section id="tools" className="zone-hot scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[20ch] text-[32px] sm:text-[46px]">
@@ -223,7 +223,7 @@ export default function ProLanding() {
                     <span className="num text-[11px] text-[var(--ink-soft)]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <h3 className="text-[19px] leading-snug font-bold tracking-[-0.02em]">
+                    <h3 className="text-[19px] leading-snug font-semibold tracking-[-0.02em]">
                       {t.t}
                     </h3>
                     <p className="max-w-[56ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
@@ -240,7 +240,7 @@ export default function ProLanding() {
           The section every competitor omits. It is the reason a professional
           reseller trusts the offer, so it gets the hottest ground on the page.
         */}
-        <section id="risks" className="zone-hot scroll-mt-8 px-5 py-28 sm:px-8 sm:py-36">
+        <section id="risks" className="zone-hot scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>риски</Kicker>
@@ -265,7 +265,7 @@ export default function ProLanding() {
                     <span className="num text-[11px] text-[var(--hot)]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <h3 className="mt-5 text-[19px] leading-snug font-bold tracking-[-0.02em]">
+                    <h3 className="mt-5 text-[19px] leading-snug font-semibold tracking-[-0.02em]">
                       {r.t}
                     </h3>
                     <p className="mt-3 max-w-[42ch] text-[14px] leading-relaxed text-[var(--ink-soft)]">
@@ -278,7 +278,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="faq" className="zone-burn scroll-mt-8 px-5 pb-24 sm:px-8 sm:pb-32">
+        <section id="faq" className="zone-burn scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-32 sm:pb-24">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="text-[28px] sm:text-[36px]">Вопросы партнёров</h2>
@@ -292,7 +292,7 @@ export default function ProLanding() {
                       <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="flex-1 text-[17px] leading-snug font-bold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--hot)] sm:text-[19px]">
+                      <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--hot)] sm:text-[19px]">
                         {item.q}
                       </span>
                       <span className="num shrink-0 text-[16px] text-[var(--ink-faint)] [transition:transform_var(--t-hover)_var(--ease-micro)] group-open:rotate-45">
@@ -309,7 +309,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="start" className="zone-burn scroll-mt-8 px-5 pb-28 sm:px-8 sm:pb-36">
+        <section id="start" className="zone-burn scroll-mt-8 px-5 pb-28 sm:px-8 sm:pb-32">
           <div className="mx-auto max-w-[76rem] border-t border-[var(--rule)] pt-16">
             <Reveal>
               <h2 className="max-w-[16ch] text-[34px] sm:text-[52px]">

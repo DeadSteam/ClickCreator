@@ -57,6 +57,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Kills the legacy 300ms tap delay: the whole page answers a finger sooner. */
+  * {
+    touch-action: manipulation;
+  }
+
   body {
     color: var(--color-steel-900);
     font-family: var(--font-sans);
@@ -74,13 +79,64 @@
     outline-offset: 3px;
   }
 
+  /*
+    Three weights across the whole page: 400 reads, 600 leads, 800 declares.
+    Five weights was two too many, and the middle ones were doing the same job
+    at sizes where nobody could tell them apart.
+  */
   h1,
-  h2,
-  h3 {
+  h2 {
     text-wrap: balance;
     letter-spacing: -0.035em;
     font-weight: 800;
     line-height: 1.02;
+  }
+
+  h3 {
+    text-wrap: balance;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  /*
+    A 4px slider is a 4px touch target. The track stays thin, the control grows
+    to a thumb-sized 44.
+  */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 44px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--rule);
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: var(--rule);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 18px;
+    margin-top: -7px;
+    background: var(--hot);
+    border-radius: 1px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 18px;
+    border: 0;
+    border-radius: 1px;
+    background: var(--hot);
   }
 
   /* Every figure on this page is an instrument reading. */

@@ -20,7 +20,7 @@ export function VolumeScale() {
           const h = 100 - i * 13;
           return (
             <div key={t.from} className="flex-1">
-              <p className="num mb-2 text-[15px] font-medium text-[var(--ink)] sm:text-[17px]">
+              <p className="num mb-2 text-[15px] font-semibold text-[var(--ink)] sm:text-[17px]">
                 {t.rate}
               </p>
               <div

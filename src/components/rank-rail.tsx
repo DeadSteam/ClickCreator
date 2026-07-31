@@ -37,7 +37,7 @@ export function RankRail({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: str
       >
         <span className="label text-[var(--ink-faint)]">позиция</span>
 
-        <span className="num text-[44px] leading-none font-medium text-[var(--ink)]">
+        <span className="num text-[44px] leading-none font-semibold text-[var(--ink)]">
           {String(rank).padStart(2, "0")}
         </span>
 
@@ -66,7 +66,7 @@ export function RankRail({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: str
         <div className="flex items-stretch border-t border-[oklch(0.955_0.012_60/0.14)] bg-[oklch(0.155_0.038_32)]">
           <div className="flex shrink-0 flex-col justify-center px-4 py-2.5">
             <span className="label text-[9px] text-[oklch(0.605_0.028_50)]">позиция</span>
-            <span className="num text-[19px] leading-none font-medium text-[oklch(0.955_0.012_60)]">
+            <span className="num text-[19px] leading-none font-semibold text-[oklch(0.955_0.012_60)]">
               {String(rank).padStart(2, "0")}
             </span>
           </div>

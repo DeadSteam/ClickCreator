@@ -37,7 +37,7 @@ export function Logo() {
     <span className="flex items-center gap-2.5">
       <Flame />
       <span className="text-[16px] font-extrabold tracking-[-0.03em] text-[var(--ink)]">
-        Top<span className="font-medium text-[var(--ink-soft)]">Injector</span>
+        Top<span className="font-semibold text-[var(--ink-soft)]">Injector</span>
       </span>
     </span>
   );

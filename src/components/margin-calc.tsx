@@ -22,7 +22,7 @@ export function MarginCalc() {
       <div className="p-6 sm:p-8">
         <label htmlFor="clients" className="flex items-baseline justify-between gap-4">
           <span className="label text-[var(--ink-faint)]">клиентов на продвижении</span>
-          <span className="num text-[22px] leading-none font-medium text-[var(--ink)]">
+          <span className="num text-[22px] leading-none font-semibold text-[var(--ink)]">
             {String(clients).padStart(2, "0")}
           </span>
         </label>
@@ -33,12 +33,12 @@ export function MarginCalc() {
           max={30}
           value={clients}
           onChange={(e) => setClients(Number(e.target.value))}
-          className="mt-4 h-1 w-full cursor-pointer appearance-none bg-[var(--rule)] accent-[var(--hot)]"
+          className="mt-1 w-full"
         />
 
         <label htmlFor="check" className="mt-10 flex items-baseline justify-between gap-4">
           <span className="label text-[var(--ink-faint)]">ваш чек за клиента</span>
-          <span className="num text-[22px] leading-none font-medium text-[var(--ink)]">
+          <span className="num text-[22px] leading-none font-semibold text-[var(--ink)]">
             {money(check)} ₽
           </span>
         </label>
@@ -50,7 +50,7 @@ export function MarginCalc() {
           step={5000}
           value={check}
           onChange={(e) => setCheck(Number(e.target.value))}
-          className="mt-4 h-1 w-full cursor-pointer appearance-none bg-[var(--rule)] accent-[var(--hot)]"
+          className="mt-1 w-full"
         />
 
         {/* The split, shown as one bar rather than two separate figures. */}
@@ -82,7 +82,7 @@ export function MarginCalc() {
       <div className="flex flex-col justify-between gap-8 border-t border-[var(--rule)] bg-[var(--inset)] p-6 sm:p-8 lg:border-t-0 lg:border-l">
         <div>
           <span className="label text-[var(--ink-faint)]">ваша маржа в месяц</span>
-          <p className="num mt-3 text-[38px] leading-none font-medium text-[var(--ink)]">
+          <p className="num mt-3 text-[38px] leading-none font-semibold text-[var(--ink)]">
             {money(margin)}
             <span className="ml-1.5 text-[18px] text-[var(--ink-faint)]">₽</span>
           </p>

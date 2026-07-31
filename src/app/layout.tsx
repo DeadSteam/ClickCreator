@@ -37,7 +37,23 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" className={`${onest.variable} ${martian.variable}`}>
-      <body className="dither min-h-dvh antialiased">{children}</body>
+      <body className="dither min-h-dvh antialiased">
+        {/*
+          The page runs to roughly nine thousand pixels. Without this a keyboard
+          user tabs through the entire navigation on every visit before reaching
+          a single word of content.
+        */}
+        <a
+          href="#main"
+          className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-3 focus:left-3
+            focus:rounded-[var(--radius-pill)] focus:bg-[oklch(0.155_0.038_32)]
+            focus:px-4 focus:py-3 focus:text-[14px] focus:font-semibold
+            focus:text-[oklch(0.965_0.010_60)]"
+        >
+          Перейти к содержимому
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

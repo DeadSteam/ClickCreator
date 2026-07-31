@@ -49,7 +49,7 @@ export function Voices() {
     <div>
       <Reveal>
         <figure className="border-t border-[var(--rule)] pt-8 lg:grid lg:grid-cols-[1fr_auto] lg:items-start lg:gap-16">
-          <blockquote className="max-w-[30ch] text-[24px] leading-[1.25] font-bold tracking-[-0.025em] sm:text-[32px] lg:max-w-[24ch] lg:text-[38px]">
+          <blockquote className="max-w-[30ch] text-[24px] leading-[1.25] font-semibold tracking-[-0.025em] sm:text-[32px] lg:max-w-[24ch] lg:text-[38px]">
             {lead.quote}
           </blockquote>
           <figcaption className="mt-8 flex items-end justify-between gap-8 lg:mt-0 lg:block">
@@ -60,7 +60,7 @@ export function Voices() {
               </p>
             </div>
             <div className="shrink-0 text-right lg:mt-8 lg:text-left">
-              <p className="num text-[30px] leading-none font-medium text-[var(--hot)] sm:text-[38px]">
+              <p className="num text-[30px] leading-none font-semibold text-[var(--hot)] sm:text-[38px]">
                 {lead.figure}
               </p>
               <p className="label mt-2 text-[var(--ink-faint)]">{lead.note}</p>

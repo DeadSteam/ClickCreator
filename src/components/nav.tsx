@@ -81,7 +81,7 @@ export function Nav({
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Закрыть меню" : "Открыть меню"}
             aria-expanded={open}
-            className="relative z-50 flex h-9 w-9 items-center justify-center lg:hidden"
+            className="relative z-50 -mr-2 flex h-11 w-11 items-center justify-center lg:hidden"
           >
             <span className="relative block h-3 w-5">
               <span
@@ -110,7 +110,8 @@ export function Nav({
             animate={{ opacity: 1 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-            className="zone-burn fixed inset-0 z-40 bg-[oklch(0.155_0.038_32)] px-5 pt-24 pb-10 lg:hidden"
+            className="zone-burn fixed inset-0 z-40 overflow-y-auto overscroll-contain
+              bg-[oklch(0.155_0.038_32)] px-5 pt-24 pb-10 lg:hidden"
           >
             <ul className="flex flex-col">
               {[...links, crossLink].map((l, i) => (
