@@ -1,0 +1,324 @@
+@import "tailwindcss";
+
+/*
+  ПРОГРЕВ.
+
+  The page has a temperature. It opens on cold machined steel and heats along a
+  single continuous ramp until it combusts at the call to action. This is one
+  deliberate colour-block story, not random section alternation: the ramp encodes
+  the product's actual claim, which is that positions get heated.
+
+  Text colour is not global. Each section declares a zone that matches the local
+  ground beneath it.
+*/
+
+@theme {
+  /* Cold end: brushed aluminium, cool and desaturated. Never pure white. */
+  --color-steel-100: oklch(0.905 0.006 240);
+  --color-steel-200: oklch(0.862 0.009 238);
+  --color-steel-300: oklch(0.795 0.012 236);
+  --color-steel-500: oklch(0.585 0.016 240);
+  --color-steel-700: oklch(0.365 0.018 245);
+  --color-steel-900: oklch(0.185 0.020 250);
+
+  /* Hot end. */
+  --color-ember: oklch(0.688 0.196 44);
+  --color-ember-hot: oklch(0.782 0.172 66);
+  --color-ember-deep: oklch(0.475 0.158 34);
+  --color-burn: oklch(0.155 0.038 32);
+
+  /* Cold accent, straight off the logo's blue tongue. Reference only, never a CTA. */
+  --color-azure: oklch(0.505 0.118 248);
+
+  --font-sans: var(--font-onest), system-ui, sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, monospace;
+
+  /*
+    Motion tokens. Durations follow what benchmark products actually ship:
+    micro-interactions land at 100-160ms, not 300-500ms. Slow transitions are
+    the single biggest reason an interface feels ordinary.
+  */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-micro: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-haptic: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --t-press: 100ms;
+  --t-hover: 150ms;
+  --t-panel: 240ms;
+
+  /* Machined, not squishy. Corners are milled, not inflated. */
+  --radius-panel: 3px;
+  --radius-pill: 2px;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-steel-200);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Kills the legacy 300ms tap delay: the whole page answers a finger sooner. */
+  * {
+    touch-action: manipulation;
+  }
+
+  body {
+    color: var(--color-steel-900);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-ember);
+    color: var(--color-burn);
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  /*
+    Three weights across the whole page: 400 reads, 600 leads, 800 declares.
+    Five weights was two too many, and the middle ones were doing the same job
+    at sizes where nobody could tell them apart.
+  */
+  h1,
+  h2 {
+    text-wrap: balance;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    line-height: 1.02;
+  }
+
+  h3 {
+    text-wrap: balance;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  /*
+    A 4px slider is a 4px touch target. The track stays thin, the control grows
+    to a thumb-sized 44.
+  */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 44px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--rule);
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: var(--rule);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 18px;
+    margin-top: -7px;
+    background: var(--hot);
+    border-radius: 1px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 18px;
+    border: 0;
+    border-radius: 1px;
+    background: var(--hot);
+  }
+
+  /* Every figure on this page is an instrument reading. */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.04em;
+  }
+
+  /*
+    Letter-spacing is added after the final character too, so a tracked label
+    carries a phantom 0.16em on its right edge. Left uncorrected it pushes
+    right-aligned labels past their container and the page gains a few pixels of
+    horizontal scroll.
+  */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    margin-right: -0.16em;
+    text-transform: uppercase;
+  }
+}
+
+@layer components {
+  /*
+    The ramp itself. Sized to the document, so scrolling moves you through it.
+    No fixed attachment: that stutters badly on mobile.
+
+    The isotherm map rides in the same background stack rather than as an
+    overlay element. Blending inside one element's own paint costs far less than
+    a stacked layer with mix-blend-mode, and it scrolls with the content for
+    free, so the texture reads as the material of the page instead of a film
+    laid over it.
+  */
+  .heat-ramp {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='t' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncG type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncB type='linear' slope='0.16' intercept='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
+      linear-gradient(
+        180deg,
+        oklch(0.905 0.006 240) 0%,
+        oklch(0.872 0.008 236) 22%,
+        oklch(0.838 0.026 90) 40%,
+        oklch(0.795 0.070 66) 54%,
+        oklch(0.722 0.140 52) 66%,
+        oklch(0.688 0.196 44) 76%,
+        oklch(0.452 0.152 34) 88%,
+        oklch(0.155 0.038 32) 100%
+      );
+    background-size:
+      600px 600px,
+      100% 100%;
+    background-blend-mode: soft-light, normal;
+  }
+
+  /*
+    Dither. The ramp spans roughly nine thousand pixels across eight stops, which
+    works out near thirty-five pixels per 8-bit colour step: far past the point
+    where a gradient breaks into visible stripes. Fine noise over the top
+    scatters the boundaries. Fixed, so scrolling never repaints it.
+  */
+  .dither::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  }
+
+  /* Zones: each section states which part of the ramp it sits on. */
+  .zone-cold {
+    --ink: oklch(0.185 0.020 250);
+    --ink-soft: oklch(0.395 0.018 245);
+    --ink-faint: oklch(0.545 0.016 242);
+    --rule: oklch(0.185 0.020 250 / 0.16);
+    --rule-soft: oklch(0.185 0.020 250 / 0.09);
+    --inset: oklch(0.185 0.020 250 / 0.035);
+    --hot: oklch(0.545 0.185 38);
+    --btn-bg: oklch(0.688 0.196 44);
+    --btn-ink: oklch(0.155 0.038 32);
+    --btn-bg-hover: oklch(0.782 0.172 66);
+  }
+
+  .zone-warm {
+    --ink: oklch(0.175 0.030 40);
+    --ink-soft: oklch(0.365 0.032 42);
+    --ink-faint: oklch(0.495 0.034 45);
+    --rule: oklch(0.175 0.030 40 / 0.20);
+    --rule-soft: oklch(0.175 0.030 40 / 0.11);
+    --inset: oklch(0.175 0.030 40 / 0.045);
+    --hot: oklch(0.455 0.175 34);
+    --btn-bg: oklch(0.175 0.030 40);
+    --btn-ink: oklch(0.955 0.012 60);
+    --btn-bg-hover: oklch(0.285 0.045 38);
+  }
+
+  /*
+    On ember ground the accent cannot also be the button: it would vanish.
+    The control inverts to near-black instead.
+  */
+  .zone-hot {
+    --ink: oklch(0.155 0.038 32);
+    --ink-soft: oklch(0.265 0.055 32);
+    --ink-faint: oklch(0.345 0.065 32);
+    --rule: oklch(0.155 0.038 32 / 0.30);
+    --rule-soft: oklch(0.155 0.038 32 / 0.16);
+    --inset: oklch(0.155 0.038 32 / 0.07);
+    --hot: oklch(0.155 0.038 32);
+    --btn-bg: oklch(0.155 0.038 32);
+    --btn-ink: oklch(0.955 0.012 60);
+    --btn-bg-hover: oklch(0.245 0.050 34);
+  }
+
+  .zone-burn {
+    --ink: oklch(0.965 0.010 60);
+    --ink-soft: oklch(0.815 0.020 55);
+    --ink-faint: oklch(0.655 0.026 50);
+    --rule: oklch(0.965 0.010 60 / 0.26);
+    --rule-soft: oklch(0.965 0.010 60 / 0.14);
+    --inset: oklch(0.965 0.010 60 / 0.06);
+    --hot: oklch(0.782 0.172 66);
+    --btn-bg: oklch(0.688 0.196 44);
+    --btn-ink: oklch(0.155 0.038 32);
+    --btn-bg-hover: oklch(0.782 0.172 66);
+  }
+
+  .zone-cold,
+  .zone-warm,
+  .zone-hot,
+  .zone-burn {
+    color: var(--ink);
+  }
+
+  /* Milled panel: an inset recess, not a floating rounded card. */
+  .panel {
+    background: var(--inset);
+    border: 1px solid var(--rule-soft);
+    border-radius: var(--radius-panel);
+  }
+
+  /* Hairline scale, the page's connective tissue instead of card borders. */
+  .rule-t {
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  .ticks {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--rule) 0 1px,
+      transparent 1px 100%
+    );
+    background-size: 8.3333% 100%;
+  }
+}
+
+/*
+  Reduced motion means fewer and gentler animations, not none. Movement and
+  scaling go; opacity and colour stay, because they carry meaning.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Touch devices fire hover on tap, so gate anything decorative behind a pointer. */
+@media (hover: hover) and (pointer: fine) {
+  .lift {
+    transition: transform var(--t-hover) var(--ease-micro);
+  }
+
+  .lift:hover {
+    transform: translateY(-1px);
+  }
+}
