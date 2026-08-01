@@ -109,22 +109,31 @@ export function Meter() {
     <div ref={ref} className="panel">
       {/* Верхняя строка прибора: что именно он показывает. */}
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-[var(--color-rule-soft)] px-5 py-3.5 sm:px-7">
-        <span className="tag">расход в сутки</span>
+        <span className="tag">продвижение в Яндексе, расход в сутки</span>
         <span className="tag">
           {calc.mode.name} &middot; сдвиги через {calc.mode.shift}
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
+      {/*
+        Три блока вместо двух колонок, и порядок у них разный по ширине экрана.
+
+        На телефоне показание стояло вверху, а ползунок, который его меняет, -
+        через полтысячи пикселей вниз, за производными цифрами и сравнением.
+        Человек видел число и не видел, чем его крутить: связь "двигаю - меняется",
+        на которой держится весь вариант, была разорвана. Норман называет это
+        нарушенным отображением: орган управления обязан быть рядом с тем, на что
+        он влияет.
+
+        Теперь на телефоне идёт показание, сразу под ним управление, и только
+        потом производные. На широком экране порядок прежний: order снимается,
+        управление занимает правую колонку во всю высоту (row-span-2), а экран
+        разбит на две строки левой колонки.
+      */}
+      <div className="flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr]">
         {/* Показание. Занимает столько места, сколько занимал бы заголовок
             на обычном лендинге - в этом и есть заявление сайта. */}
-        {/*
-          Колонка тянется по высоте соседней и распределяет содержимое по краям.
-          Без этого при более высокой колонке управления экран заканчивал
-          содержимое на середине и оставлял снизу двести пикселей пустой сетки -
-          это читается как незагрузившийся блок, а не как поле прибора.
-        */}
-        <div className="screen flex flex-col justify-between gap-8 border-b border-[var(--color-rule-soft)] px-5 py-8 sm:px-7 sm:py-10 lg:border-r lg:border-b-0">
+        <div className="screen order-1 border-b border-[var(--color-rule-soft)] px-5 pt-8 pb-8 sm:px-7 sm:pt-10 lg:order-none lg:border-r">
           <p className="flex flex-wrap items-baseline gap-x-3">
             <span
               className={`read read-xl text-[clamp(56px,11vw,116px)] font-medium ${live ? "live" : ""}`}
@@ -135,8 +144,11 @@ export function Meter() {
               ₽ в сутки
             </span>
           </p>
+        </div>
 
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-[var(--color-rule-hair)] pt-6 sm:grid-cols-3">
+        {/* Производные показания и сравнение: на телефоне уезжают под управление. */}
+        <div className="screen order-3 flex flex-col gap-8 border-b border-[var(--color-rule-soft)] px-5 py-8 sm:px-7 sm:py-10 lg:order-none lg:border-r lg:border-b-0">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
             <div>
               <dt className="tag">за 30 суток</dt>
               <dd className="read mt-2 text-[24px] sm:text-[28px]">
@@ -196,8 +208,11 @@ export function Meter() {
           </div>
         </div>
 
-        {/* Органы управления. */}
-        <div className="flex flex-col gap-7 px-5 py-8 sm:px-7 sm:py-10">
+        {/*
+          Органы управления. На телефоне стоят сразу под показанием (order-2),
+          на широком экране занимают правую колонку во всю высоту.
+        */}
+        <div className="order-2 flex flex-col gap-7 px-5 py-8 sm:px-7 sm:py-10 lg:order-none lg:row-span-2">
           <div>
             <div className="flex items-baseline justify-between gap-4">
               <label htmlFor="m-phrases" className="tag">
@@ -227,14 +242,15 @@ export function Meter() {
 
           <div>
             <span className="tag block">скорость</span>
-            <div className="mt-3 flex flex-col gap-px bg-[var(--color-rule-soft)]">
+            <div role="radiogroup" aria-label="Скорость" className="mt-3 flex flex-col gap-px bg-[var(--color-rule-soft)]">
               {SPEEDS.map((s, i) => {
                 const active = i === speed;
                 return (
                   <button
                     key={s.name}
                     type="button"
-                    aria-pressed={active}
+                    role="radio"
+                    aria-checked={active}
                     onClick={() => {
                       setSpeed(i);
                       note();

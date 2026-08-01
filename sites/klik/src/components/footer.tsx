@@ -39,7 +39,7 @@ export function Footer({ cross }: { cross: { label: string; href: string } }) {
               <div className="flex items-baseline justify-between gap-4">
                 <dt className="text-[var(--color-read-soft)]">ставка за фразу</dt>
                 <dd className="read">
-                  {low}–{high} ₽
+                  {low}-{high} ₽
                 </dd>
               </div>
               <div className="flex items-baseline justify-between gap-4">

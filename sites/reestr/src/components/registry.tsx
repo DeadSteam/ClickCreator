@@ -171,14 +171,15 @@ export function Registry() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
+        <div role="radiogroup" aria-label="Фильтр по статусу записи" className="flex flex-wrap items-center gap-x-1 gap-y-2">
           {FILTERS.map((f) => {
             const active = filter === f.id;
             return (
               <button
                 key={f.id}
                 type="button"
-                aria-pressed={active}
+                role="radio"
+                aria-checked={active}
                 onClick={() => {
                   setFilter(f.id);
                   noted();

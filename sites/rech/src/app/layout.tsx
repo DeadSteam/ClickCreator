@@ -15,10 +15,20 @@ import "./globals.css";
   Обе проверены на кириллицу: у половины шрифтов, которые рекомендуют базы
   шрифтовых пар, её нет, и подмена системным шрифтом на русском видна сразу.
 */
+/*
+  Начертания перечислены поимённо, иначе next/font тянет всё семейство и вес
+  шрифтов уходит за бюджет: было 262 кБ и 26 файлов при потолке 200.
+
+  Bona Nova нужна только полужирной - заголовками и репликами диалога. Прямое
+  начертание 400 держалось на одном курсивном абзаце в вопросах, и ради него
+  грузилась вдвое большая четвёрка комбинаций. Абзац стал полужирным.
+
+  Wix Madefor Text набирает основной текст (400) и редкие выделения (600).
+*/
 const bona = Bona_Nova({
   variable: "--font-bona",
   subsets: ["cyrillic", "latin"],
-  weight: ["400", "700"],
+  weight: ["700"],
   style: ["normal", "italic"],
   display: "swap",
 });
@@ -26,13 +36,14 @@ const bona = Bona_Nova({
 const madefor = Wix_Madefor_Text({
   variable: "--font-madefor",
   subsets: ["cyrillic", "latin"],
+  weight: ["400", "600"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.origin),
   title: {
-    default: `${SITE.author}: продвижение поведенческими сигналами без посредников`,
+    default: `${SITE.author}: продвижение сайтов поведенческими сигналами`,
     template: `%s · ${SITE.brand}`,
   },
   description: SITE.description,

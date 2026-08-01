@@ -51,14 +51,15 @@ function Choice({
             колонку, и его фон - та самая линейка толщиной в gap - вылезает
             справа от кнопок серым прямоугольником.
           */}
-          <div className="mt-4 flex w-fit flex-wrap gap-px bg-[var(--color-rule-soft)]">
+          <div role="radiogroup" aria-label={question.q} className="mt-4 flex w-fit flex-wrap gap-px bg-[var(--color-rule-soft)]">
             {question.answers.map((a) => {
               const active = value === a.value;
               return (
                 <button
                   key={a.value}
                   type="button"
-                  aria-pressed={active}
+                  role="radio"
+                  aria-checked={active}
                   onClick={() => onPick(a.value)}
                   className={`hit min-h-[44px] cursor-pointer px-4 py-2.5 text-[14px]
                     [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro)]

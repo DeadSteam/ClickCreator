@@ -6,6 +6,30 @@ import { MODES } from "@/lib/content";
 import { track, trackOnView } from "@/lib/analytics";
 
 /*
+  Прокрутка к заключению после подачи.
+
+  Замер на экране 375x812 показал: кнопка подачи стоит на 699 пикселях, а
+  заключение начинается на 810 - то есть ровно за кромкой. Человек нажимал
+  "Проверить режим" и не видел, что вообще что-то произошло. Для формы, весь
+  смысл которой в вынесении вердикта, это худшая из возможных поломок.
+
+  Прокручиваем мягко и только если блок действительно не виден: на широком
+  экране он попадает в кадр сам, и дёргать страницу там незачем.
+
+  Уважаем prefers-reduced-motion: при нём прыжок делается мгновенным, а не
+  плавным, но всё равно делается - это ориентация, а не украшение.
+*/
+function revealIfOffscreen(el: HTMLElement | null) {
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  const visible = r.top >= 0 && r.bottom <= window.innerHeight;
+  if (visible) return;
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+}
+
+/*
   Форма проверки режима.
 
   Здесь намеренно нет ползунков и нет живого пересчёта. Это заявка, которую
@@ -49,6 +73,7 @@ export function Calc() {
   const [verdict, setVerdict] = useState<Verdict | null>(null);
 
   const ref = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
   const touched = useRef(false);
   useEffect(() => trackOnView(ref.current, "pricing_view"), []);
 
@@ -84,6 +109,13 @@ export function Calc() {
       blocked: !ok,
       per_day: Math.round(perDay),
     });
+
+    /*
+      Ждём кадр: заключение появляется этим же setState, и до перерисовки
+      блок ещё пуст, а значит и не на своём месте. requestAnimationFrame
+      отдаёт управление после отрисовки.
+    */
+    requestAnimationFrame(() => revealIfOffscreen(verdictRef.current));
   };
 
   return (
@@ -139,7 +171,7 @@ export function Calc() {
             >
               {MODES.map((m, i) => (
                 <option key={m.name} value={i}>
-                  {m.name} — {m.rate} ₽ за фразу
+                  {m.name}, {m.rate} ₽ за фразу
                 </option>
               ))}
             </select>
@@ -165,7 +197,11 @@ export function Calc() {
         толкает вниз всё, что под ним, и на телефоне это читается как сбой
         вёрстки, а не как ответ.
       */}
-      <div aria-live="polite" className="min-h-[8.5rem] border-t border-[var(--color-rule)]">
+      <div
+        ref={verdictRef}
+        aria-live="polite"
+        className="min-h-[8.5rem] scroll-mt-4 border-t border-[var(--color-rule)]"
+      >
         {verdict && !verdict.ok ? (
           <div aria-hidden className="hazard h-1.5" />
         ) : null}

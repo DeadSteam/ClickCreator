@@ -49,7 +49,8 @@ export default function Page() {
             <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-16">
               <Reveal>
                 <h1 className="max-w-[17ch] text-[34px] sm:text-[50px] lg:text-[58px]">
-                  Цену вы уже посчитали. Теперь о том, что за ней стоит
+                  Цену продвижения в Яндексе вы посчитали. Теперь о том, что
+                  за ней стоит
                 </h1>
               </Reveal>
               <Reveal delay={0.08}>

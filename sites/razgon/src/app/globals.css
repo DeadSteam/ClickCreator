@@ -30,7 +30,7 @@
   --color-field-edge: oklch(0.955 0.002 250);
   --color-mark: oklch(0.152 0.004 260);
   --color-mark-soft: oklch(0.436 0.006 260);
-  --color-mark-faint: oklch(0.628 0.006 260);
+  --color-mark-faint: oklch(0.557 0.006 260);
 
   /* Алый. Единственный цвет: текущие сутки и целевое действие. */
   --color-blaze: oklch(0.588 0.238 29);

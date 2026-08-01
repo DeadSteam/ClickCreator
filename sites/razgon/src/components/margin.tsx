@@ -55,14 +55,15 @@ export function Margin() {
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <span className="plate">ваша наценка</span>
 
-        <div className="flex flex-wrap gap-px bg-[var(--color-rule-soft)]">
+        <div role="radiogroup" aria-label="Наценка" className="flex flex-wrap gap-px bg-[var(--color-rule-soft)]">
           {MARKUP.map((m, i) => {
             const active = i === markup;
             return (
               <button
                 key={m}
                 type="button"
-                aria-pressed={active}
+                role="radio"
+                aria-checked={active}
                 onClick={() => pick(i)}
                 className={`min-h-[48px] cursor-pointer px-6 py-3
                   font-[family-name:var(--font-tight)] text-[22px] font-extrabold uppercase

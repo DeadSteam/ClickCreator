@@ -214,7 +214,7 @@
   .zone-cold {
     --ink: oklch(0.185 0.020 250);
     --ink-soft: oklch(0.395 0.018 245);
-    --ink-faint: oklch(0.545 0.016 242);
+    --ink-faint: oklch(0.498 0.016 242);
     --rule: oklch(0.185 0.020 250 / 0.16);
     --rule-soft: oklch(0.185 0.020 250 / 0.09);
     --inset: oklch(0.185 0.020 250 / 0.035);
@@ -227,7 +227,7 @@
   .zone-warm {
     --ink: oklch(0.175 0.030 40);
     --ink-soft: oklch(0.365 0.032 42);
-    --ink-faint: oklch(0.495 0.034 45);
+    --ink-faint: oklch(0.415 0.034 45);
     --rule: oklch(0.175 0.030 40 / 0.20);
     --rule-soft: oklch(0.175 0.030 40 / 0.11);
     --inset: oklch(0.175 0.030 40 / 0.045);
@@ -244,7 +244,7 @@
   .zone-hot {
     --ink: oklch(0.155 0.038 32);
     --ink-soft: oklch(0.265 0.055 32);
-    --ink-faint: oklch(0.345 0.065 32);
+    --ink-faint: oklch(0.306 0.065 32);
     --rule: oklch(0.155 0.038 32 / 0.30);
     --rule-soft: oklch(0.155 0.038 32 / 0.16);
     --inset: oklch(0.155 0.038 32 / 0.07);

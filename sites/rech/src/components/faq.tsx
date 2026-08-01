@@ -20,7 +20,13 @@ export function Faq({ items }: { items: readonly { q: string; a: string }[] }) {
     <div className="flex flex-col gap-10">
       {items.map((item) => (
         <div key={item.q}>
-          <p className="flex gap-3 font-[family-name:var(--font-display)] text-[21px] leading-snug italic sm:text-[23px]">
+          {/*
+            Полужирный курсив, а не обычный. Помимо того, что реплика так
+            заметнее, это единственное место на сайте, где Bona Nova была
+            нужна начертанием 400 - и ради него грузилось вдвое больше файлов
+            шрифта. Теперь у гарнитуры остаётся один вес в двух начертаниях.
+          */}
+          <p className="flex gap-3 font-[family-name:var(--font-display)] text-[21px] leading-snug font-bold italic sm:text-[23px]">
             <span aria-hidden className="text-[var(--color-ochre)]">
               &mdash;
             </span>

@@ -85,7 +85,7 @@ export function Tariff() {
                   scope="row"
                   className="num py-4 pr-6 text-[14px] font-normal text-[var(--color-ink)]"
                 >
-                  {v.to ? `${v.from}–${v.to}` : `${v.from} и больше`}
+                  {v.to ? `${v.from}-${v.to}` : `${v.from} и больше`}
                   {v.off > 0 ? (
                     <span className="field ml-3 text-[var(--color-stamp)]">
                       &minus;{Math.round(v.off * 100)} %

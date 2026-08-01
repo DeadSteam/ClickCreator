@@ -28,7 +28,7 @@
 
   --color-graphite: oklch(0.196 0.008 255);
   --color-graphite-soft: oklch(0.428 0.008 255);
-  --color-graphite-faint: oklch(0.612 0.007 255);
+  --color-graphite-faint: oklch(0.546 0.007 255);
 
   /*
     Сигнальный жёлтый. Единственный цвет на сайте, всегда в паре с графитом:
