@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+/*
+  КЛИК.
+
+  Сайт устроен как измерительный прибор, а не как лендинг. Первый экран отдан
+  расчёту целиком: посетитель считает свою цену раньше, чем прочитает хоть одно
+  утверждение о продукте. Гипотеза варианта в том, что в категории, где все
+  начинают с обещания, выигрывает тот, кто начинает с цифры.
+
+  Это единственный тёмный сайт из шести, и здесь легче всего свалиться в
+  типовое "тёмное с одним акцентом" - самый ходовой ход категории. Чтобы этого
+  не случилось, действуют жёсткие запреты:
+
+  1. Никаких свечений, размытий и стекла. Прибор не светится - он показывает.
+     Любой box-shadow с цветом, любой backdrop-blur здесь неуместен.
+  2. Никаких градиентов. Плоскости разделяются волосяной линейкой, а не
+     плавным переходом.
+  3. Сигнальный цвет только на значении, которое сейчас работает: пересчёт
+     главного показания и действующая ступень скидки. Он означает "это живое",
+     а не "тут красиво". Красить им кнопки, заголовки и рамки нельзя - смысл
+     цвета размоется, и прибор превратится в обычный тёмный лендинг с акцентом.
+  4. Показания огромные, подписи крошечные. Именно этот контраст кегля, а не
+     цвет, делает страницу похожей на прибор.
+*/
+
+@theme {
+  /*
+    Корпус прибора. Не чистый чёрный: на OLED он даёт смазывание при прокрутке,
+    а на IPS выглядит провалом. Графит с лёгким холодным уходом.
+  */
+  --color-case: oklch(0.178 0.006 260);
+  --color-case-raise: oklch(0.222 0.007 260);
+  --color-case-sink: oklch(0.144 0.006 262);
+
+  /* Показания. Не чистый белый: он режет глаз на тёмном поле. */
+  --color-read: oklch(0.964 0.002 250);
+  --color-read-soft: oklch(0.746 0.006 255);
+  --color-read-faint: oklch(0.556 0.008 258);
+
+  /*
+    Сигнал. Появляется только на живом значении. Проверен на контраст с
+    корпусом: 8.9 к 1, то есть читается как текст, а не только как заливка.
+  */
+  --color-live: oklch(0.842 0.148 178);
+
+  --color-rule: oklch(0.964 0.002 250 / 0.20);
+  --color-rule-soft: oklch(0.964 0.002 250 / 0.10);
+  --color-rule-hair: oklch(0.964 0.002 250 / 0.055);
+
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /*
+    Отклик прибора мгновенный. 100мс на нажатие - это предел, за которым
+    действие перестаёт ощущаться прямым. Переходы в 300мс, стандартные для
+    лендингов, сделали бы из прибора вялую презентацию.
+  */
+  --ease-read: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-micro: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --t-press: 90ms;
+  --t-hover: 120ms;
+  --t-panel: 200ms;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-case);
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  * {
+    touch-action: manipulation;
+  }
+
+  body {
+    color: var(--color-read);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-live);
+    color: var(--color-case);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-live);
+    outline-offset: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.03;
+    text-wrap: balance;
+  }
+
+  /*
+    Показание. Табличные цифры обязательны: без них при пересчёте число
+    дёргается по ширине на каждом кадре, и вместо прибора получается мигалка.
+    slashed-zero отличает ноль от буквы О - на приборе это не педантизм.
+  */
+  .read {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums slashed-zero;
+    font-feature-settings: "tnum", "zero";
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+  }
+
+  /*
+    Главное показание первого экрана.
+
+    word-spacing отрицательный, потому что разряды мы разделяем обычным
+    пробелом, а на кегле за сотню пикселей пробел вырастает до провала шириной
+    с цифру: "1 325" читается как два отдельных числа. Сжимаем до величины,
+    на которой группа разрядов ещё видна, но число остаётся одним объектом.
+  */
+  .read-xl {
+    word-spacing: -0.34em;
+  }
+
+  /*
+    Подпись у показания. Отрицательный отступ справа гасит трекинг после
+    последней буквы: иначе прижатая вправо подпись вылезает за колонку и
+    страница получает горизонтальную прокрутку.
+  */
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.15em;
+    margin-right: -0.15em;
+    text-transform: uppercase;
+    color: var(--color-read-faint);
+  }
+
+  /*
+    Ползунок прибора. Дорожка тонкая, бегунок узкий и высокий - как риска на
+    шкале, а не как бусина. Зона нажатия при этом полные 44 пикселя.
+  */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 2px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 2px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 2px;
+    height: 26px;
+    margin-top: -12px;
+    background: var(--color-live);
+    border-radius: 0;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 2px;
+    height: 26px;
+    border: 0;
+    border-radius: 0;
+    background: var(--color-live);
+  }
+}
+
+@layer components {
+  /*
+    Экран прибора. Разлиновка как на осциллографе: крупная клетка 48 пикселей
+    и мелкая 12. Задана градиентами, а не картинкой - масштабируется без
+    потери чёткости и не стоит отдельного запроса.
+
+    Маска сверху нужна, чтобы сетка не упиралась в край экрана резким обрывом:
+    обрубленная сетка читается как незагруженный фон.
+  */
+  .screen {
+    background-color: var(--color-case-sink);
+    background-image:
+      linear-gradient(to right, var(--color-rule-hair) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-rule-hair) 1px, transparent 1px),
+      linear-gradient(to right, var(--color-rule-soft) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-rule-soft) 1px, transparent 1px);
+    background-size:
+      12px 12px,
+      12px 12px,
+      48px 48px,
+      48px 48px;
+  }
+
+  /* Панель корпуса: плоскость на тон светлее, рамка вместо тени. */
+  .panel {
+    background-color: var(--color-case-raise);
+    border: 1px solid var(--color-rule-soft);
+  }
+
+  /*
+    Живое показание. Цвет означает, что значение сейчас пересчитывается, и
+    гаснет через мгновение после остановки. Это единственное место, где на
+    странице появляется сигнальный цвет.
+  */
+  .live {
+    color: var(--color-live);
+    transition: color var(--t-panel) var(--ease-read);
+  }
+
+  /* Риска шкалы. Повторяющийся градиент вместо тридцати узлов в дереве. */
+  .ticks {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--color-rule) 0 1px,
+      transparent 1px 100%
+    );
+    background-size: 10% 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: 120ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hit {
+    transition: background-color var(--t-hover) var(--ease-micro);
+  }
+
+  .hit:hover {
+    background-color: var(--color-case-raise);
+  }
+}

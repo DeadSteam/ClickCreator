@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+/*
+  РЕЕСТР.
+
+  Страница притворяется не лендингом, а документом: сброшюрованным реестром
+  проектов, который можно взять и проверить построчно. Это не стилизация ради
+  красоты - это и есть оффер. Вся категория обещает результат словами, здесь
+  результат опубликован таблицей, и дизайн обязан выглядеть как публикация,
+  а не как реклама публикации.
+
+  Отсюда три запрета, которые нельзя снимать при доработке:
+
+  1. Ни одной карточки с иконкой в скруглённом квадрате. Документ держится
+     на линейках, колонках и нумерации. Карточка мгновенно превращает реестр
+     обратно в лендинг.
+  2. Нулевой радиус везде. Бумага не бывает скруглённой.
+  3. Одна краска на всю страницу. Печатный красный - это штамп, а не акцент
+     для украшения: он появляется только там, где документ что-то удостоверяет.
+*/
+
+@theme {
+  /*
+    Бумага, а не белый. Чистый #fff читается как экран и убивает всю метафору.
+    Три плотности: разворот, поле, вклейка.
+  */
+  --color-paper: oklch(0.963 0.011 84);
+  --color-paper-edge: oklch(0.934 0.014 82);
+  --color-paper-deep: oklch(0.897 0.018 80);
+
+  /* Типографская краска: тёплый чёрный с уходом в коричневый, не нейтральный серый. */
+  --color-ink: oklch(0.212 0.014 62);
+  --color-ink-soft: oklch(0.432 0.014 66);
+  --color-ink-faint: oklch(0.588 0.013 70);
+
+  /* Штемпельная краска. Единственный цвет на странице. */
+  --color-stamp: oklch(0.508 0.183 27);
+  --color-stamp-deep: oklch(0.398 0.148 28);
+
+  /* Разлиновка бланка. Волосяная, ощутимо тоньше любой рамки. */
+  --color-rule: oklch(0.212 0.014 62 / 0.22);
+  --color-rule-soft: oklch(0.212 0.014 62 / 0.11);
+  --color-rule-hair: oklch(0.212 0.014 62 / 0.055);
+
+  --font-serif: var(--font-literata), Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /*
+    Движение документа - это перелистывание, а не полёт. Длительности взяты
+    короткими намеренно: всё, что дольше 200мс, начинает читаться как анимация,
+    а бумага не анимируется.
+  */
+  --ease-page: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-micro: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --t-press: 90ms;
+  --t-hover: 140ms;
+  --t-panel: 200ms;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Снимает legacy-задержку 300мс: страница отвечает пальцу сразу. */
+  * {
+    touch-action: manipulation;
+  }
+
+  body {
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-stamp);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-stamp);
+    outline-offset: 2px;
+  }
+
+  /*
+    Заголовки набраны тем же серифом, что и текст, и почти без разгона веса.
+    Документ не кричит - он различает уровни размером и интерлиньяжем.
+    Разогнать заголовки до 800 значило бы вернуться к обычному лендингу.
+  */
+  h1,
+  h2,
+  h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  /*
+    Все числа - показания, а не текст. Табличные цифры обязательны: без них
+    столбец "было - стало" пляшет по горизонтали и таблица перестаёт читаться
+    как таблица.
+  */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.03em;
+  }
+
+  /*
+    Служебная подпись бланка. Отрицательный margin справа компенсирует
+    межбуквенное расстояние, которое трекинг добавляет и после последней буквы:
+    без этого подпись, прижатая вправо, вылезает за колонку и страница получает
+    несколько пикселей горизонтальной прокрутки.
+  */
+  .field {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.14em;
+    margin-right: -0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  /* Ползунок бланка: видимая дорожка 3px, зона нажатия - полные 44. */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 3px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 3px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 3px;
+    height: 21px;
+    margin-top: -9px;
+    background: var(--color-stamp);
+    border-radius: 0;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 3px;
+    height: 21px;
+    border: 0;
+    border-radius: 0;
+    background: var(--color-stamp);
+  }
+}
+
+@layer components {
+  /*
+    Волокно бумаги. Вплетено в background-image самого разворота, а не положено
+    отдельным слоем с mix-blend-mode: смешивание внутри собственной отрисовки
+    одного элемента стоит кратно дешевле, прокручивается вместе с контентом
+    бесплатно и поэтому читается как материал страницы, а не плёнка поверх неё.
+
+    baseFrequency подобрана крупной по горизонтали и мелкой по вертикали
+    (0.7 против 0.02) - так шум ложится продольными волокнами, как в настоящей
+    бумаге, а не равномерной пылью, как в любом дефолтном noise-оверлее.
+  */
+  .sheet {
+    background-color: var(--color-paper);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='f' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7 0.02' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.06'/%3E%3C/svg%3E");
+    background-size: 420px 420px;
+  }
+
+  /*
+    Поле бланка. Утопленная плашка на тон темнее бумаги, без тени и без рамки
+    со всех сторон: у бланка поле обозначается линией снизу, а не коробкой.
+  */
+  .slot {
+    background-color: var(--color-paper-edge);
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  /*
+    Строка реестра. Нумерация ведётся счётчиком CSS, а не проставляется в
+    разметке: при фильтрации таблицы номера обязаны пересчитываться сами,
+    иначе после фильтра остаются дыры вида 03, 07, 19 и реестр выглядит
+    подделанным.
+  */
+  .registry {
+    counter-reset: row;
+  }
+
+  .registry > * {
+    counter-increment: row;
+  }
+
+  .row-no::before {
+    content: counter(row, decimal-leading-zero);
+  }
+
+  /*
+    Штамп. Повёрнут на градус с небольшим - ровно поставленный штамп выглядит
+    напечатанным вместе с бланком и перестаёт удостоверять. Поворот делается
+    трансформом, поэтому не трогает раскладку соседей.
+  */
+  .stamp {
+    color: var(--color-stamp);
+    border: 2px solid var(--color-stamp);
+    transform: rotate(-1.4deg);
+    opacity: 0.88;
+  }
+
+  /*
+    Перфорация подшивки вдоль левого поля. Радиальный градиент вместо
+    псевдоэлементов: одна отрисовка вместо тридцати узлов в дереве.
+  */
+  .punched {
+    background-image: radial-gradient(
+      circle at 11px 50%,
+      var(--color-paper-deep) 0 4px,
+      transparent 4px
+    );
+    background-size: 100% 64px;
+    background-repeat: repeat-y;
+  }
+}
+
+/*
+  Уменьшенное движение - это меньше движения, а не его отсутствие. Уезжают
+  сдвиги и масштабирование, остаются прозрачность и цвет: они несут смысл
+  (что-то появилось, что-то стало активным), а не украшают.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: 140ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .stamp {
+    transform: none;
+  }
+}
+
+/* На тапе ховер срабатывает ложно, поэтому всё декоративное - за pointer: fine. */
+@media (hover: hover) and (pointer: fine) {
+  .row-hover {
+    transition: background-color var(--t-hover) var(--ease-micro);
+  }
+
+  .row-hover:hover {
+    background-color: var(--color-paper-edge);
+  }
+}

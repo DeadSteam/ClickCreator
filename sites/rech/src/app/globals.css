@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+/*
+  ПРЯМАЯ РЕЧЬ.
+
+  Сайт написан как письмо от конкретного человека, а не как страница компании.
+  Аудит категории показал, что специалисту и владельцу бизнеса продают через
+  доверие к личности, а не к продукту, и что личный бренд - единственное, чего
+  в нише почти ни у кого нет. Отсюда гипотеза варианта.
+
+  Что из этого следует для оформления:
+
+  1. Первый экран без кнопки. Совсем. Кнопка появляется только после того, как
+     автор представился и сказал, чего он не делает. Кнопка в первом экране
+     письма превращает письмо обратно в лендинг, и вся затея рассыпается.
+  2. Никаких секций-плиток и карточек с иконками. Текст идёт колонкой шириной
+     в комфортное чтение, врезки уходят на поля.
+  3. Единица набора - абзац, а не блок. Поэтому меры отступов крупные и редкие,
+     а мелкой сетки нет вообще.
+  4. Цвет один: охра. Он отмечает то, что автор подчёркивает рукой, и больше
+     ничего.
+*/
+
+@theme {
+  /* Тёплая писчая бумага. Заметно теплее, чем у любого другого варианта. */
+  --color-leaf: oklch(0.975 0.010 88);
+  --color-leaf-edge: oklch(0.944 0.014 86);
+
+  /* Тушь: тёплый чёрный, уходящий в коричневый, а не нейтральный серый. */
+  --color-ink: oklch(0.228 0.018 62);
+  --color-ink-soft: oklch(0.448 0.020 62);
+  --color-ink-faint: oklch(0.606 0.018 66);
+
+  /* Охра. Единственный цвет на странице: подчёркивание рукой автора. */
+  --color-ochre: oklch(0.588 0.128 62);
+
+  --color-rule: oklch(0.228 0.018 62 / 0.24);
+  --color-rule-soft: oklch(0.228 0.018 62 / 0.12);
+  --color-rule-hair: oklch(0.228 0.018 62 / 0.06);
+
+  --font-display: var(--font-bona), Georgia, serif;
+  --font-text: var(--font-madefor), system-ui, sans-serif;
+
+  --ease-turn: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-micro: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --t-press: 95ms;
+  --t-hover: 150ms;
+  --t-panel: 230ms;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-leaf);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  * {
+    touch-action: manipulation;
+  }
+
+  /*
+    Тело набрано гротеском, а заголовки серифом - наоборот относительно
+    привычного. Так письмо читается современно, а не как оцифрованная книга,
+    но сохраняет голос в заголовках.
+
+    Кегль 18, а не 16: это длинный текст, который читают, а не сканируют.
+  */
+  body {
+    color: var(--color-ink);
+    font-family: var(--font-text);
+    font-size: 18px;
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-ochre);
+    color: var(--color-leaf);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ochre);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.06;
+    text-wrap: balance;
+  }
+
+  /* Цифры внутри текста должны совпадать по высоте со строчными буквами,
+     иначе они торчат из строки столбиками. */
+  .fig {
+    font-variant-numeric: oldstyle-nums;
+    font-feature-settings: "onum";
+  }
+
+  /* Служебная подпись: дата письма, номер врезки, подпись под фото. */
+  .cap {
+    font-family: var(--font-text);
+    font-size: 12px;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    color: var(--color-ink-faint);
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 1px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 1px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 13px;
+    height: 13px;
+    margin-top: -6px;
+    background: var(--color-ochre);
+    border-radius: 50%;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+    border: 0;
+    background: var(--color-ochre);
+    border-radius: 50%;
+  }
+}
+
+@layer components {
+  /*
+    Подчёркивание рукой. Не border-bottom: у рамки ровный край, а у карандашной
+    черты он неровный и лежит ниже базовой линии. Рисуем градиентом-фоном,
+    поэтому черта не влияет на раскладку и не разрывает строку при переносе.
+  */
+  .stroke {
+    background-image: linear-gradient(
+      to top,
+      var(--color-ochre) 0 2px,
+      transparent 2px
+    );
+    background-repeat: repeat-x;
+    background-size: 100% 100%;
+    padding-bottom: 1px;
+  }
+
+  /*
+    Врезка на поле. На широком экране уходит влево от колонки текста, на узком
+    становится обычным абзацем с чертой слева: втискивать поле в 375 пикселей
+    значит сделать нечитаемыми и врезку, и текст.
+  */
+  .aside-note {
+    border-left: 2px solid var(--color-ochre);
+    padding-left: 1rem;
+  }
+
+  @media (min-width: 1280px) {
+    .aside-note {
+      border-left: 0;
+      padding-left: 0;
+      text-align: right;
+    }
+  }
+
+  /*
+    Место под портрет. Тон бумаги на ступень темнее плюс мягкое зерно.
+
+    ВАЖНО: это заглушка. Файл public/portrait.jpg нужно заменить настоящей
+    фотографией автора - весь вариант проверяет гипотезу "человек продаёт
+    лучше сервиса", и без лица он проверяет что-то другое.
+  */
+  .portrait {
+    background-color: var(--color-leaf-edge);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.08'/%3E%3C/svg%3E");
+    background-size: 300px 300px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link {
+    transition: color var(--t-hover) var(--ease-micro);
+  }
+
+  .link:hover {
+    color: var(--color-ochre);
+  }
+}

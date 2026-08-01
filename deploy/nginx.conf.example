@@ -1,0 +1,62 @@
+# Раздача шести сайтов по своим доменам через nginx.
+#
+# Зачем прокси, а не порты напрямую: у каждого варианта должен быть свой домен -
+# в этом половина смысла теста. Посетитель, который видит в адресной строке
+# ip:3003, не воспринимает страницу как сайт компании, и данные по конверсии
+# такого теста ничего не стоят.
+#
+# Второе: Node не должен смотреть в интернет сам. За nginx порты 3000-3005
+# остаются на localhost, а наружу торчат только 80 и 443.
+#
+# Установка:
+#   sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/landings
+#   sudo nano /etc/nginx/sites-available/landings     # подставить домены
+#   sudo ln -s /etc/nginx/sites-available/landings /etc/nginx/sites-enabled/
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# Сертификаты - certbot, он сам допишет блоки listen 443:
+#   sudo certbot --nginx -d reestr-pozicij.ru -d www.reestr-pozicij.ru
+
+# Общие заголовки прокси. Без X-Forwarded-Proto Next считает, что пришли по
+# http, и в редиректах и канонических ссылках появляется http вместо https.
+proxy_set_header Host              $host;
+proxy_set_header X-Real-IP         $remote_addr;
+proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+proxy_http_version 1.1;
+
+server {
+    listen 80;
+    server_name topinjector.ru www.topinjector.ru;
+    location / { proxy_pass http://127.0.0.1:3000; }
+}
+
+server {
+    listen 80;
+    server_name reestr-pozicij.ru www.reestr-pozicij.ru;
+    location / { proxy_pass http://127.0.0.1:3001; }
+}
+
+server {
+    listen 80;
+    server_name porog-seo.ru www.porog-seo.ru;
+    location / { proxy_pass http://127.0.0.1:3002; }
+}
+
+server {
+    listen 80;
+    server_name klik-seo.ru www.klik-seo.ru;
+    location / { proxy_pass http://127.0.0.1:3003; }
+}
+
+server {
+    listen 80;
+    server_name pryamaya-rech.ru www.pryamaya-rech.ru;
+    location / { proxy_pass http://127.0.0.1:3004; }
+}
+
+server {
+    listen 80;
+    server_name razgon-seo.ru www.razgon-seo.ru;
+    location / { proxy_pass http://127.0.0.1:3005; }
+}

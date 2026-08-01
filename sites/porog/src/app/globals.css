@@ -1,0 +1,275 @@
+@import "tailwindcss";
+
+/*
+  ПОРОГ.
+
+  Страница построена как технические условия, а не как предложение. Она
+  открывается не оффером, а проверкой допуска, и часть посетителей уводит в
+  честный отказ. Это и есть гипотеза сайта: в категории, где все обещают всем,
+  выигрывает тот, кто первым говорит "вам мы откажем".
+
+  Дизайн обязан поддерживать именно это, поэтому:
+
+  1. Никакой теплоты. Бумага, охра, дерево - всё это смягчает, а регламент не
+     смягчает. Только холодный белый, графит и стекло.
+  2. Один сигнальный элемент на весь сайт - предупреждающая штриховка. Она
+     появляется строго там, где документ ограничивает: на границе допуска и на
+     отказе. Использовать её как украшение нельзя, иначе она перестанет
+     означать опасность.
+  3. Скругления нулевые, тени отсутствуют. Технический документ не парит над
+     страницей.
+*/
+
+@theme {
+  /* Холодная бумага печати на лазернике: белый с уходом в синеву, не в жёлтый. */
+  --color-sheet: oklch(0.972 0.002 250);
+  --color-sheet-raise: oklch(0.995 0.001 250);
+  --color-sheet-sink: oklch(0.938 0.004 250);
+
+  --color-graphite: oklch(0.196 0.008 255);
+  --color-graphite-soft: oklch(0.428 0.008 255);
+  --color-graphite-faint: oklch(0.612 0.007 255);
+
+  /*
+    Сигнальный жёлтый. Единственный цвет на сайте, всегда в паре с графитом:
+    жёлтый сам по себе на белом даёт контраст 1.4 к 1 и нечитаем, работает
+    только чередованием.
+  */
+  --color-signal: oklch(0.868 0.168 96);
+
+  --color-rule: oklch(0.196 0.008 255 / 0.28);
+  --color-rule-soft: oklch(0.196 0.008 255 / 0.14);
+  --color-rule-hair: oklch(0.196 0.008 255 / 0.07);
+
+  --font-sans: var(--font-geologica), system-ui, sans-serif;
+  --font-mono: var(--font-cousine), ui-monospace, monospace;
+
+  /*
+    Движение прибора: короткое, с жёстким торможением. Ease-out с сильным
+    выходом читается как срабатывание механизма, а не как плавная анимация.
+  */
+  --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-micro: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --t-press: 90ms;
+  --t-hover: 130ms;
+  --t-panel: 220ms;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-sheet);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  * {
+    touch-action: manipulation;
+  }
+
+  body {
+    color: var(--color-graphite);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.58;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-graphite);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-graphite);
+    outline-offset: 2px;
+  }
+
+  /*
+    Заголовки узкие и плотные. Geologica переменная, но берём только три
+    начертания: 400 читает, 500 ведёт, 700 заявляет. Пять начертаний были бы
+    на два больше - на размерах документа разницу между 500 и 600 никто не
+    различает, а вес файла растёт на каждое.
+  */
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  /*
+    Каждое число - показание прибора. Табличные цифры обязательны: без них
+    столбец допусков пляшет, и сравнить два значения глазом нельзя.
+  */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+  }
+
+  /*
+    Служебная подпись. Отрицательный отступ справа гасит межбуквенный интервал,
+    который трекинг добавляет после последней буквы: иначе прижатая вправо
+    подпись вылезает за колонку и страница получает горизонтальную прокрутку.
+  */
+  .mark {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.13em;
+    margin-right: -0.13em;
+    text-transform: uppercase;
+    color: var(--color-graphite-faint);
+  }
+
+  /*
+    Знак рубля внутри моноширинных классов.
+
+    В Cousine нет глифа U+20BD. Внутри .num или .mark браузер подменяет его
+    системным шрифтом, кегль и начертание уезжают, и строка выглядит собранной
+    из двух разных гарнитур. Класс возвращает знак в основную гарнитуру, где
+    он нарисован. Ставить его нужно на каждый ₽ в моноширинном окружении.
+  */
+  .rub {
+    font-family: var(--font-sans);
+    font-weight: 400;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 2px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 2px;
+    background: var(--color-rule);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -7px;
+    background: var(--color-graphite);
+    border-radius: 0;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 0;
+    border-radius: 0;
+    background: var(--color-graphite);
+  }
+}
+
+@layer components {
+  /*
+    Сквозная нумерация разделов и пунктов, как в настоящих ТУ. Ведётся
+    счётчиками CSS, а не руками в разметке: при вставке нового раздела в
+    середину документа ручная нумерация разъезжается вся сразу, и это
+    замечают уже на продакшене.
+  */
+  .doc {
+    counter-reset: chapter;
+  }
+
+  .chapter {
+    counter-increment: chapter;
+    counter-reset: clause;
+  }
+
+  .chapter-no::before {
+    content: counter(chapter) ".";
+  }
+
+  .clause {
+    counter-increment: clause;
+  }
+
+  .clause-no::before {
+    content: counter(chapter) "." counter(clause);
+  }
+
+  /*
+    Предупреждающая штриховка. Косые полосы графит-сигнал под 45 градусов,
+    ровно как на ограждении.
+
+    Задана градиентом, а не картинкой: масштабируется без потери чёткости,
+    красится темой и не стоит отдельного запроса. Шаг 12px подобран так, чтобы
+    полоса читалась как штриховка и на ленте высотой 6px, и на полосе в 40.
+  */
+  .hazard {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--color-graphite) 0 6px,
+      var(--color-signal) 6px 12px
+    );
+  }
+
+  /* Панель прибора: приподнятая плашка на холодном фоне, рамка вместо тени. */
+  .panel {
+    background-color: var(--color-sheet-raise);
+    border: 1px solid var(--color-rule-soft);
+  }
+
+  /* Утопленное поле ввода. */
+  .sink {
+    background-color: var(--color-sheet-sink);
+  }
+
+  /*
+    Миллиметровка. Подложка первого экрана: сетка чертежа, а не декоративный
+    паттерн. Две линии на 8 и 40 пикселей дают крупную и мелкую клетку одним
+    элементом.
+  */
+  .grid-paper {
+    background-image:
+      linear-gradient(to right, var(--color-rule-hair) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-rule-hair) 1px, transparent 1px),
+      linear-gradient(to right, var(--color-rule-soft) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-rule-soft) 1px, transparent 1px);
+    background-size:
+      8px 8px,
+      8px 8px,
+      40px 40px,
+      40px 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: 130ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hit {
+    transition:
+      background-color var(--t-hover) var(--ease-micro),
+      border-color var(--t-hover) var(--ease-micro);
+  }
+
+  .hit:hover {
+    background-color: var(--color-sheet-sink);
+  }
+}

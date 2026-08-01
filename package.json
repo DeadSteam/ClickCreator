@@ -1,0 +1,30 @@
+{
+  "name": "clickcreator-landings",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Шесть независимых лендингов одного продукта. Каждый проверяет свою гипотезу продажи, поэтому у каждого свой бренд, своя дизайн-система и свой домен.",
+  "workspaces": [
+    "topinjector",
+    "sites/*"
+  ],
+  "scripts": {
+    "dev": "node scripts/run-all.mjs",
+    "dev:all": "node scripts/run-all.mjs",
+
+    "build:all": "npm run build --workspaces --if-present",
+
+    "start:all": "node scripts/run-all.mjs --mode start",
+    "//serve": "Сборка и запуск в продакшне снаружи: то, что нужно на сервере.",
+    "serve": "npm run build:all && node scripts/run-all.mjs --mode start --host 0.0.0.0",
+
+    "stop": "node scripts/stop-all.mjs",
+    "dev:stop": "node scripts/stop-all.mjs",
+
+    "dev:topinjector": "npm run dev -w topinjector",
+    "dev:reestr": "npm run dev -w @landings/reestr",
+    "dev:porog": "npm run dev -w @landings/porog",
+    "dev:klik": "npm run dev -w @landings/klik",
+    "dev:rech": "npm run dev -w @landings/rech",
+    "dev:razgon": "npm run dev -w @landings/razgon"
+  }
+}
