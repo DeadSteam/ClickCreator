@@ -3,14 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 
 /*
-  Появление строки документа.
+  Появление блока при прокрутке.
 
   Своя реализация вместо анимационной библиотеки: весь эффект - это два
   свойства и один IntersectionObserver, а библиотека потянула бы в бандл
   десятки килобайт ради того же самого.
 
-  Сдвиг маленький (6px) намеренно. Больше - и появление читается как выезд
-  элемента, а показания не выезжают, они проявляются.
+  Сдвиг маленький (10px) намеренно. Больше - и появление читается как выезд
+  элемента: страница начинает шевелиться, а спокойная страница не шевелится.
 */
 export function Reveal({
   children,
@@ -45,8 +45,8 @@ export function Reveal({
           io.disconnect();
         }
       },
-      /* rootMargin снизу: строка проявляется до того, как упрётся в край экрана. */
-      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
+      /* rootMargin снизу: блок проявляется до того, как упрётся в край экрана. */
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
 
     io.observe(el);
@@ -59,8 +59,8 @@ export function Reveal({
       className={className}
       style={{
         opacity: shown ? 1 : 0,
-        transform: shown ? "none" : "translateY(6px)",
-        transition: `opacity 420ms var(--ease-read) ${delay}s, transform 420ms var(--ease-read) ${delay}s`,
+        transform: shown ? "none" : "translateY(10px)",
+        transition: `opacity 520ms var(--ease-soft) ${delay}s, transform 520ms var(--ease-soft) ${delay}s`,
       }}
     >
       {children}

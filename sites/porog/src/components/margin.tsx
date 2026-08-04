@@ -1,4 +1,4 @@
-import { MODES } from "@/lib/content";
+import { RATES } from "@/lib/content";
 
 /*
   Пример расчёта вознаграждения.
@@ -7,9 +7,8 @@ import { MODES } from "@/lib/content";
   подачей, и второй интерактивный расчёт на соседней странице был бы просто
   повторением приёма - а повторённый приём перестаёт быть приёмом.
 
-  Здесь работает жанр: регламент не даёт калькулятор, он приводит пример
-  расчёта отдельным пунктом. Специалисту этого достаточно, он умножает в уме
-  лучше, чем аудитория, для которой обычно пишут калькуляторы.
+  Специалисту примера достаточно: он умножает в уме лучше, чем аудитория,
+  для которой обычно пишут калькуляторы.
 
   Компонент серверный: ни грамма JavaScript в браузер, весь текст попадает
   в поисковую выдачу.
@@ -18,7 +17,7 @@ const money = (n: number) => {
   const s = Math.round(n).toString();
   let out = "";
   for (let i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
+    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
     out += s[i];
   }
   return out;
@@ -28,7 +27,7 @@ const money = (n: number) => {
   Расчёт ведётся от ставки стандартного режима, чтобы пример не разошёлся с
   таблицей режимов на главной при правке тарифа.
 */
-const RATE = MODES[1].rate;
+const RATE = RATES[1].rate;
 const PHRASES = 150;
 const DAYS = 30;
 /* Скидка второй ступени объёма: 150 фраз попадает именно в неё. */
@@ -48,7 +47,7 @@ export function Margin() {
     },
     {
       t: "Ваше вознаграждение",
-      d: `При наценке вдвое клиент платит ${money(buy * 2)} рублей, у вас остаётся ${money(buy)}. При наценке втрое - ${money(buy * 3)} и ${money(buy * 2)} соответственно. Верхнюю границу наценки мы не устанавливаем и не проверяем.`,
+      d: `При наценке вдвое клиент платит ${money(buy * 2)} рублей, у вас остаётся ${money(buy)}. При наценке втрое — ${money(buy * 3)} и ${money(buy * 2)} соответственно. Верхнюю границу наценки мы не устанавливаем и не проверяем.`,
     },
     {
       t: "На нескольких проектах",
@@ -57,30 +56,20 @@ export function Margin() {
   ];
 
   return (
-    <div className="panel chapter">
-      <div className="border-b border-[var(--color-rule)] px-5 py-4 sm:px-7">
-        <span className="mark">пример расчёта вознаграждения</span>
-      </div>
-
-      <ol className="px-5 py-2 sm:px-7">
-        {CLAUSES.map((c) => (
-          <li
-            key={c.t}
-            className="clause grid items-baseline gap-x-6 gap-y-2 border-b border-[var(--color-rule-hair)] py-5 last:border-b-0 md:grid-cols-[3rem_minmax(0,20ch)_1fr]"
-          >
-            <span
-              aria-hidden
-              className="clause-no num text-[11px] text-[var(--color-graphite-faint)]"
-            />
-            <span className="text-[16px] font-medium tracking-[-0.02em]">
-              {c.t}
-            </span>
-            <span className="max-w-[64ch] text-[15px] leading-relaxed text-[var(--color-graphite-soft)]">
-              {c.d}
-            </span>
-          </li>
-        ))}
-      </ol>
-    </div>
+    <dl className="border-t-2 border-[var(--color-graphite)]">
+      {CLAUSES.map((c) => (
+        <div
+          key={c.t}
+          className="grid gap-x-14 gap-y-3 border-b border-[var(--color-rule-soft)] py-8 md:grid-cols-[minmax(0,18rem)_1fr]"
+        >
+          <dt className="text-[21px] leading-snug font-bold tracking-[-0.025em]">
+            {c.t}
+          </dt>
+          <dd className="max-w-[62ch] text-[18px] leading-relaxed text-[var(--color-graphite-soft)]">
+            {c.d}
+          </dd>
+        </div>
+      ))}
+    </dl>
   );
 }

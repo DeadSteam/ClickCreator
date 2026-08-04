@@ -3,16 +3,19 @@
 import { track } from "@/lib/analytics";
 
 /*
-  Управляющий элемент бланка.
+  Кнопка.
 
-  Это не кнопка лендинга, а графа документа: двойная рамка, моноширинная
-  подпись капителью и служебная отметка слева, как в поле «подпись
-  ответственного». Заливка появляется только на наведении - напечатанный
-  бланк не бывает чёрной плашкой, он становится ею, когда его заполняют.
+  Прежняя была графой бланка: двойная рамка, стрелка слева, подпись
+  моноширинной капителью одиннадцатым кеглем. Читалась как поле для заполнения,
+  а не как действие, и нажать её никому не приходило в голову.
 
-  Форма выбрана намеренно непохожей на прямоугольную плашку остальных пяти
-  сайтов: одинаковые кнопки выдают общее происхождение быстрее, чем
-  одинаковые цвета, потому что кнопку рассматривают в упор.
+  Здесь прямоугольник с плотной заливкой и подписью тем же серифом, что и
+  весь текст, - тот же приём, каким в печатном издании набирают купон. Углы
+  прямые: это единственная форма, которая держит страницу в издательском мире.
+  Ни один из остальных пяти сайтов прямых углов на кнопке не имеет.
+
+  Штемпельная краска на кнопку не идёт: она занята упавшими позициями в
+  реестре, а два одинаково красных пятна на экране обесценивают оба.
 
   place обязателен: без него видно, что кликнули, но не видно, по какой из
   кнопок, и оптимизировать нечего.
@@ -30,43 +33,27 @@ export function Cta({
 }) {
   const external = href.startsWith("http");
 
+  const base =
+    "inline-flex min-h-[54px] cursor-pointer items-center justify-center px-8 " +
+    "text-[18px] font-semibold tracking-[-0.01em] " +
+    "[transition:background-color_var(--t-fast)_var(--ease-page),color_var(--t-fast)_var(--ease-page),border-color_var(--t-fast)_var(--ease-page)]";
+
+  const skin =
+    variant === "solid"
+      ? "bg-[var(--color-ink)] text-[var(--color-paper)] hover:bg-[var(--color-stamp)]"
+      : "border border-[var(--color-rule)] text-[var(--color-ink)] hover:border-[var(--color-ink)]";
+
   return (
     <a
       href={href}
-      className={`group inline-flex min-h-[46px] cursor-pointer items-center gap-3 px-5 py-3
-        [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)]
-        ${
-          variant === "solid"
-            ? "border-2 border-double border-[var(--color-ink)] text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
-            : "border border-[var(--color-rule)] text-[var(--color-ink-soft)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)]"
-        }`}
+      className={`${base} ${skin}`}
       {...(external ? { rel: "noopener" } : {})}
       onClick={() => {
         track("cta_click", { place });
         if (external) track("register_outbound", { place });
       }}
     >
-      {/*
-        Отметка графы. Меняет только цвет: любое смещение при наведении
-        превратило бы строгий бланк в анимированный виджет.
-      */}
-      <span
-        aria-hidden
-        className="num text-[13px] text-[var(--color-stamp)] [transition:color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--color-paper)]"
-      >
-        &rarr;
-      </span>
-      <span className="field text-[11px] tracking-[0.12em] text-current">
-        {children}
-      </span>
+      {children}
     </a>
   );
-}
-
-/*
-  Подпись-кикер. На всю страницу их максимум три: капсовая надпись над каждой
-  секцией читается как шаблон, а не как система.
-*/
-export function Kicker({ children }: { children: React.ReactNode }) {
-  return <span className="field block">{children}</span>;
 }

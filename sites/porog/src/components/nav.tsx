@@ -3,14 +3,21 @@
 import { useState } from "react";
 
 import { SITE } from "@/lib/site";
-import { Wordmark } from "./logo";
 import { Cta } from "./cta";
 
+/*
+  Шапка.
+
+  Было пять разделов, номер редакции рядом со знаком и перекрёстная ссылка
+  капслоком - восемь мелких объектов над заголовком. Осталось три раздела.
+
+  Знак набран шрифтом, а не нарисован: имя в собственной гарнитуре сайта
+  выглядит достовернее пиктограммы и не требует второго файла.
+*/
 const LINKS = [
-  { label: "Допуск", href: "/#gate" },
-  { label: "Условия", href: "/#terms" },
-  { label: "Режимы", href: "/#modes" },
-  { label: "Расчёт", href: "/#calc" },
+  { label: "Как работает", href: "/#how" },
+  { label: "Расчёт", href: "/#budget" },
+  { label: "Результаты", href: "/#cases" },
   { label: "Вопросы", href: "/#faq" },
 ];
 
@@ -18,47 +25,52 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-b border-[var(--color-rule)] bg-[var(--color-sheet-raise)]">
-      <div className="mx-auto flex max-w-[84rem] items-center justify-between gap-6 px-5 py-3.5 sm:px-8">
+    <header>
+      <div className="mx-auto flex max-w-[74rem] items-center justify-between gap-8 px-6 py-7 sm:px-10">
         <a
           href="/"
-          className="shrink-0 [transition:opacity_var(--t-hover)_var(--ease-micro)] hover:opacity-70"
+          className="shrink-0 text-[21px] font-bold tracking-[-0.04em] [transition:opacity_var(--t-fast)_var(--ease-snap)] hover:opacity-70"
         >
-          <Wordmark revision={SITE.revision} />
+          {SITE.brand}
         </a>
 
-        <nav aria-label="Разделы" className="hidden items-center gap-7 lg:flex">
+        <nav aria-label="Разделы" className="hidden items-center gap-9 md:flex">
           {LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className="text-[14px] text-[var(--color-graphite-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--color-graphite)]"
+              className="text-[17px] text-[var(--color-graphite-soft)] [transition:color_var(--t-fast)_var(--ease-snap)] hover:text-[var(--color-graphite)]"
             >
               {l.label}
             </a>
           ))}
-          <a href={cross.href} className="mark [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--color-graphite)]">
+          <a
+            href={cross.href}
+            className="text-[17px] text-[var(--color-graphite-soft)] [transition:color_var(--t-fast)_var(--ease-snap)] hover:text-[var(--color-graphite)]"
+          >
             {cross.label}
           </a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          {/* Обведённая, а не залитая: залитая в шапке спорит по весу с
+              главной кнопкой первого экрана. */}
           <div className="hidden sm:block">
-            <Cta href="/#gate" place="nav">
-              Проверить допуск
+            <Cta href={SITE.register} place="nav" variant="outline">
+              Запустить тест
             </Cta>
           </div>
 
-          {/* Кнопка подписана словом: иконка-гамбургер без подписи не читается
+          {/* Подписано словом: иконка-гамбургер без подписи не читается
               скринридером как «меню». */}
           <button
             type="button"
             aria-expanded={open}
             aria-controls="nav-sheet"
             onClick={() => setOpen((v) => !v)}
-            className="mark flex min-h-[44px] cursor-pointer items-center border border-[var(--color-rule)] px-3 lg:hidden"
+            className="flex min-h-[46px] cursor-pointer items-center border border-[var(--color-rule)] px-5 text-[16px] md:hidden"
           >
-            {open ? "закрыть" : "меню"}
+            {open ? "Закрыть" : "Меню"}
           </button>
         </div>
       </div>
@@ -68,30 +80,30 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
       <div
         id="nav-sheet"
         inert={!open}
-        className="grid overflow-hidden lg:hidden"
+        className="grid overflow-hidden md:hidden"
         style={{
           gridTemplateRows: open ? "1fr" : "0fr",
-          transition: "grid-template-rows var(--t-panel) var(--ease-snap)",
+          transition: "grid-template-rows var(--t-base) var(--ease-snap)",
         }}
       >
         <div className="min-h-0">
           <nav
             aria-label="Разделы, мобильная версия"
-            className="flex flex-col border-t border-[var(--color-rule-soft)] px-5 pb-5 sm:px-8"
+            className="sink mx-6 flex flex-col px-5 py-3"
           >
             {[...LINKS, cross].map((l) => (
               <a
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="flex min-h-[44px] items-center border-b border-[var(--color-rule-hair)] text-[16px] text-[var(--color-graphite-soft)]"
+                className="flex min-h-[50px] items-center text-[18px] text-[var(--color-graphite-soft)]"
               >
                 {l.label}
               </a>
             ))}
-            <div className="mt-5 sm:hidden">
-              <Cta href="/#gate" place="nav_mobile">
-                Проверить допуск
+            <div className="mt-3 mb-2 sm:hidden">
+              <Cta href={SITE.register} place="nav_mobile">
+                Запустить тест
               </Cta>
             </div>
           </nav>

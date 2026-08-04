@@ -46,7 +46,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1a1c1f",
+  /* Совпадает с --color-ink: адресная строка на телефоне продолжает страницу. */
+  themeColor: "#101318",
   colorScheme: "dark",
 };
 
@@ -60,9 +61,10 @@ export default function RootLayout({
             органы управления счётчиком прежде, чем доберётся до текста. */}
         <a
           href="#main"
-          className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-3 focus:left-3
-            focus:bg-[var(--color-read)] focus:px-4 focus:py-3 focus:text-[14px]
-            focus:font-medium focus:text-[var(--color-case)]"
+          className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-4 focus:left-4
+            focus:rounded-[var(--radius-control)] focus:bg-[var(--color-text)]
+            focus:px-6 focus:py-3 focus:text-[16px] focus:font-medium
+            focus:text-[var(--color-ink)]"
         >
           Перейти к содержимому
         </a>

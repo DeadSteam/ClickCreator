@@ -4,12 +4,37 @@ import { Cta } from "@/components/cta";
 import { Boot } from "@/components/boot";
 import { Reveal } from "@/components/reveal";
 import { Estimate } from "@/components/estimate";
+import { BeforeAfter } from "@/components/before-after";
+import { Voices } from "@/components/voices";
 import { Faq } from "@/components/faq";
 import { SITE } from "@/lib/site";
-import { BODY, DECLINED, FAQ, NOTES, OPENING, RATES, REFUSALS } from "@/lib/content";
+import {
+  BAND_QUERIES,
+  BAND_WEEKS,
+  CASES,
+  COLD,
+  FAQ,
+  HOT,
+  METRICS,
+  OFFERS,
+  PHASES,
+  RATES,
+} from "@/lib/content";
 import { FaqSchema, OrganizationSchema, ServiceSchema } from "@/lib/seo";
 
 const CROSS = { label: "Если вы агентство", href: "/pro" };
+
+/*
+  ПРЯМАЯ РЕЧЬ. Письмо от конкретного человека.
+
+  Порядок блоков здесь тот же, что на всех пяти вариантах, - это условие
+  теста. Различается голос и способ набора: тёплая бумага, крупный сериф в
+  заголовках, гротеск в тексте, одна колонка чтения и врезки на полях.
+
+  Все утверждения от первого лица. Это не украшение: гипотеза варианта в том,
+  что человек продаёт лучше сервиса, и «мы» здесь сломало бы её на первой же
+  строке.
+*/
 
 /*
   Врезка на поле.
@@ -21,9 +46,27 @@ const CROSS = { label: "Если вы агентство", href: "/pro" };
 */
 function Note({ children }: { children: React.ReactNode }) {
   return (
-    <aside className="aside-note cap mt-8 max-w-[30ch] text-[14px] leading-relaxed xl:absolute xl:right-[calc(100%+3rem)] xl:mt-2 xl:w-[16rem] xl:max-w-none">
+    <aside className="aside-note cap mt-10 max-w-[32ch] xl:absolute xl:right-[calc(100%+3rem)] xl:mt-2 xl:w-[17rem] xl:max-w-none">
       {children}
     </aside>
+  );
+}
+
+/*
+  Колонка чтения. Та же сетка, что в первом экране, с пустой первой колонкой.
+
+  Раньше отступ задавался через calc от процента ширины и промахивался: доля
+  0.34 у грид-колонки считается от ширины за вычетом gap, а calc считал от
+  полной, и колонка текста уезжала на два десятка пикселей.
+*/
+function Column({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mx-auto max-w-[72rem]">
+      <div className="grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
+        <div aria-hidden className="hidden lg:block" />
+        <div className="relative max-w-[58ch]">{children}</div>
+      </div>
+    </div>
   );
 }
 
@@ -43,296 +86,314 @@ export default function Page() {
       <Nav cross={CROSS} />
 
       <main id="main" tabIndex={-1}>
-        {/*
-          Первый экран: портрет и начало письма. Кнопки нет, и это условие
-          варианта, а не недоделка. Она появится ниже, после списка отказов.
-        */}
-        <section className="px-5 pt-14 sm:px-8 sm:pt-20">
+        {/* 1. Первый экран: портрет и начало письма. */}
+        <section className="px-6 pt-16 sm:px-10 sm:pt-24">
           <div className="mx-auto max-w-[72rem]">
             <div className="grid gap-10 lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
               <Reveal>
                 <figure className="max-w-[20rem]">
                   {/*
                     ЗАМЕНИТЬ на настоящий портрет: положите файл в
-                    public/portrait.jpg и раскомментируйте img ниже. Весь этот
-                    вариант проверяет гипотезу "человек продаёт лучше сервиса",
-                    и без лица он проверяет что-то другое.
+                    public/portrait.jpg. Весь этот вариант проверяет гипотезу
+                    «человек продаёт лучше сервиса», и без лица он проверяет
+                    что-то другое.
                   */}
                   <div className="portrait aspect-[4/5] w-full" />
-                  <figcaption className="cap mt-3">
+                  <figcaption className="cap mt-4">
                     {SITE.author}, {SITE.city}. Здесь будет фотография.
                   </figcaption>
                 </figure>
               </Reveal>
 
               <Reveal delay={0.08}>
-                <p className="cap">
-                  Письмо от {SITE.updated}
-                </p>
+                <p className="cap">Письмо от {SITE.updated}</p>
 
-                <h1 className="mt-5 max-w-[17ch] text-[38px] sm:text-[52px] lg:text-[60px]">
-                  Здравствуйте. Сейчас объясню, чем я занимаюсь
+                <h1 className="mt-6 max-w-[16ch]">
+                  Вывожу ваш сайт на первую строку Яндекса
                 </h1>
 
-                <div className="mt-8 flex max-w-[54ch] flex-col gap-5 text-[18px] leading-relaxed sm:text-[19px]">
-                  {OPENING.map((p) => (
-                    <p key={p}>{p.replace("{author}", SITE.author)}</p>
-                  ))}
+                <p className="mt-8 max-w-[46ch] text-[21px] leading-relaxed">
+                  Позиции трогаются на вторые-третьи сутки. Платите мне за
+                  состоявшиеся переходы, а не за отчёты и обещания. Ниже
+                  расскажу, как это устроено и на что я не соглашаюсь.
+                </p>
+
+                <div className="mt-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+                  <Cta href={SITE.register} place="hero">
+                    Запустить тест
+                  </Cta>
+                  <Cta href="#money" place="hero_money" variant="quiet">
+                    Во что это обойдётся
+                  </Cta>
                 </div>
               </Reveal>
             </div>
           </div>
         </section>
 
-        {/* Продолжение письма. Колонка чтения, врезки уходят на поля. */}
-        <section id="work" className="scroll-mt-6 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[72rem]">
-            {/*
-              Та же сетка, что в первом экране, с пустой первой колонкой.
-              Раньше здесь был отступ через calc от процента ширины, и он
-              промахивался: доля 0.34 у грид-колонки считается от ширины
-              за вычетом gap, а calc считал от полной. Колонка текста
-              уезжала на два десятка пикселей относительно первого экрана.
-            */}
-            <div className="grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
-              <div aria-hidden className="hidden lg:block" />
-              <div className="relative max-w-[58ch]">
-                {BODY.map((chapter, ci) => (
-                  <Reveal key={chapter.h} delay={ci * 0.05} className="mt-16 first:mt-0">
-                    <h2 className="max-w-[20ch] text-[28px] sm:text-[36px]">
-                      {chapter.h}
-                    </h2>
-                    <div className="mt-6 flex flex-col gap-5 text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
-                      {chapter.p.map((p) => (
-                        <p key={p}>{p}</p>
-                      ))}
-                    </div>
+        {/* 2. Показания. */}
+        <section className="px-6 pt-28 sm:px-10 sm:pt-36">
+          <Column>
+            <Reveal>
+              <dl className="grid gap-x-12 gap-y-10 border-t border-[var(--color-rule)] pt-8 sm:grid-cols-2">
+                {METRICS.map((m) => (
+                  <div key={m.n}>
+                    <dt className="flex flex-wrap items-baseline gap-x-2.5">
+                      <span className="fig font-[family-name:var(--font-display)] text-[40px] leading-none font-bold">
+                        {m.v}
+                      </span>
+                      <span className="text-[18px] text-[var(--color-ink-soft)]">
+                        {m.u}
+                      </span>
+                    </dt>
+                    <dd className="mt-3 max-w-[24ch] text-[18px] leading-snug text-[var(--color-ink-soft)]">
+                      {m.n}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          </Column>
+        </section>
 
-                    {ci === 0 ? <Note>{NOTES.potolok}</Note> : null}
-                    {ci === 1 ? <Note>{NOTES.vozvrat}</Note> : null}
-                  </Reveal>
+        {/* 3. Боль и выгода. */}
+        <section id="work" className="scroll-mt-6 px-6 pt-28 sm:px-10 sm:pt-36">
+          <Column>
+            <Reveal>
+              <h2 className="max-w-[18ch]">Сайт у вас есть, а заявок из поиска нет</h2>
+              <p className="mt-8 text-[19px] leading-relaxed text-[var(--color-ink-soft)]">
+                Обычная оптимизация приводит сайт в технический порядок. Но
+                Яндекс смотрит не на порядок, а на то, как ведут себя люди.
+                Нет поведения — нет и движения.
+              </p>
+            </Reveal>
+
+            <div className="mt-12 grid gap-12 sm:grid-cols-2">
+              <Reveal delay={0.05}>
+                <h3>Как сейчас</h3>
+                <ul className="mt-5">
+                  {COLD.map((t) => (
+                    <li
+                      key={t}
+                      className="border-t border-[var(--color-rule-soft)] py-4 text-[17px] leading-snug text-[var(--color-ink-soft)]"
+                    >
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+
+              <Reveal delay={0.1}>
+                <h3>Как со мной</h3>
+                <ul className="mt-5">
+                  {HOT.map((t) => (
+                    <li
+                      key={t}
+                      className="stroke-none border-t border-[var(--color-rule)] py-4 text-[17px] leading-snug font-medium"
+                    >
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            </div>
+          </Column>
+        </section>
+
+        {/* 4. Три такта. */}
+        <section className="px-6 pt-28 sm:px-10 sm:pt-36">
+          <Column>
+            <Reveal>
+              <h2 className="max-w-[16ch]">Как я это делаю</h2>
+            </Reveal>
+
+            <div className="mt-12 flex flex-col gap-10">
+              {PHASES.map((p, i) => (
+                <Reveal key={p.t} delay={i * 0.06}>
+                  <h3>{p.t}</h3>
+                  <p className="mt-3 text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
+                    {p.d}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
+
+            <Note>
+              Ни доступа к сайту, ни установки кода, ни договора. Если вам
+              обещают «интеграцию» — это не про поведенческие сигналы.
+            </Note>
+          </Column>
+        </section>
+
+        {/* 5. Расчёт. Прикидка встроена в предложение, а не в панель. */}
+        <section id="money" className="scroll-mt-6 px-6 pt-28 sm:px-10 sm:pt-36">
+          <Column>
+            <Reveal>
+              <h2 className="max-w-[16ch]">Во что это обойдётся</h2>
+              <p className="mt-8 text-[19px] leading-relaxed text-[var(--color-ink-soft)]">
+                Я беру за фразу в сутки, а не за проект и не за месяц.
+                Посчитайте прямо здесь.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.08} className="mt-12">
+              <Estimate />
+            </Reveal>
+
+            <Reveal delay={0.12}>
+              <div className="mt-14 border-t border-[var(--color-rule)]">
+                {RATES.map((r) => (
+                  <div
+                    key={r.plan}
+                    /*
+                      Ширины колонок заданы явно, а не через auto. Каждая
+                      строка - собственная сетка, и auto считает ширину внутри
+                      своей строки: «4 ₽» получал одну ширину, «28 ₽» другую,
+                      и названия режимов вставали лесенкой.
+                    */
+                    className="grid items-baseline gap-x-8 gap-y-1 border-b border-[var(--color-rule-soft)] py-5 sm:grid-cols-[4.5rem_minmax(0,10rem)_1fr]"
+                  >
+                    <span className="fig text-[21px] font-semibold">
+                      {r.rate} ₽
+                    </span>
+                    <span className="text-[18px]">{r.plan}</span>
+                    <span className="text-[17px] text-[var(--color-ink-soft)]">
+                      сдвиги через {r.window}, {r.who.toLowerCase()}
+                    </span>
+                  </div>
                 ))}
               </div>
+            </Reveal>
+          </Column>
+        </section>
+
+        {/* 6. До и после на одном проекте. */}
+        <section className="px-6 pt-28 sm:px-10 sm:pt-36">
+          <Column>
+            <Reveal>
+              <h2 className="max-w-[18ch]">
+                {BAND_QUERIES} фраз: как было и как стало
+              </h2>
+              <p className="mt-8 text-[19px] leading-relaxed text-[var(--color-ink-soft)]">
+                Мой проект. Где стояли фразы до подключения и куда они разошлись
+                за {BAND_WEEKS} недель.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.08} className="mt-12">
+              <BeforeAfter />
+            </Reveal>
+          </Column>
+        </section>
+
+        {/* 7. Результаты по нишам. */}
+        <section id="cases" className="scroll-mt-6 px-6 pt-28 sm:px-10 sm:pt-36">
+          <Column>
+            <Reveal>
+              <h2 className="max-w-[16ch]">Что вышло у моих клиентов</h2>
+              <p className="mt-8 text-[19px] leading-relaxed text-[var(--color-ink-soft)]">
+                Какая часть фраз проекта встала в первую десятку. Цифры пока
+                демонстрационные.
+              </p>
+            </Reveal>
+
+            <div className="mt-12 border-t border-[var(--color-rule)]">
+              {CASES.map((c, i) => (
+                <Reveal key={c.niche} delay={i * 0.05}>
+                  <article className="border-b border-[var(--color-rule-soft)] py-6">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">
+                      <h3>{c.niche}</h3>
+                      <p className="fig font-[family-name:var(--font-display)] text-[28px] leading-none font-bold text-[var(--color-ochre)]">
+                        {c.top} %
+                      </p>
+                    </div>
+                    <p className="mt-2 text-[17px] text-[var(--color-ink-soft)]">
+                      {c.city}, {c.note}. Было {c.was} процентов в ТОП-10.
+                    </p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </Column>
+        </section>
+
+        {/* 8. Именные отзывы. */}
+        <section id="voices" className="scroll-mt-6 px-6 pt-28 sm:px-10 sm:pt-36">
+          <div className="mx-auto max-w-[72rem]">
+            <Reveal>
+              <h2 className="max-w-[16ch]">Что говорят те, кто платит</h2>
+            </Reveal>
+            <div className="mt-12">
+              <Voices />
             </div>
           </div>
+        </section>
+
+        {/* 9. Два рычага. Режимы напечатаны выше, рядом с прикидкой. */}
+        <section className="px-6 pt-28 sm:px-10 sm:pt-36">
+          <Column>
+            <Reveal>
+              <h2 className="max-w-[18ch]">Когда деньги идут в обратную сторону</h2>
+            </Reveal>
+
+            <div className="mt-12 flex flex-col gap-10">
+              {OFFERS.map((o, i) => (
+                <Reveal key={o.t} delay={i * 0.06}>
+                  <h3 className="max-w-[26ch]">{o.t}</h3>
+                  <p className="mt-3 text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
+                    {o.d}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
+          </Column>
         </section>
 
         {/*
-          Отказы. Самый сильный блок письма и единственное место, где список
-          оформлен списком: перечисление того, чего человек не делает, читается
-          только перечислением.
+          10. Снятие последнего возражения.
+
+          На месте, где у TopInjector стоит возврат остатка. Здесь обещание
+          другое и намеренно: не «верну деньги», а «выключатель на вашей
+          стороне».
         */}
-        <section id="refusals" className="scroll-mt-6 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[72rem]">
-            {/*
-              Та же сетка, что в первом экране, с пустой первой колонкой.
-              Раньше здесь был отступ через calc от процента ширины, и он
-              промахивался: доля 0.34 у грид-колонки считается от ширины
-              за вычетом gap, а calc считал от полной. Колонка текста
-              уезжала на два десятка пикселей относительно первого экрана.
-            */}
-            <div className="grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
-              <div aria-hidden className="hidden lg:block" />
-              <div className="max-w-[58ch]">
-                <Reveal>
-                  <h2 className="max-w-[18ch] text-[28px] sm:text-[36px]">
-                    Чего я не делаю ни за какие деньги
-                  </h2>
-                </Reveal>
-
-                <dl className="mt-10 border-t border-[var(--color-rule-soft)]">
-                  {REFUSALS.map((r, i) => (
-                    <Reveal key={r.t} delay={i * 0.04}>
-                      <div className="border-b border-[var(--color-rule-hair)] py-6">
-                        <dt className="font-[family-name:var(--font-display)] text-[21px] leading-snug font-bold tracking-[-0.015em] sm:text-[23px]">
-                          {r.t}
-                        </dt>
-                        <dd className="mt-2.5 text-[17px] leading-relaxed text-[var(--color-ink-soft)]">
-                          {r.d}
-                        </dd>
-                      </div>
-                    </Reveal>
-                  ))}
-                </dl>
-
-                {/*
-                  Первая кнопка на странице. Всё, что до неё, - объяснение,
-                  а не продажа.
-                */}
-                <Reveal delay={0.1}>
-                  <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <Cta href={SITE.register} place="after_refusals">
-                      Хорошо, давайте попробуем
-                    </Cta>
-                    <p className="max-w-[28ch] text-[15px] leading-snug text-[var(--color-ink-faint)]">
-                      Семь дней без списаний и без привязки карты.
-                    </p>
-                  </div>
-                </Reveal>
+        <section className="px-6 pt-28 sm:px-10 sm:pt-40">
+          <Column>
+            <Reveal>
+              <h2 className="max-w-[18ch]">Что остаётся под вашим контролем</h2>
+              <p className="mt-8 text-[19px] leading-relaxed text-[var(--color-ink-soft)]">
+                То, что можете остановить меня в любой момент одной кнопкой в
+                кабинете. Подача прекратится в течение часа, а не в конце
+                оплаченного месяца, и неизрасходованный остаток останется вашим —
+                он не сгорает. Ни первой позиции, ни ТОП-10, ни «роста в
+                несколько раз» я не обещаю: этого не может обещать никто, и вы
+                знаете это не хуже меня. Зато выключатель находится на вашей
+                стороне, а не на моей.
+              </p>
+              <div className="mt-12 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+                <Cta href={SITE.register} place="promise">
+                  Запустить тест
+                </Cta>
+                <Cta href={SITE.telegram} place="promise_tg" variant="quiet">
+                  Сначала поговорить
+                </Cta>
               </div>
-            </div>
-          </div>
+            </Reveal>
+          </Column>
         </section>
 
-        {/* Кому отказал в этом месяце. Конкретика вместо утверждения о честности. */}
-        <section className="px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[72rem]">
-            {/*
-              Та же сетка, что в первом экране, с пустой первой колонкой.
-              Раньше здесь был отступ через calc от процента ширины, и он
-              промахивался: доля 0.34 у грид-колонки считается от ширины
-              за вычетом gap, а calc считал от полной. Колонка текста
-              уезжала на два десятка пикселей относительно первого экрана.
-            */}
-            <div className="grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
-              <div aria-hidden className="hidden lg:block" />
-              <div className="relative max-w-[58ch]">
-                <Reveal>
-                  <h2 className="max-w-[20ch] text-[28px] sm:text-[36px]">
-                    Кому я отказал за последний месяц
-                  </h2>
-                </Reveal>
-
-                <Reveal delay={0.05}>
-                  <ul className="mt-9 border-t border-[var(--color-rule-soft)]">
-                    {DECLINED.map((d) => (
-                      <li
-                        key={`${d.niche}-${d.city}`}
-                        className="grid gap-x-6 gap-y-1 border-b border-[var(--color-rule-hair)] py-4 sm:grid-cols-[1fr_1.1fr]"
-                      >
-                        <span className="text-[17px]">
-                          {d.niche}
-                          <span className="text-[var(--color-ink-faint)]">
-                            , {d.city}
-                          </span>
-                        </span>
-                        <span className="text-[16px] text-[var(--color-ink-soft)]">
-                          {d.why}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </Reveal>
-
-                <Note>{NOTES.otkaz}</Note>
-              </div>
+        {/* 11. Вопросы. */}
+        <section
+          id="faq"
+          className="scroll-mt-6 px-6 pt-28 pb-28 sm:px-10 sm:pt-36 sm:pb-36"
+        >
+          <Column>
+            <Reveal>
+              <h2>О чём меня чаще всего спрашивают</h2>
+            </Reveal>
+            <div className="mt-10">
+              <Faq items={FAQ} />
             </div>
-          </div>
-        </section>
-
-        {/* Деньги. Прикидка встроена в предложение, а не выделена в панель. */}
-        <section id="money" className="scroll-mt-6 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[72rem]">
-            {/*
-              Та же сетка, что в первом экране, с пустой первой колонкой.
-              Раньше здесь был отступ через calc от процента ширины, и он
-              промахивался: доля 0.34 у грид-колонки считается от ширины
-              за вычетом gap, а calc считал от полной. Колонка текста
-              уезжала на два десятка пикселей относительно первого экрана.
-            */}
-            <div className="grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
-              <div aria-hidden className="hidden lg:block" />
-              <div className="max-w-[58ch]">
-                <Reveal>
-                  <h2 className="max-w-[16ch] text-[28px] sm:text-[36px]">
-                    Сколько это стоит
-                  </h2>
-                  <p className="mt-6 text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
-                    Я беру за фразу в сутки, а не за проект и не за месяц.
-                    Посчитайте прямо здесь.
-                  </p>
-                </Reveal>
-
-                <Reveal delay={0.08} className="mt-10">
-                  <Estimate />
-                </Reveal>
-
-                <Reveal delay={0.12}>
-                  <div className="mt-12 border-t border-[var(--color-rule-soft)]">
-                    {RATES.map((r) => (
-                      <div
-                        key={r.plan}
-                        className="grid items-baseline gap-x-6 gap-y-1 border-b border-[var(--color-rule-hair)] py-4 sm:grid-cols-[auto_1fr_1.4fr]"
-                      >
-                        <span className="fig text-[20px] font-semibold">
-                          {r.rate} ₽
-                        </span>
-                        <span className="text-[17px]">{r.plan}</span>
-                        <span className="text-[16px] text-[var(--color-ink-soft)]">
-                          сдвиги через {r.window}, {r.who}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </Reveal>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Обещание. Единственное, которое я даю. */}
-        <section className="px-5 pt-24 sm:px-8 sm:pt-40">
-          <div className="mx-auto max-w-[72rem]">
-            {/*
-              Та же сетка, что в первом экране, с пустой первой колонкой.
-              Раньше здесь был отступ через calc от процента ширины, и он
-              промахивался: доля 0.34 у грид-колонки считается от ширины
-              за вычетом gap, а calc считал от полной. Колонка текста
-              уезжала на два десятка пикселей относительно первого экрана.
-            */}
-            <div className="grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
-              <div aria-hidden className="hidden lg:block" />
-              <div className="max-w-[58ch]">
-                <Reveal>
-                  <h2 className="max-w-[18ch] text-[32px] sm:text-[44px]">
-                    Что вы контролируете
-                  </h2>
-                  <p className="mt-6 text-[18px] leading-relaxed text-[var(--color-ink-soft)] sm:text-[19px]">
-                    Что вы можете остановить меня в любой момент одной кнопкой в
-                    кабинете. Подача прекратится в течение часа, а не в конце
-                    оплаченного месяца, и неизрасходованный баланс останется
-                    вашим - он не сгорает. Ни первой позиции, ни ТОП-10, ни &laquo;роста в
-                    несколько раз&raquo; я не обещаю: этого не может обещать
-                    никто, и вы это знаете не хуже меня. Зато выключатель
-                    находится на вашей стороне, а не на моей.
-                  </p>
-                  <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                    <Cta href={SITE.register} place="promise">
-                      Хорошо, давайте попробуем
-                    </Cta>
-                    <Cta href={SITE.telegram} place="promise_tg" variant="quiet">
-                      Сначала поговорить
-                    </Cta>
-                  </div>
-                </Reveal>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="faq" className="scroll-mt-6 px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
-          <div className="mx-auto max-w-[72rem]">
-            {/*
-              Та же сетка, что в первом экране, с пустой первой колонкой.
-              Раньше здесь был отступ через calc от процента ширины, и он
-              промахивался: доля 0.34 у грид-колонки считается от ширины
-              за вычетом gap, а calc считал от полной. Колонка текста
-              уезжала на два десятка пикселей относительно первого экрана.
-            */}
-            <div className="grid lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
-              <div aria-hidden className="hidden lg:block" />
-              <div className="max-w-[58ch]">
-                <Reveal>
-                  <h2 className="text-[26px] sm:text-[34px]">
-                    Что меня обычно спрашивают
-                  </h2>
-                </Reveal>
-                <div className="mt-8">
-                  <Faq items={FAQ} />
-                </div>
-              </div>
-            </div>
-          </div>
+          </Column>
         </section>
       </main>
 

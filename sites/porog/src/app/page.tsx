@@ -3,15 +3,35 @@ import { Footer } from "@/components/footer";
 import { Cta } from "@/components/cta";
 import { Boot } from "@/components/boot";
 import { Reveal } from "@/components/reveal";
-import { Gate } from "@/components/gate";
 import { Calc } from "@/components/calc";
+import { BeforeAfter } from "@/components/before-after";
+import { Voices } from "@/components/voices";
 import { Faq } from "@/components/faq";
 import { SITE } from "@/lib/site";
-import { ADMIT, CHAPTERS, FAQ, MODES, REFUSE } from "@/lib/content";
+import {
+  BAND_QUERIES,
+  BAND_WEEKS,
+  CASES,
+  COLD,
+  FAQ,
+  HOT,
+  METRICS,
+  OFFERS,
+  PHASES,
+  RATES,
+} from "@/lib/content";
 import { FaqSchema, OrganizationSchema, ServiceSchema } from "@/lib/seo";
 
 const CROSS = { label: "Для агентств", href: "/pro" };
 
+/*
+  ПОРОГ. Холодный белый, тяжёлый узкий гротеск, прямые углы.
+
+  Порядок блоков здесь тот же, что на всех пяти вариантах, - это условие
+  теста. Различается подача: композиция первого экрана по центру (единственный
+  из шести сайтов), одна гарнитура на всё, нулевые скругления и сигнальный
+  жёлтый ровно в двух местах.
+*/
 export default function Page() {
   return (
     <>
@@ -19,276 +39,306 @@ export default function Page() {
       <OrganizationSchema />
       <FaqSchema items={FAQ} />
       <ServiceSchema
-        name="Усиление поведенческих сигналов для сайтов в ТОП-50 Яндекса"
+        name="Продвижение сайта в Яндексе поведенческими сигналами"
         description={SITE.description}
-        lowPrice={MODES[0].rate}
-        highPrice={MODES[MODES.length - 1].rate}
+        lowPrice={RATES[0].rate}
+        highPrice={RATES[RATES.length - 1].rate}
       />
 
       <Nav cross={CROSS} />
 
-      <main id="main" tabIndex={-1} className="doc">
+      <main id="main" tabIndex={-1}>
         {/*
-          Первый экран отдан проверке допуска, а не офферу. Заголовок говорит
-          "мы берём не всех" и сразу уступает место анкете: посетитель должен
-          на первом же экране понять, что здесь ему могут отказать.
+          1. Первый экран.
+
+          Композиция по центру выбрана намеренно и только здесь: остальные
+          пять сайтов выровнены влево. Центр - это поза заявления, а не
+          рассказа.
         */}
-        <section
-          id="gate"
-          className="grid-paper scroll-mt-4 border-b border-[var(--color-rule-soft)] px-5 pt-14 pb-16 sm:px-8 sm:pt-20 sm:pb-20"
-        >
-          <div className="mx-auto max-w-[84rem]">
-            <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
-              <Reveal>
-                <span className="mark">редакция {SITE.revision}</span>
-                <h1 className="mt-6 max-w-[13ch] text-[38px] sm:text-[54px] lg:text-[60px]">
-                  Мы берём не всех и говорим об этом до оплаты
-                </h1>
-                <p className="mt-6 max-w-[42ch] text-[16px] leading-relaxed text-[var(--color-graphite-soft)]">
-                  Поведенческие сигналы двигают позицию, но не создают её.
-                  Примерно каждому четвёртому обратившемуся мы отказываем -
-                  проверьте себя за три вопроса, это бесплатно и без
-                  регистрации.
-                </p>
-
-                {/*
-                  Единица измерения вынесена из .num в основную гарнитуру.
-                  В Cousine нет знака рубля, и внутри моноширинного класса он
-                  подменяется системным шрифтом - кегль и начертание уезжают,
-                  строка выглядит собранной из двух разных шрифтов.
-                */}
-                <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-5 border-t border-[var(--color-rule-soft)] pt-6">
-                  <div>
-                    <dt className="mark">отказов</dt>
-                    <dd className="mt-1.5 flex items-baseline gap-1.5">
-                      <span className="num text-[26px] font-medium">24</span>
-                      <span className="text-[15px] text-[var(--color-graphite-soft)]">
-                        процента
-                      </span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="mark">тест без списаний</dt>
-                    <dd className="mt-1.5 flex items-baseline gap-1.5">
-                      <span className="num text-[26px] font-medium">7</span>
-                      <span className="text-[15px] text-[var(--color-graphite-soft)]">
-                        суток
-                      </span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="mark">ставка от</dt>
-                    <dd className="mt-1.5 flex items-baseline gap-1.5">
-                      <span className="num text-[26px] font-medium">4</span>
-                      <span className="text-[15px] text-[var(--color-graphite-soft)]">
-                        ₽ за фразу
-                      </span>
-                    </dd>
-                  </div>
-                </dl>
-              </Reveal>
-
-              <Reveal delay={0.1}>
-                <Gate />
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/*
-          Условия применения. Две колонки равной длины: перевес в сторону
-          "подходит" мгновенно превратил бы регламент обратно в рекламу.
-        */}
-        <section className="px-5 pt-20 sm:px-8 sm:pt-24">
-          <div className="mx-auto max-w-[84rem]">
+        <section className="px-6 pt-20 pb-28 sm:px-10 sm:pt-28 sm:pb-36">
+          <div className="mx-auto max-w-[62rem] text-center">
             <Reveal>
-              <h2 className="max-w-[17ch] text-[30px] sm:text-[42px]">
-                Кому услуга помогает, а кому нет
-              </h2>
-            </Reveal>
-
-            <div className="mt-12 grid gap-px bg-[var(--color-rule-soft)] lg:grid-cols-2">
-              <Reveal delay={0.05} className="bg-[var(--color-sheet-raise)]">
-                <div className="h-full p-6 sm:p-8">
-                  <span className="mark">берём в работу</span>
-                  <ul className="mt-6 flex flex-col">
-                    {ADMIT.map((t, i) => (
-                      <li
-                        key={t}
-                        className="flex gap-5 border-t border-[var(--color-rule-hair)] py-4 first:border-t-0 first:pt-0"
-                      >
-                        <span className="num shrink-0 text-[11px] text-[var(--color-graphite-faint)]">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <span className="text-[15px] leading-snug text-[var(--color-graphite-soft)]">
-                          {t}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-
-              <Reveal delay={0.1} className="bg-[var(--color-sheet-raise)]">
-                <div className="h-full p-6 sm:p-8">
-                  {/* Лента отмечает отказную колонку. Второе и последнее место
-                      на главной, где она появляется. */}
-                  <div aria-hidden className="hazard mb-6 h-1.5" />
-                  <span className="mark">откажем</span>
-                  <ul className="mt-6 flex flex-col">
-                    {REFUSE.map((t, i) => (
-                      <li
-                        key={t}
-                        className="flex gap-5 border-t border-[var(--color-rule-hair)] py-4 first:border-t-0 first:pt-0"
-                      >
-                        <span className="num shrink-0 text-[11px] text-[var(--color-graphite-faint)]">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <span className="text-[15px] leading-snug font-medium">
-                          {t}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* Технические условия. Нумерация ведётся счётчиками CSS. */}
-        <section id="terms" className="scroll-mt-4 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
-            <Reveal>
-              <div className="flex flex-wrap items-end justify-between gap-6">
-                <h2 className="max-w-[15ch] text-[30px] sm:text-[42px]">
-                  Технические условия
-                </h2>
-                <p className="max-w-[40ch] text-[15px] leading-relaxed text-[var(--color-graphite-soft)]">
-                  Три раздела: как устроен метод, какой у него риск и что мы
-                  берём на себя. Раздел про риск идёт вторым, а не спрятан в
-                  примечания.
-                </p>
+              <h1 className="mx-auto max-w-[16ch]">
+                Ставим сайт на первую строку Яндекса
+              </h1>
+              <p className="mx-auto mt-10 max-w-[52ch] text-[21px] leading-relaxed text-[var(--color-graphite-soft)]">
+                Первое движение — вторые-третьи сутки. Платите за переходы,
+                а не за отчёты и обещания.
+              </p>
+              <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+                <Cta href={SITE.register} place="hero">
+                  Запустить тест
+                </Cta>
+                <Cta href="#budget" place="hero_budget" variant="outline">
+                  Рассчитать бюджет
+                </Cta>
               </div>
             </Reveal>
 
-            <div className="mt-12 flex flex-col gap-12">
-              {CHAPTERS.map((ch, ci) => (
-                <Reveal key={ch.title} delay={ci * 0.05} className="chapter">
-                  <div className="border-t border-[var(--color-graphite)] pt-5">
-                    <h3 className="flex items-baseline gap-4 text-[24px] sm:text-[28px]">
-                      <span
-                        aria-hidden
-                        className="chapter-no num text-[13px] font-normal text-[var(--color-graphite-faint)]"
-                      />
-                      {ch.title}
-                    </h3>
-
-                    <ol className="mt-6">
-                      {ch.clauses.map((c) => (
-                        <li
-                          key={c}
-                          className="clause grid grid-cols-[3rem_1fr] items-baseline gap-x-4 border-b border-[var(--color-rule-hair)] py-4"
-                        >
-                          <span
-                            aria-hidden
-                            className="clause-no num text-[11px] text-[var(--color-graphite-faint)]"
-                          />
-                          <span className="max-w-[74ch] text-[15px] leading-relaxed text-[var(--color-graphite-soft)]">
-                            {c}
-                          </span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Режимы. Отличаются скоростью и предельной долей подачи. */}
-        <section id="modes" className="scroll-mt-4 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
-            <Reveal>
-              <h2 className="max-w-[20ch] text-[30px] sm:text-[42px]">
-                Режимы отличаются скоростью и предельной долей подачи
-              </h2>
-            </Reveal>
-
-            <div className="mt-12 border-t border-[var(--color-graphite)]">
-              {MODES.map((m, i) => (
-                <Reveal key={m.name} delay={i * 0.05}>
-                  <div className="grid items-baseline gap-x-8 gap-y-2 border-b border-[var(--color-rule-hair)] py-6 sm:grid-cols-[auto_1fr_auto_1fr_1.5fr]">
-                    <span className="num text-[28px] leading-none font-medium sm:text-[34px]">
-                      {m.rate}
-                      <span className="rub ml-1 text-[13px]">₽</span>
-                    </span>
-                    <span className="text-[18px] font-medium tracking-[-0.02em]">
-                      {m.name}
-                    </span>
-                    <span className="num text-[14px] text-[var(--color-graphite)]">
-                      {m.share}
-                    </span>
-                    <span className="text-[14px] text-[var(--color-graphite-soft)]">
-                      сдвиги через {m.window}
-                    </span>
-                    <span className="text-[14px] text-[var(--color-graphite-soft)]">
-                      {m.who}
-                    </span>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
+            {/* 2. Показания. */}
             <Reveal delay={0.1}>
-              <p className="mt-5 max-w-[62ch] text-[14px] leading-relaxed text-[var(--color-graphite-faint)]">
-                Ставка указана за одну фразу в сутки. Третья колонка - предельная
-                доля подаваемых сессий в общем трафике сайта: превысить её нельзя,
-                кабинет не даст выбрать режим.
-              </p>
+              <dl className="mt-20 grid gap-x-14 gap-y-10 border-t border-[var(--color-graphite)] pt-10 sm:grid-cols-2 lg:grid-cols-4">
+                {METRICS.map((m) => (
+                  <div key={m.n}>
+                    <dt className="flex flex-wrap items-baseline justify-center gap-x-2.5">
+                      <span className="num text-[clamp(38px,4.4vw,54px)] leading-none font-bold tracking-[-0.045em]">
+                        {m.v}
+                      </span>
+                      <span className="text-[18px] font-normal text-[var(--color-graphite-soft)]">
+                        {m.u}
+                      </span>
+                    </dt>
+                    <dd className="mx-auto mt-4 max-w-[22ch] text-[18px] leading-snug text-[var(--color-graphite-soft)]">
+                      {m.n}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </Reveal>
           </div>
         </section>
 
-        <section id="calc" className="scroll-mt-4 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
+        {/* 3. Боль и выгода. Две колонки равной длины. */}
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
             <Reveal>
-              <h2 className="max-w-[18ch] text-[30px] sm:text-[42px]">
-                Заявка на режим
-              </h2>
-              <p className="mt-5 max-w-[54ch] text-[16px] leading-relaxed text-[var(--color-graphite-soft)]">
-                Заполните три поля и подайте форму. Мы посчитаем не только списание,
-                но и долю подачи в вашем трафике, а на превышении предела
-                откажем в заявленном режиме - до регистрации, а не после оплаты.
+              <h2 className="max-w-[16ch]">Сайт есть. Заявок из поиска нет</h2>
+              <p className="mt-8 max-w-[54ch] text-[19px] leading-relaxed text-[var(--color-graphite-soft)]">
+                Оптимизация приводит сайт в технический порядок. Яндекс считает
+                не порядок, а поведение людей на сайте. Нет поведения — нет
+                движения.
               </p>
             </Reveal>
 
-            <Reveal delay={0.08} className="mt-10">
+            <div className="mt-16 grid gap-x-16 gap-y-14 lg:grid-cols-2">
+              {/*
+                Оба заголовка набраны плашкой одного размера, и только одна из
+                них закрашена сигнальным. Так линейки под ними встают на одну
+                высоту: без общей плашки жёлтый прямоугольник опускал правый
+                список на шестнадцать пикселей, и колонки переставали читаться
+                как пара. Отрицательный отступ слева возвращает текст на общий
+                край колонки.
+              */}
+              <Reveal delay={0.05}>
+                <h3 className="-ml-4 inline-block px-4 py-2">Как сейчас</h3>
+                <ul className="mt-4 flex flex-col border-t-2 border-[var(--color-graphite)]">
+                  {COLD.map((t) => (
+                    <li
+                      key={t}
+                      className="border-b border-[var(--color-rule-soft)] py-5 text-[18px] leading-snug text-[var(--color-graphite-soft)]"
+                    >
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+
+              <Reveal delay={0.1}>
+                {/* Сигнальная плашка. Первое из двух мест на главной, где
+                    появляется этот цвет. */}
+                <h3 className="warn -ml-4 inline-block px-4 py-2">Как с нами</h3>
+                <ul className="mt-4 flex flex-col border-t-2 border-[var(--color-graphite)]">
+                  {HOT.map((t) => (
+                    <li
+                      key={t}
+                      className="border-b border-[var(--color-rule-soft)] py-5 text-[18px] leading-snug font-medium"
+                    >
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Три такта. */}
+        <section id="how" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
+            <Reveal>
+              <h2 className="max-w-[14ch]">Три шага. Десять минут</h2>
+            </Reveal>
+
+            <div className="mt-16 grid gap-x-14 gap-y-14 sm:grid-cols-3">
+              {PHASES.map((p, i) => (
+                <Reveal key={p.t} delay={i * 0.06}>
+                  <h3>{p.t}</h3>
+                  <p className="mt-4 max-w-[38ch] text-[18px] leading-relaxed text-[var(--color-graphite-soft)]">
+                    {p.d}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Расчёт бюджета. Форма с подачей, а не ползунок. */}
+        <section id="budget" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
+            <Reveal>
+              <h2 className="max-w-[16ch]">Посчитайте свой бюджет</h2>
+              <p className="mt-8 max-w-[54ch] text-[19px] leading-relaxed text-[var(--color-graphite-soft)]">
+                Укажите объём и режим. Между режимами меняется только скорость:
+                возможности у всех одни и те же.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.08} className="mt-14">
               <Calc />
             </Reveal>
           </div>
         </section>
 
-        <section className="px-5 pt-24 sm:px-8 sm:pt-40">
-          <div className="mx-auto max-w-[84rem]">
+        {/* 6. До и после на одном проекте. */}
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
             <Reveal>
-              <div className="border-t border-[var(--color-graphite)] pt-10">
-                <h2 className="max-w-[17ch] text-[34px] sm:text-[50px]">
-                  Подача останавливается за час
-                </h2>
-                <p className="mt-6 max-w-[56ch] text-[16px] leading-relaxed text-[var(--color-graphite-soft)] sm:text-[17px]">
-                  Обязательство записано пунктом 3.3 технических условий выше. Кнопка
-                  в кабинете прекращает сессии в течение часа, а не в конце
-                  оплаченного периода. Неизрасходованный баланс не сгорает и
-                  ждёт, пока он вам понадобится, - в том числе на другом проекте.
+              <h2 className="max-w-[16ch]">
+                {BAND_QUERIES} фраз. До и после
+              </h2>
+              <p className="mt-8 max-w-[54ch] text-[19px] leading-relaxed text-[var(--color-graphite-soft)]">
+                Один проект. Где стояли фразы до подключения и где оказались
+                через {BAND_WEEKS} недель.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.08} className="mt-14">
+              <BeforeAfter />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* 7. Результаты по нишам. */}
+        <section id="cases" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
+            <Reveal>
+              <div className="flex flex-wrap items-baseline justify-between gap-6">
+                <h2 className="max-w-[14ch]">Что вышло у других</h2>
+                <p className="text-[17px] text-[var(--color-graphite-soft)]">
+                  данные демо
                 </p>
-                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <Cta href="#gate" place="final_gate">
-                    Проверить допуск
+              </div>
+            </Reveal>
+
+            <div className="mt-14 border-t-2 border-[var(--color-graphite)]">
+              {CASES.map((c, i) => (
+                <Reveal key={c.niche} delay={i * 0.05}>
+                  <article className="grid items-center gap-x-12 gap-y-4 border-b border-[var(--color-rule-soft)] py-8 sm:grid-cols-[1.3fr_1fr_auto]">
+                    <div>
+                      <h3>{c.niche}</h3>
+                      <p className="mt-1.5 text-[17px] text-[var(--color-graphite-soft)]">
+                        {c.city}, {c.note}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="flex h-3 w-full overflow-hidden bg-[var(--color-sheet-sink)]">
+                        <span
+                          className="block bg-[var(--color-graphite)] opacity-40"
+                          style={{ width: `${c.was}%` }}
+                        />
+                        <span
+                          className="block bg-[var(--color-graphite)]"
+                          style={{ width: `${c.top - c.was}%` }}
+                        />
+                      </span>
+                      <p className="mt-3 text-[17px] text-[var(--color-graphite-soft)]">
+                        было {c.was}, стало {c.top} процентов в ТОП-10
+                      </p>
+                    </div>
+
+                    <p className="num text-[38px] leading-none font-bold sm:text-right">
+                      {c.top}
+                      <span className="ml-1 text-[19px] font-normal">%</span>
+                    </p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 8. Именные отзывы. */}
+        <section id="voices" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
+            <Reveal>
+              <h2 className="max-w-[14ch]">Говорят плательщики</h2>
+            </Reveal>
+            <div className="mt-14">
+              <Voices />
+            </div>
+          </div>
+        </section>
+
+        {/* 9. Режимы и два рычага. */}
+        <section id="rates" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
+            <Reveal>
+              <h2 className="max-w-[16ch]">Режимы различаются скоростью. И только</h2>
+            </Reveal>
+
+            <div className="mt-14 border-t-2 border-[var(--color-graphite)]">
+              {RATES.map((r, i) => (
+                <Reveal key={r.plan} delay={i * 0.05}>
+                  <div className="grid gap-x-12 gap-y-2 border-b border-[var(--color-rule-soft)] py-8 sm:grid-cols-[5rem_minmax(0,22rem)_1fr] sm:items-baseline">
+                    <span className="num text-[34px] leading-none font-bold">
+                      {r.rate}
+                      <span className="ml-1.5 text-[18px] font-normal text-[var(--color-graphite-soft)]">
+                        ₽
+                      </span>
+                    </span>
+                    <span>
+                      <span className="block text-[21px] font-bold tracking-[-0.025em]">
+                        {r.plan}
+                      </span>
+                      <span className="mt-1 block text-[18px] font-normal text-[var(--color-graphite-soft)]">
+                        {r.who}
+                      </span>
+                    </span>
+                    <span className="text-[18px] text-[var(--color-graphite-soft)]">
+                      сдвиги через {r.window}
+                    </span>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+            <div className="mt-16 grid gap-x-16 gap-y-12 sm:grid-cols-2">
+              {OFFERS.map((o, i) => (
+                <Reveal key={o.t} delay={i * 0.06}>
+                  <h3 className="max-w-[24ch]">{o.t}</h3>
+                  <p className="mt-4 max-w-[42ch] text-[18px] leading-relaxed text-[var(--color-graphite-soft)]">
+                    {o.d}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/*
+          10. Снятие последнего возражения.
+
+          На месте, где у TopInjector стоит возврат остатка. Здесь обещание
+          другое и намеренно: не «вернём деньги», а «выключатель на вашей
+          стороне».
+        */}
+        <section id="start" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
+            <Reveal>
+              <div className="panel px-8 py-20 text-center sm:px-14 sm:py-28">
+                <h2 className="mx-auto max-w-[15ch]">Стоп за один час</h2>
+                <p className="mx-auto mt-8 max-w-[54ch] text-[19px] leading-relaxed text-[var(--color-graphite-soft)]">
+                  Кнопка в кабинете гасит подачу за час, а не в конце оплаченного
+                  периода. Остаток не сгорает и ждёт своего часа — в том числе
+                  на другом проекте.
+                </p>
+                <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+                  <Cta href={SITE.register} place="final">
+                    Запустить тест
                   </Cta>
                   <Cta href={SITE.telegram} place="final_tg" variant="outline">
-                    Спросить в Telegram
+                    Задать вопрос в Telegram
                   </Cta>
                 </div>
               </div>
@@ -296,12 +346,13 @@ export default function Page() {
           </div>
         </section>
 
-        <section id="faq" className="scroll-mt-4 px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
-          <div className="mx-auto max-w-[84rem]">
+        {/* 11. Вопросы. */}
+        <section id="faq" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[74rem]">
             <Reveal>
-              <h2 className="text-[28px] sm:text-[36px]">Вопросы</h2>
+              <h2>Отвечаем прямо</h2>
             </Reveal>
-            <div className="mt-10">
+            <div className="mt-12">
               <Faq items={FAQ} />
             </div>
           </div>

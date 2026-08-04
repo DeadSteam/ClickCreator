@@ -28,8 +28,8 @@ export function Cta({
   const external = href.startsWith("http");
 
   const base =
-    "inline-flex min-h-[48px] cursor-pointer items-center justify-center px-7 py-3 " +
-    "font-[family-name:var(--font-tight)] text-[18px] font-extrabold uppercase tracking-[0.01em] " +
+    "inline-flex min-h-[54px] cursor-pointer items-center justify-center px-8 " +
+    "font-[family-name:var(--font-tight)] text-[20px] font-extrabold uppercase tracking-[0.01em] " +
     "[transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-micro)] " +
     "active:scale-[0.985]";
 

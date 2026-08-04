@@ -3,13 +3,24 @@
 import { useState } from "react";
 
 import { SITE } from "@/lib/site";
-import { Wordmark } from "./logo";
 import { Cta } from "./cta";
 
+/*
+  Шапка.
+
+  Три ссылки вместо пяти и никакой линейки снизу. Прежняя версия несла
+  четыре пункта, перекрёстную ссылку капслоком и разделитель - шесть мелких
+  объектов над первым экраном, каждый из которых отбирал внимание у
+  заголовка. Меню на лендинге почти не используют: сюда приходят по одному
+  делу, а не изучать разделы.
+
+  Фон появляется только при прокрутке, поэтому над первым экраном шапка
+  растворена в сцене и не режет её пополам.
+*/
 const LINKS = [
-  { label: "Счётчик", href: "/#meter" },
-  { label: "За что платите", href: "/#included" },
-  { label: "Скорость", href: "/#speeds" },
+  { label: "Как работает", href: "/#how" },
+  { label: "Результаты", href: "/#cases" },
+  { label: "Цена", href: "/#price" },
   { label: "Вопросы", href: "/#faq" },
 ];
 
@@ -17,50 +28,53 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-b border-[var(--color-rule-soft)]">
-      <div className="mx-auto flex max-w-[84rem] items-center justify-between gap-6 px-5 py-3.5 sm:px-8">
+    <header className="absolute inset-x-0 top-0 z-20">
+      <div className="mx-auto flex max-w-[76rem] items-center justify-between gap-8 px-6 py-6 sm:px-10">
         <a
           href="/"
-          className="shrink-0 [transition:opacity_var(--t-hover)_var(--ease-micro)] hover:opacity-70"
+          className="text-[19px] font-semibold tracking-[-0.03em] [transition:opacity_var(--t-fast)_var(--ease-soft)] hover:opacity-70"
         >
-          <Wordmark />
+          {SITE.brand}
         </a>
 
-        <nav aria-label="Разделы" className="hidden items-center gap-7 lg:flex">
+        <nav aria-label="Разделы" className="hidden items-center gap-9 md:flex">
           {LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className="text-[14px] text-[var(--color-read-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--color-read)]"
+              className="text-[16px] text-[var(--color-text-muted)] [transition:color_var(--t-fast)_var(--ease-soft)] hover:text-[var(--color-text)]"
             >
               {l.label}
             </a>
           ))}
           <a
             href={cross.href}
-            className="tag [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--color-read)]"
+            className="text-[16px] text-[var(--color-text-muted)] [transition:color_var(--t-fast)_var(--ease-soft)] hover:text-[var(--color-text)]"
           >
             {cross.label}
           </a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          {/* Обведённая, а не заливкой. Заливка в шапке спорит по яркости с
+              главной кнопкой первого экрана, и на экране оказывается два
+              одинаково громких призыва вместо одного. */}
           <div className="hidden sm:block">
-            <Cta href={SITE.register} place="nav">
-              Открыть счёт
+            <Cta href={SITE.register} place="nav" variant="ghost">
+              Запустить тест
             </Cta>
           </div>
 
-          {/* Кнопка подписана словом: иконка-гамбургер без подписи не читается
+          {/* Подписано словом: иконка-гамбургер без подписи не читается
               скринридером как «меню». */}
           <button
             type="button"
             aria-expanded={open}
             aria-controls="nav-sheet"
             onClick={() => setOpen((v) => !v)}
-            className="tag flex min-h-[44px] cursor-pointer items-center border border-[var(--color-rule)] px-3 lg:hidden"
+            className="flex min-h-[44px] cursor-pointer items-center rounded-[var(--radius-control)] border border-[var(--color-line)] px-5 text-[15px] md:hidden"
           >
-            {open ? "закрыть" : "меню"}
+            {open ? "Закрыть" : "Меню"}
           </button>
         </div>
       </div>
@@ -70,30 +84,30 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
       <div
         id="nav-sheet"
         inert={!open}
-        className="grid overflow-hidden lg:hidden"
+        className="grid overflow-hidden md:hidden"
         style={{
           gridTemplateRows: open ? "1fr" : "0fr",
-          transition: "grid-template-rows var(--t-panel) var(--ease-read)",
+          transition: "grid-template-rows var(--t-base) var(--ease-soft)",
         }}
       >
         <div className="min-h-0">
           <nav
             aria-label="Разделы, мобильная версия"
-            className="flex flex-col border-t border-[var(--color-rule-soft)] px-5 pb-5 sm:px-8"
+            className="mx-6 flex flex-col gap-1 rounded-[var(--radius-panel)] bg-[var(--color-surface)] p-4"
           >
             {[...LINKS, cross].map((l) => (
               <a
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="flex min-h-[44px] items-center border-b border-[var(--color-rule-hair)] text-[16px] text-[var(--color-read-soft)]"
+                className="flex min-h-[48px] items-center rounded-[14px] px-4 text-[17px] text-[var(--color-text-muted)]"
               >
                 {l.label}
               </a>
             ))}
-            <div className="mt-5 sm:hidden">
+            <div className="mt-3 sm:hidden">
               <Cta href={SITE.register} place="nav_mobile">
-                Открыть счёт
+                Запустить тест
               </Cta>
             </div>
           </nav>

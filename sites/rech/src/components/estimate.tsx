@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { RATES } from "@/lib/content";
+import { RATES, VOLUME, discountFor } from "@/lib/content";
 import { track, trackOnView } from "@/lib/analytics";
 
 /*
@@ -30,23 +30,27 @@ const money = (n: number) => {
   const s = Math.round(n).toString();
   let out = "";
   for (let i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
+    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
     out += s[i];
   }
   return out;
 };
 
 /*
-  Ступени объёма вместо непрерывного ползунка. Их четыре, они названы словами
-  и покрывают реальные размеры проектов: точность до одной фразы здесь никому
-  не нужна, а выбор из четырёх пунктов делается одним движением.
+  Ступени объёма названы словами. Скидка не хранится рядом с ними, а берётся
+  из общих порогов: раньше она была вписана сюда руками, и на пяти сотнях
+  фраз показывались пятнадцать процентов вместо двадцати двух - число
+  разошлось с прайсом ровно там, где страница обещает считать честно.
 */
 const SIZES = [
-  { label: "три десятка фраз", phrases: 30, off: 0 },
-  { label: "сотня фраз", phrases: 100, off: 0.08 },
-  { label: "две с половиной сотни", phrases: 250, off: 0.15 },
-  { label: "пять сотен", phrases: 500, off: 0.15 },
+  { label: "три десятка фраз", phrases: 30 },
+  { label: "сотня фраз", phrases: 100 },
+  { label: "две с половиной сотни", phrases: 250 },
+  { label: "пять сотен", phrases: 500 },
 ] as const;
+
+/* Как назвать режим внутри фразы «мы идём ... темпом». */
+const TEMPO = ["спокойным", "обычным", "быстрым"] as const;
 
 export function Estimate() {
   const [size, setSize] = useState(1);
@@ -57,9 +61,10 @@ export function Estimate() {
   useEffect(() => trackOnView(ref.current, "pricing_view"), []);
 
   const calc = useMemo(() => {
-    const s = SIZES[size];
-    const perDay = s.phrases * RATES[plan].rate * (1 - s.off);
-    return { perDay, perMonth: perDay * 30, off: s.off };
+    const phrases = SIZES[size].phrases;
+    const off = discountFor(phrases);
+    const perDay = phrases * RATES[plan].rate * (1 - off);
+    return { perDay, perMonth: perDay * 30, off, phrases };
   }, [size, plan]);
 
   const note = () => {
@@ -90,11 +95,11 @@ export function Estimate() {
     Ширина select по умолчанию равна ширине самого длинного варианта, поэтому
     подчёркивание тянулось далеко за текущее слово и разрывало фразу пустотой.
 
-    Одной сетки для этого мало: даже в общей ячейке select продолжает
-    отдавать в расчёт свою собственную ширину, и колонка растёт под него.
-    Поэтому select выводится из потока абсолютным позиционированием и
-    растягивается по обёртке, а ширину задаёт невидимый образец с текущим
-    значением. Теперь подчёркивание ровно по выбранному слову.
+    Одной сетки для этого мало: даже в общей ячейке select продолжает отдавать
+    в расчёт свою собственную ширину, и колонка растёт под него. Поэтому
+    select выводится из потока абсолютным позиционированием и растягивается по
+    обёртке, а ширину задаёт невидимый образец с текущим значением. Теперь
+    подчёркивание ровно по выбранному слову.
   */
   const Field = ({
     label,
@@ -138,7 +143,7 @@ export function Estimate() {
 
   return (
     <div ref={ref}>
-      <p className="max-w-[26ch] font-[family-name:var(--font-display)] text-[28px] leading-[1.4] font-bold tracking-[-0.015em] sm:text-[34px]">
+      <p className="max-w-[26ch] font-[family-name:var(--font-display)] text-[30px] leading-[1.42] font-bold tracking-[-0.018em] sm:text-[38px]">
         Если у вас{" "}
         <Field
           label="Размер проекта"
@@ -152,8 +157,8 @@ export function Estimate() {
           label="Скорость работы"
           value={plan}
           onChange={setPlan}
-          options={RATES.map((r) => r.tempo)}
-          text={RATES[plan].tempo}
+          options={TEMPO}
+          text={TEMPO[plan]}
         />{" "}
         темпом, выйдет{" "}
         <span className="stroke whitespace-nowrap">
@@ -162,7 +167,7 @@ export function Estimate() {
         в сутки.
       </p>
 
-      <p className="mt-7 max-w-[54ch] text-[16px] leading-relaxed text-[var(--color-ink-soft)]">
+      <p className="mt-8 max-w-[54ch] text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
         Это <span className="fig">{money(calc.perMonth)}</span> ₽ за месяц.{" "}
         {calc.off > 0 ? (
           <>
@@ -172,9 +177,10 @@ export function Estimate() {
           </>
         ) : (
           <>
-            От <span className="fig">100</span> фраз я снимаю{" "}
-            <span className="fig">8</span> процентов, от{" "}
-            <span className="fig">250</span> - <span className="fig">15</span>.
+            От <span className="fig">{VOLUME[1].from}</span> фраз я снимаю{" "}
+            <span className="fig">{Math.round(VOLUME[1].off * 100)}</span>{" "}
+            процентов, от <span className="fig">{VOLUME[2].from}</span> —{" "}
+            <span className="fig">{Math.round(VOLUME[2].off * 100)}</span>.
           </>
         )}{" "}
         Списывается за фактические переходы, абонентской платы нет, остаток не

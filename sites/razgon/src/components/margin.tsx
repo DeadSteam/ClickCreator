@@ -25,7 +25,7 @@ const money = (n: number) => {
   const s = Math.round(n).toString();
   let out = "";
   for (let i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
+    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
     out += s[i];
   }
   return out;
@@ -53,7 +53,7 @@ export function Margin() {
   return (
     <div ref={ref}>
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-        <span className="plate">ваша наценка</span>
+        <span className="text-[18px] text-[var(--color-mark-soft)]">Ваша наценка</span>
 
         <div role="radiogroup" aria-label="Наценка" className="flex flex-wrap gap-px bg-[var(--color-rule-soft)]">
           {MARKUP.map((m, i) => {
@@ -81,20 +81,20 @@ export function Margin() {
         </div>
       </div>
 
-      <div className="mt-8 border-t border-[var(--color-mark)]">
+      <div className="mt-10 border-t border-[var(--color-mark)]">
         <div
           aria-hidden
-          className="grid grid-cols-[1fr_1fr_1fr] gap-x-6 border-b border-[var(--color-rule-hair)] py-3"
+          className="grid grid-cols-[1fr_1fr_1fr] gap-x-6 border-b border-[var(--color-rule-soft)] py-5"
         >
-          <span className="plate">закупка</span>
-          <span className="plate text-right">чек клиента</span>
-          <span className="plate text-right">ваша прибыль</span>
+          <span className="text-[17px] text-[var(--color-mark-soft)]">Закупка</span>
+          <span className="text-right text-[17px] text-[var(--color-mark-soft)]">Чек клиента</span>
+          <span className="text-right text-[17px] text-[var(--color-mark-soft)]">Ваша прибыль</span>
         </div>
 
         {BUY.map((b) => (
           <div
             key={b}
-            className="grid grid-cols-[1fr_1fr_1fr] items-baseline gap-x-6 border-b border-[var(--color-rule-hair)] py-4"
+            className="grid grid-cols-[1fr_1fr_1fr] items-baseline gap-x-6 border-b border-[var(--color-rule-soft)] py-6"
           >
             <span className="day text-[20px] text-[var(--color-mark-soft)] sm:text-[24px]">
               {money(b)}
@@ -113,7 +113,7 @@ export function Margin() {
         ))}
       </div>
 
-      <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-[var(--color-mark-soft)]">
+      <p className="mt-8 max-w-[58ch] text-[18px] leading-relaxed text-[var(--color-mark-soft)]">
         Закупка списывается за фактические переходы, поэтому в месяц с
         недобором вы платите меньше, а чек клиенту выставляете прежний.
         Верхнюю границу наценки мы не устанавливаем и не проверяем: цифры в

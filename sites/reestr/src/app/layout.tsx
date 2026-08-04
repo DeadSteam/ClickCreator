@@ -49,7 +49,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f3ede1",
+  /* Совпадает с --color-paper: адресная строка продолжает полосу. */
+  themeColor: "#f7f4ee",
   colorScheme: "light",
 };
 
@@ -65,8 +66,8 @@ export default function RootLayout({
         */}
         <a
           href="#main"
-          className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-3 focus:left-3
-            focus:bg-[var(--color-ink)] focus:px-4 focus:py-3 focus:text-[14px]
+          className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-4 focus:left-4
+            focus:bg-[var(--color-ink)] focus:px-6 focus:py-3 focus:text-[17px]
             focus:font-semibold focus:text-[var(--color-paper)]"
         >
           Перейти к содержимому

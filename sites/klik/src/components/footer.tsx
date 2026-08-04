@@ -1,91 +1,68 @@
 "use client";
 
 import { SITE } from "@/lib/site";
-import { SPEEDS } from "@/lib/content";
-import { Mark } from "./logo";
 import { track } from "@/lib/analytics";
 
 /*
-  Нижняя панель прибора: диапазон шкалы, связь, оговорка.
+  Подвал.
 
-  Диапазон ставок берётся из того же массива, что и счётчик наверху. Вписать
-  его руками означало бы однажды поменять тариф в одном месте и оставить
-  старую цифру в подвале - на сайте, который весь держится на счёте, такое
-  расхождение стоит дороже, чем где-либо ещё.
+  Прежний нёс три колонки, две пары определений с диапазоном ставок и
+  подписи капслоком - двенадцать мелких объектов там, где посетитель ищет
+  ровно одно: как связаться. Диапазон ставок переехал в раздел о темпе,
+  где он и нужен, а здесь остались имя, два адреса и оговорка.
+
+  Оговорка набрана обычным для страницы кеглем, а не восьмым. Мелкий шрифт
+  на предупреждении читается как попытка его спрятать, и это ровно то
+  впечатление, которого сайту в серой нише допускать нельзя.
 */
 export function Footer({ cross }: { cross: { label: string; href: string } }) {
-  const low = SPEEDS[0].rate;
-  const high = SPEEDS[SPEEDS.length - 1].rate;
-
   return (
-    <footer className="border-t border-[var(--color-rule)] px-5 pt-10 pb-12 sm:px-8">
-      <div className="mx-auto max-w-[84rem]">
-        <div className="grid gap-10 border-b border-[var(--color-rule-hair)] pb-10 md:grid-cols-[1.4fr_1fr_1fr]">
+    <footer className="px-6 pb-16 sm:px-10">
+      <div className="mx-auto max-w-[72rem] border-t border-[var(--color-line-soft)] pt-14">
+        <div className="flex flex-col justify-between gap-10 md:flex-row md:items-start">
           <div>
-            <span className="flex items-center gap-2.5">
-              <Mark className="h-5 w-5" />
-              <span className="text-[17px] font-semibold tracking-[-0.04em]">
-                {SITE.brandFull}
-              </span>
+            <span className="text-[19px] font-semibold tracking-[-0.03em]">
+              {SITE.brandFull}
             </span>
-            <p className="mt-4 max-w-[38ch] text-[14px] leading-relaxed text-[var(--color-read-soft)]">
-              {SITE.tagline}. Данные на {SITE.updated}.
+            <p className="mt-3 max-w-[34ch] text-[16px] leading-relaxed text-[var(--color-text-muted)]">
+              {SITE.tagline}
             </p>
           </div>
 
-          <div>
-            <span className="tag">диапазон шкалы</span>
-            <dl className="mt-4 flex flex-col gap-2 text-[14px]">
-              <div className="flex items-baseline justify-between gap-4">
-                <dt className="text-[var(--color-read-soft)]">ставка за фразу</dt>
-                <dd className="read">
-                  {low}-{high} ₽
-                </dd>
-              </div>
-              <div className="flex items-baseline justify-between gap-4">
-                <dt className="text-[var(--color-read-soft)]">скидка за объём</dt>
-                <dd className="read">до 22 %</dd>
-              </div>
-            </dl>
-          </div>
-
-          <div>
-            <span className="tag">связь</span>
-            <div className="mt-4 flex flex-col gap-2 text-[14px]">
-              <a
-                href={SITE.telegram}
-                rel="noopener"
-                onClick={() => track("contact_click", { channel: "telegram" })}
-                className="text-[var(--color-read-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--color-read)]"
-              >
-                {SITE.telegramHandle}
-              </a>
-              <a
-                href={`mailto:${SITE.email}`}
-                onClick={() => track("contact_click", { channel: "email" })}
-                className="text-[var(--color-read-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--color-read)]"
-              >
-                {SITE.email}
-              </a>
-              <a
-                href={cross.href}
-                className="mt-2 text-[var(--color-read-soft)] [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--color-read)]"
-              >
-                {cross.label}
-              </a>
-            </div>
+          <div className="flex flex-col gap-3 text-[16px] md:items-end">
+            <a
+              href={SITE.telegram}
+              rel="noopener"
+              onClick={() => track("contact_click", { channel: "telegram" })}
+              className="text-[var(--color-text-muted)] [transition:color_var(--t-fast)_var(--ease-soft)] hover:text-[var(--color-text)]"
+            >
+              {SITE.telegramHandle}
+            </a>
+            <a
+              href={`mailto:${SITE.email}`}
+              onClick={() => track("contact_click", { channel: "email" })}
+              className="text-[var(--color-text-muted)] [transition:color_var(--t-fast)_var(--ease-soft)] hover:text-[var(--color-text)]"
+            >
+              {SITE.email}
+            </a>
+            <a
+              href={cross.href}
+              className="text-[var(--color-text-muted)] [transition:color_var(--t-fast)_var(--ease-soft)] hover:text-[var(--color-text)]"
+            >
+              {cross.label}
+            </a>
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <p className="max-w-[66ch] text-[13px] leading-relaxed text-[var(--color-read-faint)]">
-            Ставки, коэффициенты и цена клика в контексте демонстрационные и
-            служат для показа механики расчёта. Усиление поведенческих сигналов
-            не входит в число методов, одобренных Яндексом: мы не гарантируем
-            позиции и не обещаем отсутствия реакции поисковой системы.
+        <div className="mt-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <p className="max-w-[68ch] text-[15px] leading-relaxed text-[var(--color-text-muted)]">
+            Ставки и коэффициенты на странице демонстрационные и показывают
+            механику расчёта. Усиление поведенческих сигналов не входит в число
+            методов, одобренных Яндексом: мы не гарантируем позиции и не обещаем
+            отсутствия реакции поисковой системы.
           </p>
-          <p className="tag shrink-0">
-            {SITE.domain} &middot; {new Date().getFullYear()}
+          <p className="shrink-0 text-[15px] text-[var(--color-text-muted)]">
+            {SITE.domain} · {new Date().getFullYear()}
           </p>
         </div>
       </div>

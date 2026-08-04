@@ -93,23 +93,25 @@ export default function ProPage() {
       <Nav cross={CROSS} />
 
       <main id="main" tabIndex={-1}>
-        <section className="px-5 pt-12 sm:px-8 sm:pt-16">
-          <div className="mx-auto max-w-[84rem]">
+        <section className="px-6 pt-16 pb-28 sm:px-10 sm:pt-24 sm:pb-36">
+          <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <span className="plate">для тех, кто продаёт сам</span>
-              <h1 className="mt-5 max-w-[13ch] text-[54px] sm:text-[92px] lg:text-[118px]">
+              <p className="text-[19px] text-[var(--color-mark-soft)]">
+                Для тех, кто продаёт сам
+              </p>
+              <h1 className="mt-6 max-w-[13ch]">
                 Расписание, которое можно переслать клиенту
               </h1>
             </Reveal>
 
             <Reveal delay={0.08}>
-              <div className="mt-8 grid gap-8 border-t border-[var(--color-mark)] pt-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-                <p className="max-w-[46ch] text-[18px] leading-relaxed text-[var(--color-mark-soft)]">
+              <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+                <p className="max-w-[44ch] text-[21px] leading-relaxed text-[var(--color-mark-soft)]">
                   В нём нет ни одного обещания, за которое вам потом придётся
                   оправдываться, и нет упоминаний о нас. Наценку назначаете вы,
                   скидка считается по суммарному объёму фраз на счёте.
                 </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                   <Cta href={SITE.register} place="pro_hero">
                     Открыть счёт
                   </Cta>
@@ -122,30 +124,17 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <h2 className="max-w-[14ch] text-[42px] sm:text-[62px]">
-                Кому это подходит
-              </h2>
+              <h2 className="max-w-[14ch]">Кому это подходит</h2>
             </Reveal>
 
-            <div className="mt-10 grid border-t border-[var(--color-mark)] lg:grid-cols-2">
+            <div className="mt-14 grid gap-x-16 gap-y-14 sm:grid-cols-2">
               {ROLES.map((r, i) => (
-                <Reveal
-                  key={r.who}
-                  delay={i * 0.05}
-                  className={`border-b border-[var(--color-rule-hair)] py-7 lg:py-9 ${
-                    i % 2 === 1
-                      ? "lg:border-l lg:border-l-[var(--color-rule-hair)] lg:pl-8"
-                      : "lg:pr-8"
-                  }`}
-                >
-                  <span className="day text-[13px] text-[var(--color-mark-faint)]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-4 text-[22px]">{r.who}</h3>
-                  <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-[var(--color-mark-soft)]">
+                <Reveal key={r.who} delay={i * 0.05}>
+                  <h3 className="max-w-[22ch]">{r.who}</h3>
+                  <p className="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-[var(--color-mark-soft)]">
                     {r.d}
                   </p>
                 </Reveal>
@@ -154,31 +143,25 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
+        {/* Разговор о риске идёт до разговора о деньгах. */}
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <div className="flex flex-wrap items-end justify-between gap-6">
-                <h2 className="max-w-[14ch] text-[42px] sm:text-[62px]">
-                  Что говорить клиенту
-                </h2>
-                <p className="max-w-[40ch] text-[16px] leading-relaxed text-[var(--color-mark-soft)]">
-                  Три вопроса, которые вам зададут. Отвечать придётся вам, а не
-                  нам, поэтому ответы написаны заранее.
-                </p>
-              </div>
+              <h2 className="max-w-[14ch]">Что говорить клиенту</h2>
+              <p className="mt-8 max-w-[52ch] text-[19px] leading-relaxed text-[var(--color-mark-soft)]">
+                Три вопроса, которые вам зададут. Отвечать придётся вам, а не
+                нам, поэтому ответы написаны заранее.
+              </p>
             </Reveal>
 
-            <dl className="mt-10 border-t border-[var(--color-mark)]">
+            <dl className="mt-14 border-t border-[var(--color-mark)]">
               {SCRIPT.map((s, i) => (
                 <Reveal key={s.q} delay={i * 0.05}>
-                  <div className="grid items-baseline gap-x-8 gap-y-3 border-b border-[var(--color-rule-hair)] py-7 md:grid-cols-[3rem_minmax(0,18rem)_1fr]">
-                    <span className="day text-[13px] text-[var(--color-mark-faint)]">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <dt className="text-[19px] leading-snug font-bold tracking-[-0.02em]">
+                  <div className="grid gap-x-14 gap-y-3 border-b border-[var(--color-rule-soft)] py-8 md:grid-cols-[minmax(0,18rem)_1fr]">
+                    <dt className="text-[21px] leading-snug font-bold tracking-[-0.02em]">
                       {s.q}
                     </dt>
-                    <dd className="max-w-[66ch] text-[16px] leading-relaxed text-[var(--color-mark-soft)]">
+                    <dd className="max-w-[62ch] text-[18px] leading-relaxed text-[var(--color-mark-soft)]">
                       {s.a}
                     </dd>
                   </div>
@@ -188,36 +171,32 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section id="margin" className="scroll-mt-4 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
+        <section id="margin" className="scroll-mt-10 px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <h2 className="max-w-[14ch] text-[42px] sm:text-[62px]">
-                Сколько остаётся вам
-              </h2>
-              <p className="mt-6 max-w-[50ch] text-[16px] leading-relaxed text-[var(--color-mark-soft)]">
+              <h2 className="max-w-[14ch]">Сколько остаётся вам</h2>
+              <p className="mt-8 max-w-[52ch] text-[19px] leading-relaxed text-[var(--color-mark-soft)]">
                 Наценку мы не ограничиваем и не проверяем.
               </p>
             </Reveal>
 
-            <Reveal delay={0.08} className="mt-10">
+            <Reveal delay={0.08} className="mt-14">
               <Margin />
             </Reveal>
           </div>
         </section>
 
-        <section className="px-5 pt-24 sm:px-8 sm:pt-40">
-          <div className="mx-auto max-w-[84rem]">
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <div className="border-t border-[var(--color-mark)] pt-10">
-                <h2 className="max-w-[14ch] text-[48px] sm:text-[80px] lg:text-[96px]">
-                  Первый проект бесплатно
-                </h2>
-                <p className="mt-8 max-w-[54ch] text-[17px] leading-relaxed text-[var(--color-mark-soft)] sm:text-[19px]">
-                  Возьмите один свой проект и пройдите по расписанию семь суток,
-                  прежде чем что-то обещать клиенту. Карта не нужна, договор не
-                  нужен, отказаться можно молча.
+              <div className="border-t border-[var(--color-mark)] pt-14">
+                <h2 className="max-w-[15ch]">Первый проект без баланса</h2>
+                <p className="mt-10 max-w-[52ch] text-[21px] leading-relaxed text-[var(--color-mark-soft)]">
+                  Заведите один проект и семь суток смотрите на позиции, прежде
+                  чем что-то обещать клиенту. Карта не нужна, договор не нужен,
+                  отказаться можно молча.
                 </p>
-                <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-12 flex flex-col gap-4 sm:flex-row">
                   <Cta href={SITE.register} place="pro_final">
                     Открыть счёт
                   </Cta>
@@ -230,12 +209,12 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
-          <div className="mx-auto max-w-[84rem]">
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <h2 className="max-w-[12ch] text-[42px] sm:text-[56px]">Вопросы</h2>
+              <h2 className="max-w-[12ch]">Вопросы</h2>
             </Reveal>
-            <div className="mt-10">
+            <div className="mt-12">
               <Faq items={FAQ_PRO} />
             </div>
           </div>

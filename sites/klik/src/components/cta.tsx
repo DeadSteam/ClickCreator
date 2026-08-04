@@ -3,18 +3,19 @@
 import { track } from "@/lib/analytics";
 
 /*
-  Кнопка прибора.
+  Кнопка.
 
-  Сигнальный цвет здесь намеренно не используется - ни в заливке, ни в ховере.
-  На этом сайте он означает ровно одно: показание сейчас пересчитывается.
-  Покрасив им кнопку, мы бы обесценили единственный смысловой цвет страницы
-  ради украшения одного элемента.
+  Полностью круглая и крупная: 52 пикселя высоты вместо прежних 44. Главное
+  действие страницы не должно выглядеть как элемент формы, и лишние восемь
+  пикселей стоят дешевле любого текста, который пытается его продать.
 
-  Поэтому основная кнопка - инверсия: белая плашка на графите. На тёмном фоне
-  это самый сильный контраст, который вообще есть в палитре.
+  Основная - светлая заливка на тёмном. Это самый сильный контраст, какой
+  вообще есть в палитре, и он достаётся бесплатно. Акцентный цвет на кнопку
+  не идёт: он занят живым числом в расчёте, и раскрасив им ещё и кнопку,
+  мы получим два одинаково ярких пятна и ни одного главного.
 
-  place обязателен: без него видно, что по кнопке кликнули, но не видно, по
-  какой из шести, и оптимизировать нечего.
+  place обязателен: без него видно, что кликнули, но не видно, по какой из
+  кнопок, и оптимизировать нечего.
 */
 export function Cta({
   href,
@@ -25,20 +26,20 @@ export function Cta({
   href: string;
   place: string;
   children: React.ReactNode;
-  variant?: "solid" | "outline";
+  variant?: "solid" | "ghost";
 }) {
   const external = href.startsWith("http");
 
   const base =
-    "inline-flex min-h-[44px] cursor-pointer items-center justify-center px-6 py-3 " +
-    "text-center text-[15px] font-medium tracking-[-0.01em] " +
-    "[transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-micro)] " +
-    "active:scale-[0.985]";
+    "inline-flex min-h-[52px] cursor-pointer items-center justify-center " +
+    "rounded-[var(--radius-control)] px-8 text-[17px] font-medium " +
+    "[transition:background-color_var(--t-fast)_var(--ease-soft),color_var(--t-fast)_var(--ease-soft),border-color_var(--t-fast)_var(--ease-soft),transform_var(--t-fast)_var(--ease-soft)] " +
+    "active:scale-[0.98]";
 
   const skin =
     variant === "solid"
-      ? "bg-[var(--color-read)] text-[var(--color-case)] hover:bg-[var(--color-read-soft)]"
-      : "border border-[var(--color-rule)] text-[var(--color-read)] hover:border-[var(--color-read)] hover:bg-[var(--color-case-raise)]";
+      ? "bg-[var(--color-text)] text-[var(--color-ink)] hover:bg-[var(--color-text-muted)]"
+      : "border border-[var(--color-line)] text-[var(--color-text)] hover:bg-[var(--color-surface)]";
 
   return (
     <a

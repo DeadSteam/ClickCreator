@@ -23,21 +23,32 @@
   4. Никаких бегущих строк, параллакса и рывков при прокрутке. Скорость здесь
      заявляется размером и ритмом, а не мельтешением: мельтешение читается как
      дешёвый шаблон, что для этой ниши было бы смертельно.
+  5. Мелких элементов нет. В прежней версии над каждым блоком висела подпись
+     одиннадцатым кеглем капслоком с разрядкой - приём, который выглядит
+     «дизайнерски» и не сообщает ничего: страница из-за него читалась как
+     приборный отчёт. Минимальный кегль на сайте - шестнадцатый.
 */
 
 @theme {
   --color-field: oklch(0.988 0 0);
   --color-field-edge: oklch(0.955 0.002 250);
+
+  /* Два уровня текста, оба проходят AA с запасом: 19:1 и 7.6:1. */
   --color-mark: oklch(0.152 0.004 260);
   --color-mark-soft: oklch(0.436 0.006 260);
-  --color-mark-faint: oklch(0.557 0.006 260);
 
-  /* Алый. Единственный цвет: текущие сутки и целевое действие. */
-  --color-blaze: oklch(0.588 0.238 29);
+  /*
+    Алый. Единственный цвет: текущие сутки и целевое действие.
+
+    Приглушён с 0.588 до 0.545. На прежнем значении он давал ровно 4.51 к 1
+    и с бумагой, и с белым текстом на себе - формально проходило, фактически
+    без запаса: любая правка светлоты роняла обе пары ниже нормы. Теперь
+    5.15 при том же цвете.
+  */
+  --color-blaze: oklch(0.545 0.238 29);
 
   --color-rule: oklch(0.152 0.004 260 / 0.26);
   --color-rule-soft: oklch(0.152 0.004 260 / 0.12);
-  --color-rule-hair: oklch(0.152 0.004 260 / 0.06);
 
   --font-tight: var(--font-sofia-xc), system-ui, sans-serif;
   --font-text: var(--font-sofia), system-ui, sans-serif;
@@ -84,6 +95,14 @@
     превращается в забор, который никто не читает. Отсюда жёсткое правило -
     заголовок не длиннее пяти слов.
   */
+  h1 {
+    font-size: clamp(58px, 9vw, 138px);
+  }
+
+  h2 {
+    font-size: clamp(38px, 5vw, 68px);
+  }
+
   h1,
   h2 {
     font-family: var(--font-tight);
@@ -96,9 +115,10 @@
 
   h3 {
     font-family: var(--font-text);
+    font-size: 23px;
     font-weight: 700;
     letter-spacing: -0.02em;
-    line-height: 1.12;
+    line-height: 1.2;
     text-wrap: balance;
   }
 
@@ -114,22 +134,6 @@
     font-weight: 800;
     line-height: 0.8;
     letter-spacing: -0.01em;
-  }
-
-  /*
-    Служебная подпись. Отрицательный отступ справа гасит трекинг после
-    последней буквы: иначе прижатая вправо подпись вылезает за колонку и
-    страница получает горизонтальную прокрутку.
-  */
-  .plate {
-    font-family: var(--font-text);
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: 0.14em;
-    margin-right: -0.14em;
-    text-transform: uppercase;
-    color: var(--color-mark-faint);
   }
 
   input[type="range"] {
@@ -151,19 +155,20 @@
     background: var(--color-rule-soft);
   }
 
+  /* Бегунок квадратный и крупный: он единственное, что тянут пальцем. */
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 18px;
-    height: 18px;
-    margin-top: -7px;
+    width: 22px;
+    height: 22px;
+    margin-top: -9px;
     background: var(--color-blaze);
     border-radius: 0;
   }
 
   input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     border: 0;
     border-radius: 0;
     background: var(--color-blaze);

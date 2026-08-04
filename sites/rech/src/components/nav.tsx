@@ -8,18 +8,18 @@ import { track } from "@/lib/analytics";
 /*
   Шапка письма.
 
-  Кнопки целевого действия здесь нет намеренно. На всех остальных вариантах
-  она в шапке есть, и это правильно; здесь её отсутствие - часть проверяемой
-  гипотезы. Письмо, которое с первой строки предлагает купить, читается как
-  рассылка, а не как письмо.
+  Кнопки целевого действия в шапке нет намеренно, и это единственное
+  расхождение с остальными вариантами по составу управления. Письмо, которое
+  предлагает купить прежде, чем автор представился, читается как рассылка.
 
-  Вместо кнопки - ссылка на живого человека в Telegram. Написать автору можно
-  в любой момент, и это не покупка.
+  Вместо кнопки - ссылка на живого человека в Telegram: написать автору можно
+  в любой момент, и это не покупка. Само целевое действие стоит в первом
+  экране, рядом с подписью, - как на всех пяти сайтах.
 */
 const LINKS = [
-  { label: "Что я делаю", href: "/#work" },
-  { label: "Чего не делаю", href: "/#refusals" },
+  { label: "Как работает", href: "/#work" },
   { label: "Сколько", href: "/#money" },
+  { label: "Результаты", href: "/#cases" },
   { label: "Вопросы", href: "/#faq" },
 ];
 
@@ -41,12 +41,12 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
             <a
               key={l.href}
               href={l.href}
-              className="link text-[15px] text-[var(--color-ink-soft)]"
+              className="link text-[17px] text-[var(--color-ink-soft)]"
             >
               {l.label}
             </a>
           ))}
-          <a href={cross.href} className="link text-[15px] text-[var(--color-ink-soft)]">
+          <a href={cross.href} className="link text-[17px] text-[var(--color-ink-soft)]">
             {cross.label}
           </a>
         </nav>
@@ -56,7 +56,7 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
             href={SITE.telegram}
             rel="noopener"
             onClick={() => track("contact_click", { channel: "telegram", place: "nav" })}
-            className="stroke hidden text-[15px] sm:inline-block"
+            className="stroke hidden text-[17px] sm:inline-block"
           >
             Написать мне
           </a>
@@ -68,9 +68,9 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
             aria-expanded={open}
             aria-controls="nav-sheet"
             onClick={() => setOpen((v) => !v)}
-            className="cap flex min-h-[44px] cursor-pointer items-center border border-[var(--color-rule)] px-3 lg:hidden"
+            className="flex min-h-[46px] cursor-pointer items-center border border-[var(--color-rule)] px-5 text-[16px] lg:hidden"
           >
-            {open ? "закрыть" : "меню"}
+            {open ? "Закрыть" : "Меню"}
           </button>
         </div>
       </div>
@@ -89,14 +89,14 @@ export function Nav({ cross }: { cross: { label: string; href: string } }) {
         <div className="min-h-0">
           <nav
             aria-label="Разделы, мобильная версия"
-            className="flex flex-col border-t border-[var(--color-rule-hair)] px-5 pb-5 sm:px-8"
+            className="flex flex-col border-t border-[var(--color-rule-soft)] px-5 pb-5 sm:px-8"
           >
             {[...LINKS, cross].map((l) => (
               <a
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="flex min-h-[44px] items-center border-b border-[var(--color-rule-hair)] text-[17px] text-[var(--color-ink-soft)]"
+                className="flex min-h-[44px] items-center border-b border-[var(--color-rule-soft)] text-[17px] text-[var(--color-ink-soft)]"
               >
                 {l.label}
               </a>

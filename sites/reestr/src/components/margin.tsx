@@ -3,7 +3,7 @@
 
   Здесь, как и в прайсе на главной, нет ползунков. Причина та же: реестр -
   публикация, а не инструмент, и агентство должно иметь возможность
-  распечатать эту страницу и положить её в папку с расчётами.
+  распечатать страницу и положить её в папку с расчётами.
 
   Матрица, а не калькулятор: специалист редко знает точную закупку заранее,
   зато сразу видит порядок цифры на своей строке и на соседних. Ползунок
@@ -17,14 +17,15 @@ const MARKUP = [1.5, 2, 3] as const;
 
 /*
   Формат вручную, а не через Intl.NumberFormat: Node и браузер разводят
-  разделитель разрядов для ru-RU (узкий неразрывный пробел против обычного),
-  и серверная отрисовка перестаёт совпадать с клиентской.
+  разделитель разрядов для ru-RU, и серверная отрисовка перестаёт совпадать с
+  клиентской. Разделитель - узкий неразрывный пробел: обычный переносится на
+  новую строку и рвёт число пополам.
 */
 const money = (n: number) => {
   const s = Math.round(n).toString();
   let out = "";
   for (let i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
+    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
     out += s[i];
   }
   return out;
@@ -38,24 +39,23 @@ export function Margin() {
         на узком экране неизбежно шире 375 пикселей, но ехать горизонтально
         должна таблица, а не весь документ.
       */}
-      <div className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
-        <table className="w-full min-w-[36rem] border-collapse text-left">
-          <caption className="field mb-4 text-left">
-            ваша прибыль в месяц, рублей
-          </caption>
-
+      <div className="-mx-6 overflow-x-auto px-6 sm:mx-0 sm:px-0">
+        <table className="w-full min-w-[40rem] border-collapse text-left">
           <thead>
             <tr className="border-t border-b border-[var(--color-ink)]">
-              <th scope="col" className="field py-3 pr-6 font-normal">
-                закупка в месяц
+              <th
+                scope="col"
+                className="py-5 pr-10 text-[17px] font-normal text-[var(--color-ink-soft)]"
+              >
+                Закупка в месяц
               </th>
               {MARKUP.map((m) => (
                 <th
                   key={m}
                   scope="col"
-                  className="field py-3 pr-6 text-right font-normal last:pr-0"
+                  className="py-5 pr-10 text-right text-[17px] font-normal text-[var(--color-ink-soft)] last:pr-0"
                 >
-                  наценка &times;{String(m).replace(".", ",")}
+                  наценка ×{String(m).replace(".", ",")}
                 </th>
               ))}
             </tr>
@@ -65,18 +65,18 @@ export function Margin() {
             {BUY.map((b) => (
               <tr
                 key={b}
-                className="row-hover border-b border-[var(--color-rule-hair)]"
+                className="row-hover border-b border-[var(--color-rule-soft)]"
               >
                 <th
                   scope="row"
-                  className="num py-4 pr-6 text-[14px] font-normal text-[var(--color-ink)]"
+                  className="num py-6 pr-10 text-[18px] font-normal text-[var(--color-ink-soft)]"
                 >
                   {money(b)}
                 </th>
                 {MARKUP.map((m) => (
                   <td
                     key={m}
-                    className="num py-4 pr-6 text-right text-[17px] last:pr-0"
+                    className="num py-6 pr-10 text-right text-[24px] last:pr-0"
                   >
                     {money(b * m - b)}
                   </td>
@@ -87,11 +87,12 @@ export function Margin() {
         </table>
       </div>
 
-      <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-[var(--color-ink-soft)]">
-        Закупка списывается за фактические переходы, поэтому в месяц с
-        недоработкой вы платите меньше, а чек клиенту выставляете прежний.
-        Наценку мы не ограничиваем и не проверяем: цифры в шапке -
-        распространённые на рынке, а не предписанные нами.
+      <p className="mt-8 max-w-[60ch] text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
+        В ячейках — ваша прибыль в месяц, рублей. Закупка списывается за
+        фактические переходы, поэтому в месяц с недоработкой вы платите меньше,
+        а чек клиенту выставляете прежний. Наценку мы не ограничиваем и не
+        проверяем: множители в шапке распространены на рынке, а не предписаны
+        нами.
       </p>
     </div>
   );

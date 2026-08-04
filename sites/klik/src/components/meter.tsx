@@ -2,45 +2,36 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { CPC_CONTEXT, SPEEDS, TIERS, discountFor, nextTier } from "@/lib/content";
-import { SITE } from "@/lib/site";
+import { RATES, discountFor } from "@/lib/content";
 import { track, trackOnView } from "@/lib/analytics";
-import { Cta } from "./cta";
+import { Amount } from "./amount";
 
 /*
-  Счётчик. Первый экран сайта целиком.
+  Расчёт.
 
-  Число форматируем вручную, а не через Intl.NumberFormat: Node и браузер
-  разводят разделитель разрядов для ru-RU (узкий неразрывный пробел против
-  обычного), серверная отрисовка не совпадает с клиентской, и React
-  перерисовывает поддерево с предупреждением в консоли. Для сайта, где число -
-  это главный объект первого экрана, такое расхождение недопустимо.
+  Прежняя версия показывала восемь чисел разом: расход, месяц, переходы, цену
+  перехода, долю скидки, три ступени порогов и две полосы сравнения. Всё это
+  правда, но человек, впервые открывший страницу, не может выбрать, на что
+  смотреть, и не смотрит никуда.
+
+  Здесь одно крупное число и два органа управления. Остальное - две строки
+  подписи под ним. Ступени скидки, сравнение с контекстом и месячная сумма
+  переехали в текст страницы, где им и место: это аргументы, а не показания.
 */
-const money = (n: number) => {
-  const s = Math.round(n).toString();
-  let out = "";
-  for (let i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 === 0) out += " ";
-    out += s[i];
-  }
-  return out;
-};
 
 /**
- * Подсветка живого показания.
+ * Подсветка меняющегося числа.
  *
- * Значение горит сигнальным цветом, пока меняется, и гаснет через 600мс после
- * последнего изменения. Таймер сбрасывается на каждом изменении, поэтому при
- * протаскивании ползунка показание горит непрерывно, а не мигает на каждом
- * шаге - мигание читалось бы как сбой прибора.
+ * Горит акцентом, пока значение меняется, и гаснет через 600мс после
+ * последнего изменения. Таймер сбрасывается на каждом шаге, поэтому при
+ * протаскивании ползунка число горит непрерывно, а не мигает на каждом
+ * пикселе - мигание читалось бы как сбой.
  */
 function useLive(value: number) {
   const [live, setLive] = useState(false);
   const first = useRef(true);
 
   useEffect(() => {
-    /* Первый проход - это отрисовка, а не изменение. Без этой проверки
-       показание вспыхивает при каждой загрузке страницы. */
     if (first.current) {
       first.current = false;
       return;
@@ -62,20 +53,10 @@ export function Meter() {
   useEffect(() => trackOnView(ref.current, "pricing_view"), []);
 
   const calc = useMemo(() => {
-    const mode = SPEEDS[speed];
+    const mode = RATES[speed];
     const off = discountFor(phrases);
     const perDay = phrases * mode.rate * (1 - off);
-    const clicks = phrases * mode.perPhrase;
-    return {
-      off,
-      perDay,
-      perMonth: perDay * 30,
-      clicks,
-      /* Цена одного перехода. Главное число для сравнения с контекстом. */
-      perClick: clicks > 0 ? perDay / clicks : 0,
-      next: nextTier(phrases),
-      mode,
-    };
+    return { perDay, off, mode };
   }, [phrases, speed]);
 
   const live = useLive(Math.round(calc.perDay));
@@ -93,237 +74,101 @@ export function Meter() {
         track("calc_result", {
           widget: "meter",
           phrases,
-          speed: calc.mode.name,
+          speed: calc.mode.plan,
           per_day: Math.round(calc.perDay),
-          per_click: Math.round(calc.perClick * 100) / 100,
         }),
       700,
     );
     return () => clearTimeout(id);
-  }, [phrases, calc.mode.name, calc.perDay, calc.perClick]);
-
-  /* Во сколько раз переход дешевле контекстного. Одна цифра вместо абзаца. */
-  const cheaper = calc.perClick > 0 ? CPC_CONTEXT / calc.perClick : 0;
+  }, [phrases, calc.mode.plan, calc.perDay]);
 
   return (
-    <div ref={ref} className="panel">
-      {/* Верхняя строка прибора: что именно он показывает. */}
-      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-[var(--color-rule-soft)] px-5 py-3.5 sm:px-7">
-        <span className="tag">продвижение в Яндексе, расход в сутки</span>
-        <span className="tag">
-          {calc.mode.name} &middot; сдвиги через {calc.mode.shift}
+    <div ref={ref} className="panel px-7 py-8 sm:px-10 sm:py-10">
+      {/* Число. Единственный крупный объект блока. */}
+      <p className="flex flex-wrap items-baseline gap-x-4">
+        <Amount
+          value={calc.perDay}
+          className={`num text-[clamp(52px,8vw,80px)] leading-none font-medium ${
+            live ? "text-[var(--color-accent)]" : ""
+          }`}
+          style={{ transition: "color var(--t-base) var(--ease-soft)" }}
+        />
+        <span className="text-[19px] text-[var(--color-text-muted)]">
+          ₽ в сутки
         </span>
-      </div>
+      </p>
 
-      {/*
-        Три блока вместо двух колонок, и порядок у них разный по ширине экрана.
+      <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-[var(--color-text-muted)]">
+        Списывается за фактические переходы. Первые сдвиги на темпе
+        &laquo;{calc.mode.plan.toLowerCase()}&raquo; обычно видны через{" "}
+        {calc.mode.window}.
+        {calc.off > 0
+          ? ` Скидка за объём ${Math.round(calc.off * 100)} процентов уже учтена.`
+          : ""}
+      </p>
 
-        На телефоне показание стояло вверху, а ползунок, который его меняет, -
-        через полтысячи пикселей вниз, за производными цифрами и сравнением.
-        Человек видел число и не видел, чем его крутить: связь "двигаю - меняется",
-        на которой держится весь вариант, была разорвана. Норман называет это
-        нарушенным отображением: орган управления обязан быть рядом с тем, на что
-        он влияет.
-
-        Теперь на телефоне идёт показание, сразу под ним управление, и только
-        потом производные. На широком экране порядок прежний: order снимается,
-        управление занимает правую колонку во всю высоту (row-span-2), а экран
-        разбит на две строки левой колонки.
-      */}
-      <div className="flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr]">
-        {/* Показание. Занимает столько места, сколько занимал бы заголовок
-            на обычном лендинге - в этом и есть заявление сайта. */}
-        <div className="screen order-1 border-b border-[var(--color-rule-soft)] px-5 pt-8 pb-8 sm:px-7 sm:pt-10 lg:order-none lg:border-r">
-          <p className="flex flex-wrap items-baseline gap-x-3">
-            <span
-              className={`read read-xl text-[clamp(56px,11vw,116px)] font-medium ${live ? "live" : ""}`}
-            >
-              {money(calc.perDay)}
-            </span>
-            <span className="text-[18px] text-[var(--color-read-soft)]">
-              ₽ в сутки
-            </span>
-          </p>
+      {/* Управление. Два элемента, разделённые воздухом, а не линейкой. */}
+      <div className="mt-10 flex flex-col gap-9">
+        <div>
+          <div className="flex items-baseline justify-between gap-6">
+            <label htmlFor="m-phrases" className="text-[16px] text-[var(--color-text-muted)]">
+              Фраз в работе
+            </label>
+            <output htmlFor="m-phrases" className="num text-[24px] font-medium">
+              {phrases}
+            </output>
+          </div>
+          <input
+            id="m-phrases"
+            type="range"
+            min={10}
+            max={800}
+            step={10}
+            value={phrases}
+            onChange={(e) => {
+              setPhrases(Number(e.target.value));
+              note();
+            }}
+          />
         </div>
 
-        {/* Производные показания и сравнение: на телефоне уезжают под управление. */}
-        <div className="screen order-3 flex flex-col gap-8 border-b border-[var(--color-rule-soft)] px-5 py-8 sm:px-7 sm:py-10 lg:order-none lg:border-r lg:border-b-0">
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
-            <div>
-              <dt className="tag">за 30 суток</dt>
-              <dd className="read mt-2 text-[24px] sm:text-[28px]">
-                {money(calc.perMonth)}
-              </dd>
-            </div>
-            <div>
-              <dt className="tag">переходов в сутки</dt>
-              <dd className="read mt-2 text-[24px] sm:text-[28px]">
-                {Math.round(calc.clicks)}
-              </dd>
-            </div>
-            <div>
-              <dt className="tag">цена перехода</dt>
-              <dd className="read mt-2 text-[24px] sm:text-[28px]">
-                {calc.perClick.toFixed(1)}
-              </dd>
-            </div>
-          </dl>
-
+        <div>
+          <span className="block text-[16px] text-[var(--color-text-muted)]">
+            Темп
+          </span>
           {/*
-            Сравнение с контекстом. Две полосы одной шкалы, а не два числа
-            рядом: длину видно, разницу между "9,6" и "78" ещё надо прочитать.
+            Радиогруппа, а не набор переключателей: выбор взаимоисключающий,
+            и aria-pressed сказал бы «кнопка нажата» вместо «выбрано 1 из 3».
           */}
-          <div className="border-t border-[var(--color-rule-hair)] pt-6">
-            <div className="flex items-baseline justify-between gap-4">
-              <span className="tag">переход из органики</span>
-              <span className="read text-[15px]">
-                {calc.perClick.toFixed(1)} ₽
-              </span>
-            </div>
-            <div className="mt-2 h-2.5 w-full bg-[var(--color-case-sink)]">
-              <div
-                className="h-full bg-[var(--color-live)]"
-                style={{
-                  width: `${Math.min(100, (calc.perClick / CPC_CONTEXT) * 100)}%`,
-                  transition: "width var(--t-panel) var(--ease-read)",
-                }}
-              />
-            </div>
-
-            <div className="mt-4 flex items-baseline justify-between gap-4">
-              <span className="tag">клик в Директе, нижняя оценка</span>
-              <span className="read text-[15px] text-[var(--color-read-soft)]">
-                {CPC_CONTEXT} ₽
-              </span>
-            </div>
-            <div className="mt-2 h-2.5 w-full bg-[var(--color-case-sink)]">
-              <div className="h-full w-full bg-[var(--color-read-faint)]" />
-            </div>
-
-            <p className="mt-4 max-w-[46ch] text-[13px] leading-relaxed text-[var(--color-read-faint)]">
-              Дешевле примерно в {cheaper.toFixed(0)} раз при текущих настройках.
-              Контекст приводит посетителя сразу, органика - позицию, которая
-              работает и после отключения бюджета.
-            </p>
-          </div>
-        </div>
-
-        {/*
-          Органы управления. На телефоне стоят сразу под показанием (order-2),
-          на широком экране занимают правую колонку во всю высоту.
-        */}
-        <div className="order-2 flex flex-col gap-7 px-5 py-8 sm:px-7 sm:py-10 lg:order-none lg:row-span-2">
-          <div>
-            <div className="flex items-baseline justify-between gap-4">
-              <label htmlFor="m-phrases" className="tag">
-                фраз в работе
-              </label>
-              <output htmlFor="m-phrases" className="read text-[26px]">
-                {phrases}
-              </output>
-            </div>
-            <input
-              id="m-phrases"
-              type="range"
-              min={10}
-              max={800}
-              step={10}
-              value={phrases}
-              onChange={(e) => {
-                setPhrases(Number(e.target.value));
-                note();
-              }}
-            />
-            <div className="tag flex justify-between">
-              <span>10</span>
-              <span>800</span>
-            </div>
-          </div>
-
-          <div>
-            <span className="tag block">скорость</span>
-            <div role="radiogroup" aria-label="Скорость" className="mt-3 flex flex-col gap-px bg-[var(--color-rule-soft)]">
-              {SPEEDS.map((s, i) => {
-                const active = i === speed;
-                return (
-                  <button
-                    key={s.name}
-                    type="button"
-                    role="radio"
-                    aria-checked={active}
-                    onClick={() => {
-                      setSpeed(i);
-                      note();
-                    }}
-                    className={`flex min-h-[44px] cursor-pointer items-baseline justify-between gap-4 px-4 py-3 text-left
-                      [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro)]
-                      ${
-                        active
-                          ? "bg-[var(--color-read)] text-[var(--color-case)]"
-                          : "bg-[var(--color-case-raise)] text-[var(--color-read-soft)] hover:bg-[var(--color-case-sink)]"
-                      }`}
-                  >
-                    <span className="text-[15px]">{s.name}</span>
-                    <span className="read text-[15px]">{s.rate} ₽</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Скидка. Показана всегда, а не всплывает при достижении порога. */}
-          <div className="border-t border-[var(--color-rule-hair)] pt-5">
-            <div className="flex items-baseline justify-between gap-4">
-              <span className="tag">скидка за объём</span>
-              <span
-                className={`read text-[20px] ${calc.off > 0 ? "live" : "text-[var(--color-read-faint)]"}`}
-              >
-                {calc.off > 0 ? `−${Math.round(calc.off * 100)} %` : "0 %"}
-              </span>
-            </div>
-
-            <ol className="mt-4 flex flex-col gap-1.5">
-              {[...TIERS]
-                .filter((t) => t.from > 0)
-                .sort((a, b) => a.from - b.from)
-                .map((t) => {
-                  const reached = phrases >= t.from;
-                  return (
-                    <li
-                      key={t.from}
-                      className={`flex items-baseline justify-between gap-4 text-[13px] ${
-                        reached
-                          ? "text-[var(--color-read)]"
-                          : "text-[var(--color-read-faint)]"
-                      }`}
-                    >
-                      <span className="read">от {t.from} фраз</span>
-                      <span className="read">−{Math.round(t.off * 100)} %</span>
-                    </li>
-                  );
-                })}
-            </ol>
-
-            {calc.next ? (
-              <p className="mt-4 text-[13px] leading-snug text-[var(--color-read-faint)]">
-                Ещё {calc.next.from - phrases} фраз до скидки{" "}
-                {Math.round(calc.next.off * 100)} процентов.
-              </p>
-            ) : (
-              <p className="mt-4 text-[13px] leading-snug text-[var(--color-read-faint)]">
-                Максимальная скидка достигнута.
-              </p>
-            )}
-          </div>
-
-          <div className="mt-auto flex flex-col gap-3 border-t border-[var(--color-rule-hair)] pt-6">
-            <Cta href={SITE.register} place="meter">
-              Запустить с этими настройками
-            </Cta>
-            <p className="text-[13px] leading-relaxed text-[var(--color-read-faint)]">
-              Семь суток без привязки карты. Остановить можно в любой момент,
-              баланс не сгорает.
-            </p>
+          <div
+            role="radiogroup"
+            aria-label="Темп"
+            className="mt-3 flex flex-wrap gap-2"
+          >
+            {RATES.map((s, i) => {
+              const active = i === speed;
+              return (
+                <button
+                  key={s.plan}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => {
+                    setSpeed(i);
+                    note();
+                  }}
+                  className={`min-h-[48px] cursor-pointer rounded-[var(--radius-control)] px-6 text-[16px]
+                    [transition:background-color_var(--t-fast)_var(--ease-soft),color_var(--t-fast)_var(--ease-soft)]
+                    ${
+                      active
+                        ? "bg-[var(--color-text)] text-[var(--color-ink)]"
+                        : "bg-[var(--color-surface-2)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                    }`}
+                >
+                  {s.plan}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

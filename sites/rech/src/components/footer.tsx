@@ -15,7 +15,7 @@ export function Footer({ cross }: { cross: { label: string; href: string } }) {
   return (
     <footer className="border-t border-[var(--color-rule)] px-5 pt-12 pb-14 sm:px-8">
       <div className="mx-auto max-w-[72rem]">
-        <div className="grid gap-10 border-b border-[var(--color-rule-hair)] pb-10 md:grid-cols-[1.5fr_1fr]">
+        <div className="grid gap-10 border-b border-[var(--color-rule-soft)] pb-10 md:grid-cols-[1.5fr_1fr]">
           <div>
             <p className="font-[family-name:var(--font-display)] text-[26px] leading-tight font-bold tracking-[-0.015em]">
               {SITE.author}
@@ -49,7 +49,7 @@ export function Footer({ cross }: { cross: { label: string; href: string } }) {
         </div>
 
         <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <p className="max-w-[64ch] text-[15px] leading-relaxed text-[var(--color-ink-faint)]">
+          <p className="max-w-[64ch] text-[16px] leading-relaxed text-[var(--color-ink-soft)]">
             Цифры на этой странице демонстрационные. Усиление поведенческих
             сигналов не входит в число методов, одобренных Яндексом: я не
             гарантирую позиции и не обещаю, что поисковая система не отреагирует.

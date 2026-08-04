@@ -78,7 +78,7 @@ export default function ProPage() {
       <Nav cross={CROSS} />
 
       <main id="main" tabIndex={-1}>
-        <section className="px-5 pt-14 sm:px-8 sm:pt-20">
+        <section className="px-6 pt-16 sm:px-10 sm:pt-24">
           <div className="mx-auto max-w-[72rem]">
             <div className="max-w-[58ch]">
               <Reveal>
@@ -96,11 +96,11 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 sm:px-8 sm:pt-32">
+        <section className="px-6 pt-28 sm:px-10 sm:pt-36">
           <div className="mx-auto max-w-[72rem]">
             <div className="max-w-[58ch]">
               <Reveal>
-                <h2 className="max-w-[20ch] text-[28px] sm:text-[36px]">
+                <h2 className="max-w-[20ch]">
                   Четыре вопроса, которые вам зададут
                 </h2>
                 <p className="mt-6 text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
@@ -114,7 +114,7 @@ export default function ProPage() {
               <dl className="mt-10 border-t border-[var(--color-rule-soft)]">
                 {SCRIPT.map((s, i) => (
                   <Reveal key={s.q} delay={i * 0.04}>
-                    <div className="border-b border-[var(--color-rule-hair)] py-6">
+                    <div className="border-b border-[var(--color-rule-soft)] py-6">
                       <dt className="font-[family-name:var(--font-display)] text-[21px] leading-snug font-bold tracking-[-0.015em] sm:text-[23px]">
                         {s.q}
                       </dt>
@@ -129,11 +129,11 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section id="margin" className="scroll-mt-6 px-5 pt-24 sm:px-8 sm:pt-32">
+        <section id="margin" className="scroll-mt-6 px-6 pt-28 sm:px-10 sm:pt-36">
           <div className="mx-auto max-w-[72rem]">
             <Reveal>
               <div className="max-w-[58ch]">
-                <h2 className="max-w-[18ch] text-[28px] sm:text-[36px]">
+                <h2 className="max-w-[18ch]">
                   Сколько на этом зарабатывают
                 </h2>
                 <p className="mt-6 text-[18px] leading-relaxed text-[var(--color-ink-soft)]">
@@ -149,11 +149,11 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 sm:px-8 sm:pt-40">
+        <section className="px-6 pt-28 sm:px-10 sm:pt-40">
           <div className="mx-auto max-w-[72rem]">
             <div className="max-w-[58ch]">
               <Reveal>
-                <h2 className="max-w-[20ch] text-[32px] sm:text-[44px]">
+                <h2 className="max-w-[20ch]">
                   Первый проект я веду бесплатно
                 </h2>
                 <p className="mt-6 text-[18px] leading-relaxed text-[var(--color-ink-soft)] sm:text-[19px]">
@@ -174,7 +174,7 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
+        <section className="px-6 pt-28 pb-28 sm:px-10 sm:pt-36 sm:pb-36">
           <div className="mx-auto max-w-[72rem]">
             <div className="max-w-[58ch]">
               <Reveal>

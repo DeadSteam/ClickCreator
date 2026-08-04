@@ -42,7 +42,7 @@ const ROLES = [
   Ответы на вопросы клиента. Аудит категории зафиксировал: ни один конкурент
   не объясняет специалисту, что тот скажет заказчику, если поисковик
   отреагирует. Именно это отпугивает грамотного партнёра сильнее цены, поэтому
-  блок стоит до расчёта маржи, а не после.
+  блок стоит до вопросов и сразу после того, кому это подходит.
 */
 const SCRIPT = [
   {
@@ -51,7 +51,7 @@ const SCRIPT = [
   },
   {
     q: "Что делать, если позиции просели",
-    a: "Останавливать подачу в кабинете. Она прекращается в течение часа, а не в конце оплаченного периода, неизрасходованный баланс остаётся на вашем счёте и переставляется на другой проект. Сайт клиента остаётся в том состоянии, в каком был до подключения.",
+    a: "Останавливать подачу в кабинете. Она прекращается в течение часа, а не в конце оплаченного периода, остаток переставляется на другой проект. Сайт клиента остаётся в том состоянии, в каком был до подключения.",
   },
   {
     q: "Как показать результат",
@@ -66,7 +66,7 @@ const FAQ_PRO = [
   },
   {
     q: "Клиент узнает, что работает через посредника?",
-    a: "От нас - нет. Выгрузки и письма не содержат нашего имени. Единственное, чего мы не делаем, - не запрещаем вам говорить правду, если считаете нужным.",
+    a: "От нас — нет. Выгрузки и письма не содержат нашего имени. Единственное, чего мы не делаем, — не запрещаем вам говорить правду, если считаете нужным.",
   },
   {
     q: "Есть ли минимальная закупка?",
@@ -74,7 +74,7 @@ const FAQ_PRO = [
   },
   {
     q: "Что обещать клиенту по результату?",
-    a: "Гарантии позиций мы не даём и вам не советуем: в этой нише её не может дать никто. Что у вас есть - прозрачная цена перехода, остановка в течение часа и баланс, который не сгорает, поэтому неудачный проект освобождает бюджет вместо того, чтобы его сжечь.",
+    a: "Гарантии позиций мы не даём и вам не советуем: в этой нише её не может дать никто. Что у вас есть — прозрачная цена перехода, остановка в течение часа и остаток, который не сгорает, поэтому неудачный проект освобождает бюджет вместо того, чтобы его сжечь.",
   },
 ] as const;
 
@@ -93,64 +93,48 @@ export default function ProPage() {
       <Nav cross={CROSS} />
 
       <main id="main" tabIndex={-1}>
-        {/* Как и на главной, первым идёт расчёт, а не заявление. */}
-        <section className="px-5 pt-8 sm:px-8 sm:pt-10">
-          <div className="mx-auto max-w-[84rem]">
-            <Margin />
-          </div>
-        </section>
-
-        <section className="px-5 pt-20 sm:px-8 sm:pt-28">
-          <div className="mx-auto max-w-[84rem]">
-            <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-16">
-              <Reveal>
-                <h1 className="max-w-[17ch] text-[34px] sm:text-[50px] lg:text-[56px]">
-                  Наценку назначаете вы, мы её не проверяем
-                </h1>
-              </Reveal>
-              <Reveal delay={0.08}>
-                <p className="max-w-[46ch] text-[16px] leading-relaxed text-[var(--color-read-soft)] sm:text-[17px]">
-                  Оптовая закупка для тех, кто продаёт продвижение сам. Скидка
-                  считается по суммарному объёму фраз на счёте, отчёт уходит
-                  клиенту без единого упоминания нас.
-                </p>
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <Cta href={SITE.register} place="pro_lead">
-                    Открыть счёт
-                  </Cta>
-                  <Cta href={SITE.telegram} place="pro_lead_tg" variant="outline">
-                    Спросить в Telegram
-                  </Cta>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        <section className="px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
-            <Reveal>
-              <h2 className="max-w-[16ch] text-[30px] sm:text-[42px]">
-                Кому это закрывает задачу
-              </h2>
+        {/* Тот же первый экран, что и на главной: утверждение и расчёт рядом. */}
+        <section className="glow px-6 pt-32 pb-24 sm:px-10 sm:pt-40 sm:pb-32">
+          <div className="mx-auto grid max-w-[72rem] items-center gap-y-12 lg:grid-cols-[1fr_0.9fr] lg:gap-x-20 lg:gap-y-10">
+            <Reveal className="lg:col-start-1 lg:row-start-1">
+              <h1 className="max-w-[15ch]">
+                Наценку назначаете вы, мы её не проверяем
+              </h1>
+              <p className="mt-8 max-w-[44ch] text-[19px] leading-relaxed text-[var(--color-text-muted)]">
+                Оптовая закупка для тех, кто продаёт продвижение сам. Скидка
+                считается по суммарному объёму фраз на счёте, отчёт уходит
+                клиенту без единого упоминания нас.
+              </p>
             </Reveal>
 
-            <div className="mt-12 grid border-t border-[var(--color-rule)] lg:grid-cols-2">
+            <Reveal delay={0.12} className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+              <Margin />
+            </Reveal>
+
+            <Reveal delay={0.08} className="lg:col-start-1 lg:row-start-2">
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Cta href={SITE.register} place="pro_lead">
+                  Открыть счёт
+                </Cta>
+                <Cta href={SITE.telegram} place="pro_lead_tg" variant="ghost">
+                  Спросить в Telegram
+                </Cta>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        <section className="px-6 py-28 sm:px-10 sm:py-36">
+          <div className="mx-auto max-w-[72rem]">
+            <Reveal>
+              <h2 className="max-w-[15ch]">Кому это закрывает задачу</h2>
+            </Reveal>
+
+            <div className="mt-16 grid gap-x-16 gap-y-14 sm:grid-cols-2 lg:mt-20">
               {ROLES.map((r, i) => (
-                <Reveal
-                  key={r.who}
-                  delay={i * 0.05}
-                  className={`border-b border-[var(--color-rule-hair)] py-7 lg:py-9 ${
-                    i % 2 === 1
-                      ? "lg:border-l lg:border-l-[var(--color-rule-soft)] lg:pl-8"
-                      : "lg:pr-8"
-                  }`}
-                >
-                  <span className="read text-[11px] text-[var(--color-read-faint)]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-4 text-[21px]">{r.who}</h3>
-                  <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-[var(--color-read-soft)]">
+                <Reveal key={r.who} delay={i * 0.05}>
+                  <h3 className="max-w-[22ch]">{r.who}</h3>
+                  <p className="mt-4 max-w-[46ch] text-[17px] leading-relaxed text-[var(--color-text-muted)]">
                     {r.d}
                   </p>
                 </Reveal>
@@ -159,31 +143,28 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[84rem]">
+        {/*
+          Разговор с заказчиком. Раньше это была сетка из трёх колонок с
+          номерами; осталось определение и ответ - два уровня вместо четырёх.
+        */}
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[72rem]">
             <Reveal>
-              <div className="flex flex-wrap items-end justify-between gap-6">
-                <h2 className="max-w-[18ch] text-[30px] sm:text-[42px]">
-                  Что вы скажете клиенту
-                </h2>
-                <p className="max-w-[40ch] text-[15px] leading-relaxed text-[var(--color-read-soft)]">
-                  Три вопроса, которые вам зададут. Отвечать придётся вам, а не
-                  нам, поэтому ответы написаны заранее.
-                </p>
-              </div>
+              <h2 className="max-w-[15ch]">Что вы скажете клиенту</h2>
+              <p className="mt-6 max-w-[52ch] text-[19px] leading-relaxed text-[var(--color-text-muted)]">
+                Три вопроса, которые вам зададут. Отвечать придётся вам, а не
+                нам, поэтому ответы написаны заранее.
+              </p>
             </Reveal>
 
-            <dl className="mt-12 border-t border-[var(--color-rule)]">
+            <dl className="mt-14 border-t border-[var(--color-line-soft)]">
               {SCRIPT.map((s, i) => (
                 <Reveal key={s.q} delay={i * 0.05}>
-                  <div className="grid items-baseline gap-x-8 gap-y-3 border-b border-[var(--color-rule-hair)] py-6 md:grid-cols-[2.5rem_minmax(0,18rem)_1fr]">
-                    <span className="read text-[11px] text-[var(--color-read-faint)]">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <dt className="text-[18px] leading-snug font-medium tracking-[-0.03em]">
+                  <div className="grid gap-x-16 gap-y-3 border-b border-[var(--color-line-soft)] py-8 md:grid-cols-[minmax(0,18rem)_1fr]">
+                    <dt className="text-[21px] leading-snug font-semibold tracking-[-0.02em]">
                       {s.q}
                     </dt>
-                    <dd className="max-w-[66ch] text-[15px] leading-relaxed text-[var(--color-read-soft)]">
+                    <dd className="max-w-[60ch] text-[17px] leading-relaxed text-[var(--color-text-muted)]">
                       {s.a}
                     </dd>
                   </div>
@@ -193,12 +174,12 @@ export default function ProPage() {
           </div>
         </section>
 
-        <section className="px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
-          <div className="mx-auto max-w-[84rem]">
+        <section className="px-6 pb-28 sm:px-10 sm:pb-36">
+          <div className="mx-auto max-w-[72rem]">
             <Reveal>
-              <h2 className="text-[28px] sm:text-[36px]">Вопросы</h2>
+              <h2>Вопросы</h2>
             </Reveal>
-            <div className="mt-10">
+            <div className="mt-12 max-w-[58rem] border-t border-[var(--color-line-soft)]">
               <Faq items={FAQ_PRO} />
             </div>
           </div>
