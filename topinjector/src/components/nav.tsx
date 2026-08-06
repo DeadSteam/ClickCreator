@@ -8,9 +8,9 @@ import { Logo } from "./logo";
 export type NavLink = { label: string; href: string };
 
 /*
-  A hairline bar that scrolls away with the page. Not a floating glass pill:
-  that reads as the category default, and the fixed rank rail already carries
-  persistent orientation.
+  Волосяная линейка, уезжающая вместе со страницей. Не парящая стеклянная
+  капсула: та читается как умолчание категории, а постоянную ориентацию уже
+  несёт фиксированная рейка окна сомнения.
 */
 export function Nav({
   links,
@@ -87,14 +87,14 @@ export function Nav({
               <span
                 className={`absolute left-0 block h-[1.5px] w-5 [transition:top_var(--t-panel)_var(--ease-haptic),transform_var(--t-panel)_var(--ease-haptic),background-color_var(--t-panel)_var(--ease-haptic)] ${
                     open
-                      ? "top-[5px] rotate-45 bg-[oklch(0.955_0.012_60)]"
+                      ? "top-[5px] rotate-45 bg-[oklch(0.962_0.004_250)]"
                       : "top-0 bg-[var(--ink)]"
                   }`}
               />
               <span
                 className={`absolute left-0 block h-[1.5px] w-5 [transition:top_var(--t-panel)_var(--ease-haptic),transform_var(--t-panel)_var(--ease-haptic),background-color_var(--t-panel)_var(--ease-haptic)] ${
                     open
-                      ? "top-[5px] -rotate-45 bg-[oklch(0.955_0.012_60)]"
+                      ? "top-[5px] -rotate-45 bg-[oklch(0.962_0.004_250)]"
                       : "top-[10px] bg-[var(--ink)]"
                   }`}
               />
@@ -110,8 +110,8 @@ export function Nav({
             animate={{ opacity: 1 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-            className="zone-burn fixed inset-0 z-40 overflow-y-auto overscroll-contain
-              bg-[oklch(0.155_0.038_32)] px-5 pt-24 pb-10 lg:hidden"
+            className="zone-settled fixed inset-0 z-40 overflow-y-auto overscroll-contain
+              bg-[oklch(0.172_0.014_252)] px-5 pt-24 pb-10 lg:hidden"
           >
             <ul className="flex flex-col">
               {[...links, crossLink].map((l, i) => (

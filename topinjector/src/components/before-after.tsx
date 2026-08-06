@@ -77,7 +77,7 @@ export function BeforeAfter() {
                   className="block h-full"
                   style={{
                     width: `${(v / MAX) * 100}%`,
-                    backgroundColor: gain ? "var(--hot)" : "var(--ink)",
+                    backgroundColor: gain ? "var(--accent)" : "var(--ink)",
                     opacity: gain ? 1 : 0.3,
                   }}
                 />
@@ -114,7 +114,7 @@ export function BeforeAfter() {
 
       <div className="mt-3 flex justify-between">
         <span className="num text-[11px] text-[var(--ink-faint)]">старт</span>
-        <span className="num text-[11px] text-[var(--hot)]">6 недель</span>
+        <span className="num text-[11px] text-[var(--accent)]">6 недель</span>
       </div>
     </div>
   );

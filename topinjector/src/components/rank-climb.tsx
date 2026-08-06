@@ -79,7 +79,7 @@ export function RankClimb() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.3, delay: 1.35 }}
         >
-          <span className="num text-[20px] leading-none font-semibold text-[var(--hot)]">
+          <span className="num text-[20px] leading-none font-semibold text-[var(--accent)]">
             +44
           </span>
           <p className="label mt-1.5 text-[var(--ink-faint)]">за 14 дней</p>
@@ -96,8 +96,8 @@ export function RankClimb() {
         >
           <defs>
             <linearGradient id="rc-area" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--hot)" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="var(--hot)" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -125,7 +125,7 @@ export function RankClimb() {
           <motion.path
             d={LINE}
             fill="none"
-            stroke="var(--hot)"
+            stroke="var(--accent)"
             strokeWidth="2"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"

@@ -1,19 +1,24 @@
 @import "tailwindcss";
 
 /*
-  ПРОГРЕВ.
+  ОКНО СОМНЕНИЯ.
 
-  The page has a temperature. It opens on cold machined steel and heats along a
-  single continuous ramp until it combusts at the call to action. This is one
-  deliberate colour-block story, not random section alternation: the ramp encodes
-  the product's actual claim, which is that positions get heated.
+  Страница проходит сквозь него сверху вниз. Наверху — день первый: клиент уже
+  оценивает специалиста, но подтверждения ещё нет, свет холодный и ровный.
+  Внизу — экспертность подтверждена результатом, и материал успокаивается в
+  графит.
 
-  Text colour is not global. Each section declares a zone that matches the local
-  ground beneath it.
+  Дуга кодирует главную идею бренда, а не температуру сайта. Поэтому фон по всей
+  длине остаётся нейтральным: максимальная насыщенность 0.014 против прежних
+  0.196. Оранжевый акцент (0.196) теперь на порядок насыщеннее любой точки фона
+  и потому работает акцентом — пунктуацией на 5-10% площади, а не заливкой.
+
+  Цвет текста не глобальный. Каждая секция объявляет зону, соответствующую
+  тому участку дуги, на котором она лежит.
 */
 
 @theme {
-  /* Cold end: brushed aluminium, cool and desaturated. Never pure white. */
+  /* Холодный конец: предрассветная сталь. Никогда не чистый белый. */
   --color-steel-100: oklch(0.905 0.006 240);
   --color-steel-200: oklch(0.862 0.009 238);
   --color-steel-300: oklch(0.795 0.012 236);
@@ -21,22 +26,46 @@
   --color-steel-700: oklch(0.365 0.018 245);
   --color-steel-900: oklch(0.185 0.020 250);
 
-  /* Hot end. */
-  --color-ember: oklch(0.688 0.196 44);
-  --color-ember-hot: oklch(0.782 0.172 66);
-  --color-ember-deep: oklch(0.475 0.158 34);
-  --color-burn: oklch(0.155 0.038 32);
+  /*
+    Акцент — оранжевый, насыщенный.
 
-  /* Cold accent, straight off the logo's blue tongue. Reference only, never a CTA. */
+    Коричневым он выглядел не из-за самого цвета, а из-за того, что тёплый тон
+    был растянут по среднему участку дуги на несколько тысяч пикселей: на такой
+    площади любая тёплая заливка малой насыщенности читается как грязь. Здесь
+    оранжевый живёт только в акценте и в кнопке на графите, а фон остаётся
+    нейтральным — и цвет наконец работает так, как задумано.
+  */
+  --color-ember: oklch(0.688 0.196 44);
+  --color-ember-lit: oklch(0.782 0.172 66);
+  --color-ember-deep: oklch(0.475 0.158 34);
+  --color-graphite: oklch(0.172 0.014 252);
+
+  /* Холодный акцент с синего языка логотипа. Только для отсылок, никогда CTA. */
   --color-azure: oklch(0.505 0.118 248);
+
+  /*
+    Шкала риска диагностики. Это статусные цвета данных, а не второй брендовый
+    акцент: они живут только на шкале индекса и нигде больше. Насыщенность
+    держится низкой — светофор из чистых зелёного и красного превратил бы
+    профессиональный аудит в результат теста из соцсети.
+
+    Янтарный уровень намеренно уведён в жёлтую сторону от брендового
+    оранжевого: статус данных и акцент интерфейса должны различаться, иначе
+    шкала риска читается как элемент управления. Светлота выставлена так, чтобы
+    каждый цвет держал 4.5:1 на графите.
+  */
+  --color-risk-low: oklch(0.640 0.090 158);
+  --color-risk-medium: oklch(0.700 0.098 118);
+  --color-risk-high: oklch(0.760 0.110 72);
+  --color-risk-critical: oklch(0.620 0.135 27);
 
   --font-sans: var(--font-onest), system-ui, sans-serif;
   --font-mono: var(--font-martian), ui-monospace, monospace;
 
   /*
-    Motion tokens. Durations follow what benchmark products actually ship:
-    micro-interactions land at 100-160ms, not 300-500ms. Slow transitions are
-    the single biggest reason an interface feels ordinary.
+    Токены движения. Длительности взяты из замеров эталонных продуктов:
+    микровзаимодействия укладываются в 100-160мс, а не в 300-500мс. Медленные
+    переходы — главная причина, по которой интерфейс ощущается обычным.
   */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-micro: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -46,7 +75,7 @@
   --t-hover: 150ms;
   --t-panel: 240ms;
 
-  /* Machined, not squishy. Corners are milled, not inflated. */
+  /* Фрезерованное, не надутое. Углы обработаны, а не раздуты. */
   --radius-panel: 3px;
   --radius-pill: 2px;
 }
@@ -57,9 +86,19 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Kills the legacy 300ms tap delay: the whole page answers a finger sooner. */
+  /* Снимает легаси-задержку тапа в 300мс: страница отвечает пальцу раньше. */
   * {
     touch-action: manipulation;
+  }
+
+  /*
+    Плавная прокрутка по якорям. Требование ТЗ на лендинг: переход с первого
+    экрана к разделу «Как это работает» должен быть плавным, иначе клик по
+    «Посмотреть, как это работает» ощущается как перезагрузка страницы.
+    В блоке reduced-motion ниже это правило снимается.
+  */
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
@@ -70,8 +109,8 @@
   }
 
   ::selection {
-    background-color: var(--color-ember);
-    color: var(--color-burn);
+    background-color: var(--color-ember-lit);
+    color: var(--color-graphite);
   }
 
   :focus-visible {
@@ -80,9 +119,9 @@
   }
 
   /*
-    Three weights across the whole page: 400 reads, 600 leads, 800 declares.
-    Five weights was two too many, and the middle ones were doing the same job
-    at sizes where nobody could tell them apart.
+    Три начертания на всю страницу: 400 читает, 600 ведёт, 800 заявляет.
+    Пять было на два больше, и средние делали одну работу на размерах, где
+    разницу никто не различает.
   */
   h1,
   h2 {
@@ -100,8 +139,8 @@
   }
 
   /*
-    A 4px slider is a 4px touch target. The track stays thin, the control grows
-    to a thumb-sized 44.
+    Ползунок в 4 пикселя — это цель для пальца в 4 пикселя. Дорожка остаётся
+    тонкой, а сам ползунок вырастает до 44.
   */
   input[type="range"] {
     -webkit-appearance: none;
@@ -127,7 +166,7 @@
     width: 14px;
     height: 18px;
     margin-top: -7px;
-    background: var(--hot);
+    background: var(--accent);
     border-radius: 1px;
   }
 
@@ -136,10 +175,10 @@
     height: 18px;
     border: 0;
     border-radius: 1px;
-    background: var(--hot);
+    background: var(--accent);
   }
 
-  /* Every figure on this page is an instrument reading. */
+  /* Каждая цифра на странице — показание прибора. */
   .num {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
@@ -148,10 +187,10 @@
   }
 
   /*
-    Letter-spacing is added after the final character too, so a tracked label
-    carries a phantom 0.16em on its right edge. Left uncorrected it pushes
-    right-aligned labels past their container and the page gains a few pixels of
-    horizontal scroll.
+    Межбуквенный интервал добавляется и после последнего символа, поэтому
+    разряженная подпись несёт фантомные 0.16em на правом краю. Без поправки она
+    выталкивает выключенные вправо подписи за контейнер, и страница получает
+    несколько пикселей горизонтальной прокрутки.
   */
   .label {
     font-family: var(--font-mono);
@@ -165,40 +204,74 @@
 
 @layer components {
   /*
-    The ramp itself. Sized to the document, so scrolling moves you through it.
-    No fixed attachment: that stutters badly on mobile.
+    Сама дуга. Растянута по документу, поэтому прокрутка проводит сквозь неё.
+    Без fixed-подложки: на мобильных она даёт заметный рывок.
 
-    The isotherm map rides in the same background stack rather than as an
-    overlay element. Blending inside one element's own paint costs far less than
-    a stacked layer with mix-blend-mode, and it scrolls with the content for
-    free, so the texture reads as the material of the page instead of a film
-    laid over it.
+    Крапчатость лежит в том же стеке фона, а не отдельным слоем. Смешивание
+    внутри собственной отрисовки одного элемента стоит куда дешевле стопки с
+    mix-blend-mode и прокручивается вместе с контентом бесплатно, поэтому
+    текстура читается как материал страницы, а не как плёнка поверх неё.
   */
-  .heat-ramp {
+  .brand-ramp {
+    /*
+      Фон нейтральный по всей длине. Движение задаётся светлотой, а не
+      температурой: сталь постепенно темнеет и уходит в графит.
+
+      Цветной фон пробовали трижды — оранжевый, латунный, бирюзовый — и каждый
+      раз одно и то же: тон, растянутый на тысячи пикселей, перестаёт быть
+      цветом и становится заливкой. Оранжевый теперь живёт только там, где он
+      и должен: в акценте, кнопке и цифрах. Против нейтрального фона он виден
+      лучше, чем когда был фоном и акцентом одновременно.
+
+      Длина дуги задана в пикселях, а не в процентах документа: иначе каждая
+      страница получала свой прогрев и текстура на единицу площади
+      разбавлялась пропорционально длине. Всё ниже девяти тысяч заливается
+      конечным цветом — градиент заканчивается ровно им, стык не виден.
+    */
+    background-color: oklch(0.172 0.014 252);
     background-image:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='t' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncG type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncB type='linear' slope='0.16' intercept='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
       linear-gradient(
         180deg,
         oklch(0.905 0.006 240) 0%,
-        oklch(0.872 0.008 236) 22%,
-        oklch(0.838 0.026 90) 40%,
-        oklch(0.795 0.070 66) 54%,
-        oklch(0.722 0.140 52) 66%,
-        oklch(0.688 0.196 44) 76%,
-        oklch(0.452 0.152 34) 88%,
-        oklch(0.155 0.038 32) 100%
+        oklch(0.890 0.006 239) 24%,
+        oklch(0.872 0.007 238) 44%,
+        oklch(0.850 0.008 237) 62%,
+        oklch(0.822 0.009 236) 78%,
+        oklch(0.470 0.014 246) 90%,
+        oklch(0.172 0.014 252) 97%,
+        oklch(0.172 0.014 252) 100%
       );
     background-size:
       600px 600px,
-      100% 100%;
+      100% 9000px;
+    background-repeat: repeat, no-repeat;
     background-blend-mode: soft-light, normal;
   }
 
   /*
-    Dither. The ramp spans roughly nine thousand pixels across eight stops, which
-    works out near thirty-five pixels per 8-bit colour step: far past the point
-    where a gradient breaks into visible stripes. Fine noise over the top
-    scatters the boundaries. Fixed, so scrolling never repaints it.
+    Ровный светлый материал без градиента. Для длинных страниц, где дуга
+    неуместна: лендинг идёт на семнадцать тысяч пикселей, и любой градиент на
+    такой длине превращается в незаметное перетекание, а его тёмный конец
+    съедает половину страницы.
+
+    ТЗ на лендинг требует обратного: светлый фон как основа и графит как
+    акцентная вставка. Крапчатость та же, что у дуги, поэтому материал страницы
+    остаётся общим для всего сайта.
+  */
+  .brand-flat {
+    background-color: oklch(0.905 0.006 240);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='t' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncG type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncB type='linear' slope='0.16' intercept='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E");
+    background-size: 600px 600px;
+    background-blend-mode: soft-light;
+  }
+
+  /*
+    Дизеринг. Дуга тянется примерно на девять тысяч пикселей через восемь
+    опорных точек — около тридцати пяти пикселей на один 8-битный шаг цвета,
+    далеко за порогом, где градиент разваливается на видимые полосы. Мелкий шум
+    поверх рассеивает границы. Зафиксирован, поэтому прокрутка его не
+    перерисовывает.
   */
   .dither::before {
     content: "";
@@ -210,78 +283,115 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
   }
 
-  /* Zones: each section states which part of the ramp it sits on. */
-  .zone-cold {
+  /*
+    Зоны названы по стадии окна сомнения, а не по температуре. Каждая секция
+    объявляет, на каком участке дуги она стоит.
+
+    Контраст проверен под каждую зону: --ink-soft держит минимум 4.5:1 на своём
+    фоне, --ink-faint — не ниже 4.5:1, потому что подписи набраны десятым
+    кеглем и прощают меньше всего.
+  */
+
+  /* День первый. Клиент оценивает, подтверждения нет. */
+  .zone-doubt {
     --ink: oklch(0.185 0.020 250);
-    --ink-soft: oklch(0.395 0.018 245);
-    --ink-faint: oklch(0.498 0.016 242);
+    --ink-soft: oklch(0.395 0.018 246);
+    --ink-faint: oklch(0.455 0.016 244);
     --rule: oklch(0.185 0.020 250 / 0.16);
     --rule-soft: oklch(0.185 0.020 250 / 0.09);
     --inset: oklch(0.185 0.020 250 / 0.035);
-    --hot: oklch(0.545 0.185 38);
+    --accent: oklch(0.478 0.176 38);
     --btn-bg: oklch(0.688 0.196 44);
-    --btn-ink: oklch(0.155 0.038 32);
-    --btn-bg-hover: oklch(0.782 0.172 66);
+    --btn-ink: oklch(0.172 0.014 252);
+    --btn-bg-hover: oklch(0.746 0.176 52);
   }
 
-  .zone-warm {
-    --ink: oklch(0.175 0.030 40);
-    --ink-soft: oklch(0.365 0.032 42);
-    --ink-faint: oklch(0.415 0.034 45);
-    --rule: oklch(0.175 0.030 40 / 0.20);
-    --rule-soft: oklch(0.175 0.030 40 / 0.11);
-    --inset: oklch(0.175 0.030 40 / 0.045);
-    --hot: oklch(0.455 0.175 34);
-    --btn-bg: oklch(0.175 0.030 40);
-    --btn-ink: oklch(0.955 0.012 60);
-    --btn-bg-hover: oklch(0.285 0.045 38);
+  /* Появился первый измеримый сигнал. */
+  .zone-signal {
+    --ink: oklch(0.180 0.018 250);
+    --ink-soft: oklch(0.378 0.016 247);
+    --ink-faint: oklch(0.440 0.015 245);
+    --rule: oklch(0.180 0.018 250 / 0.20);
+    --rule-soft: oklch(0.180 0.018 250 / 0.11);
+    --inset: oklch(0.180 0.018 250 / 0.045);
+    --accent: oklch(0.466 0.174 38);
+    --btn-bg: oklch(0.688 0.196 44);
+    --btn-ink: oklch(0.172 0.014 252);
+    --btn-bg-hover: oklch(0.746 0.176 52);
+  }
+
+  /* Результат показан клиенту. Последний светлый участок дуги. */
+  .zone-proof {
+    --ink: oklch(0.176 0.018 251);
+    --ink-soft: oklch(0.360 0.016 248);
+    --ink-faint: oklch(0.420 0.015 246);
+    --rule: oklch(0.176 0.018 251 / 0.22);
+    --rule-soft: oklch(0.176 0.018 251 / 0.12);
+    --inset: oklch(0.176 0.018 251 / 0.05);
+    --accent: oklch(0.452 0.172 38);
+    --btn-bg: oklch(0.688 0.196 44);
+    --btn-ink: oklch(0.172 0.014 252);
+    --btn-bg-hover: oklch(0.746 0.176 52);
   }
 
   /*
-    On ember ground the accent cannot also be the button: it would vanish.
-    The control inverts to near-black instead.
+    Доверие установлено. На графите оранжевый наконец может быть кнопкой: здесь
+    она читается, а тёмная кнопка исчезла бы.
+
+    Зона подкладывает собственный графит, а не полагается на то, что дуга к
+    этому месту успела потемнеть. Привязка светлого текста к проценту прокрутки
+    хрупка: стоит секции выше вырасти на пару экранов, и зона уезжает на
+    светлый участок, где её текст перестаёт читаться. Дуга гасится к 86%, так
+    что стык остаётся невидимым при любой длине страницы.
   */
-  .zone-hot {
-    --ink: oklch(0.155 0.038 32);
-    --ink-soft: oklch(0.265 0.055 32);
-    --ink-faint: oklch(0.306 0.065 32);
-    --rule: oklch(0.155 0.038 32 / 0.30);
-    --rule-soft: oklch(0.155 0.038 32 / 0.16);
-    --inset: oklch(0.155 0.038 32 / 0.07);
-    --hot: oklch(0.155 0.038 32);
-    --btn-bg: oklch(0.155 0.038 32);
-    --btn-ink: oklch(0.955 0.012 60);
-    --btn-bg-hover: oklch(0.245 0.050 34);
-  }
-
-  .zone-burn {
-    --ink: oklch(0.965 0.010 60);
-    --ink-soft: oklch(0.815 0.020 55);
-    --ink-faint: oklch(0.655 0.026 50);
-    --rule: oklch(0.965 0.010 60 / 0.26);
-    --rule-soft: oklch(0.965 0.010 60 / 0.14);
-    --inset: oklch(0.965 0.010 60 / 0.06);
-    --hot: oklch(0.782 0.172 66);
+  .zone-settled {
+    background-color: var(--color-graphite);
+    --ink: oklch(0.962 0.004 250);
+    --ink-soft: oklch(0.808 0.010 248);
+    --ink-faint: oklch(0.640 0.014 248);
+    --rule: oklch(0.962 0.004 250 / 0.24);
+    --rule-soft: oklch(0.962 0.004 250 / 0.13);
+    --inset: oklch(0.962 0.004 250 / 0.055);
+    --accent: oklch(0.760 0.178 56);
     --btn-bg: oklch(0.688 0.196 44);
-    --btn-ink: oklch(0.155 0.038 32);
-    --btn-bg-hover: oklch(0.782 0.172 66);
+    --btn-ink: oklch(0.172 0.014 252);
+    --btn-bg-hover: oklch(0.760 0.178 56);
   }
 
-  .zone-cold,
-  .zone-warm,
-  .zone-hot,
-  .zone-burn {
+  .zone-doubt,
+  .zone-signal,
+  .zone-proof,
+  .zone-settled {
     color: var(--ink);
   }
 
-  /* Milled panel: an inset recess, not a floating rounded card. */
+  /*
+    Вход в графит. Ставится на первую секцию zone-settled на странице: сплошная
+    заливка встык с дугой дала бы видимый горизонт ровно там, где страница
+    просто сменила секцию. Двести пикселей растушёвки прячут стык, где бы он ни
+    оказался, поэтому длину страниц можно менять, не пересчитывая проценты
+    градиента.
+
+    Прозрачность берётся от самого графита, а не от ключевого слова transparent:
+    оно раскрывается в прозрачный чёрный, и интерполяция уводит переход в грязь.
+  */
+  .settle-in {
+    background-color: transparent;
+    background-image: linear-gradient(
+      180deg,
+      oklch(0.172 0.014 252 / 0) 0,
+      var(--color-graphite) 200px
+    );
+  }
+
+  /* Фрезерованная панель: утопленная выемка, а не парящая скруглённая карточка. */
   .panel {
     background: var(--inset);
     border: 1px solid var(--rule-soft);
     border-radius: var(--radius-panel);
   }
 
-  /* Hairline scale, the page's connective tissue instead of card borders. */
+  /* Волосяная шкала — соединительная ткань страницы вместо границ карточек. */
   .rule-t {
     border-top: 1px solid var(--rule-soft);
   }
@@ -297,8 +407,8 @@
 }
 
 /*
-  Reduced motion means fewer and gentler animations, not none. Movement and
-  scaling go; opacity and colour stay, because they carry meaning.
+  Уменьшенное движение означает меньше и мягче, а не ничего. Уходят сдвиг и
+  масштаб; прозрачность и цвет остаются, потому что несут смысл.
 */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -312,7 +422,7 @@
   }
 }
 
-/* Touch devices fire hover on tap, so gate anything decorative behind a pointer. */
+/* Тач-устройства выдают ховер по тапу, поэтому декоративное живёт за курсором. */
 @media (hover: hover) and (pointer: fine) {
   .lift {
     transition: transform var(--t-hover) var(--ease-micro);

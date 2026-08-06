@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 */
 export default function NotFound() {
   return (
-    <div className="zone-burn flex min-h-dvh flex-col bg-[oklch(0.155_0.038_32)] px-5 py-8 sm:px-8">
+    <div className="zone-settled flex min-h-dvh flex-col bg-[oklch(0.172_0.014_252)] px-5 py-8 sm:px-8">
       <header>
         <Link href="/" aria-label="TopInjector, на главную">
           <Logo />
@@ -24,7 +24,7 @@ export default function NotFound() {
       </header>
 
       <main className="mx-auto flex w-full max-w-[76rem] flex-1 flex-col justify-center py-16">
-        <span className="num text-[76px] leading-[0.85] font-semibold text-[var(--hot)] sm:text-[120px]">
+        <span className="num text-[76px] leading-[0.85] font-semibold text-[var(--accent)] sm:text-[120px]">
           404
         </span>
 

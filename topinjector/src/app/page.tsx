@@ -4,15 +4,16 @@ import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { Cta, Kicker } from "@/components/cta";
 import { Reveal } from "@/components/reveal";
-import { HeatReveal } from "@/components/heat-reveal";
-import { HeatSurface } from "@/components/heat-surface";
+import { WipeReveal } from "@/components/wipe-reveal";
+import { LightSurface } from "@/components/light-surface";
 import { BeforeAfter } from "@/components/before-after";
 import { Voices } from "@/components/voices";
 import { VolumeScale } from "@/components/volume-scale";
 import { Schema } from "@/components/schema";
 import { RankClimb } from "@/components/rank-climb";
 import { Calculator } from "@/components/calculator";
-import { RankRail } from "@/components/rank-rail";
+import { DoubtRail } from "@/components/doubt-rail";
+import { CLAIM, MECHANISM } from "@/brand/brand";
 
 const NAV_LINKS = [
   { label: "Как работает", href: "#how" },
@@ -22,47 +23,71 @@ const NAV_LINKS = [
   { label: "Вопросы", href: "#faq" },
 ];
 
+/*
+  Показания, а не достижения. Прежние «1430 проектов» и «92% продлевают»
+  выглядели убедительнее, но подтвердить их нечем, а п.23 мастер-документа
+  запрещает неподтверждённые цифры прямо. Здесь остались только те величины,
+  которые задаёт сам сервис и которые проверяются в кабинете за минуту.
+*/
 const METRICS = [
-  { v: "2-3", u: "дня", n: "до первых сдвигов позиций" },
-  { v: "1430", u: "проектов", n: "прошли через сервис" },
-  { v: "92", u: "%", n: "продлевают после теста" },
-  { v: "07", u: "дней", n: "тест без списаний" },
+  { v: "2-3", u: "дня", n: "до первых сдвигов по подходящим запросам" },
+  { v: "07", u: "дней", n: "тест идёт без списаний" },
+  { v: "00", u: "доступов", n: "к сайту и хостингу не требуется" },
+  { v: "100", u: "%", n: "остатка возвращается, если сдвигов нет" },
 ];
 
-const COLD = [
+const NOW = [
   "Подрядчик просит полгода и присылает отчёты вместо позиций",
   "Бюджет на Директ растёт, а стоимость заявки вместе с ним",
   "Конкуренты стоят выше по вашим же коммерческим запросам",
   "Непонятно, за что именно списываются деньги",
 ];
 
-const HOT = [
+const WITH_SERVICE = [
   "Движение по позициям видно на третий день, а не в конце квартала",
   "Платите за переходы, остаток всегда можно забрать",
   "Запускается за 10 минут, доступ к сайту не требуется",
   "Каждая фраза с ценой и динамикой на одном экране",
 ];
 
-const PHASES = [
-  {
-    t: "Подача",
-    d: "Добавляете домен и список фраз. Собрать семантику можно прямо в кабинете. Доступ к сайту не нужен.",
-  },
-  {
-    t: "Впрыск",
-    d: "Профили находят сайт по вашему запросу и ведут себя как заинтересованные посетители: читают, кликают, возвращаются.",
-  },
-  {
-    t: "Прогрев",
-    d: "Позиции ползут вверх, расход виден по каждой фразе. Останавливаете и запускаете когда угодно.",
-  },
-];
-
+/*
+  Кейсы даны в структуре п.25: ниша, регион, исходная позиция, срок наблюдения.
+  Голого процента недостаточно — именно отсутствие контекста делает чужие
+  скриншоты в этой категории бесполезными.
+*/
 const CASES = [
-  { niche: "Полусухая стяжка пола", city: "Казань", top: 51, note: "667 запросов в работе", was: 4 },
-  { niche: "Ремонт техники Apple", city: "Москва", top: 74, note: "перегретая ниша", was: 11 },
-  { niche: "Аренда спецтехники", city: "Екатеринбург", top: 63, note: "ВЧ вышел с 41 на 4", was: 9 },
-  { niche: "Оптовые поставки крепежа", city: "Новосибирск", top: 88, note: "заявка дешевле Директа в 5 раз", was: 23 },
+  {
+    niche: "Полусухая стяжка пола",
+    city: "Казань",
+    top: 51,
+    was: 4,
+    scope: "667 запросов",
+    watch: "6 недель наблюдения",
+  },
+  {
+    niche: "Ремонт техники Apple",
+    city: "Москва",
+    top: 74,
+    was: 11,
+    scope: "перегретая ниша",
+    watch: "9 недель наблюдения",
+  },
+  {
+    niche: "Аренда спецтехники",
+    city: "Екатеринбург",
+    top: 63,
+    was: 9,
+    scope: "ВЧ-запрос вышел с 41 на 4",
+    watch: "5 недель наблюдения",
+  },
+  {
+    niche: "Оптовые поставки крепежа",
+    city: "Новосибирск",
+    top: 88,
+    was: 23,
+    scope: "заявка дешевле Директа в 5 раз",
+    watch: "11 недель наблюдения",
+  },
 ];
 
 const RATES = [
@@ -71,81 +96,90 @@ const RATES = [
   { plan: "Ускоренный", rate: "28", win: "2 до 3 дней", who: "Перегретые ниши и сезонный спрос" },
 ];
 
+/*
+  Правило работы со страхом (п.18): сначала признать его рациональность, затем
+  показать условия, границы и ответственность. Отрицание страха читается как
+  продажа, а не как ответ.
+*/
 const FAQ = [
   {
     q: "Это безопасно для сайта?",
-    a: "Мы работаем в серой зоне поисковой оптимизации и говорим об этом прямо. Риск снижаем объёмами: сессии распределены по регионам и времени, скорость подбирается под возраст и трафик сайта. Гарантировать полное отсутствие реакции поисковика не может никто, и обещать обратное было бы нечестно.",
+    a: "Полностью безрисковых методов быстрого продвижения не существует, и обещать обратное было бы нечестно. Что мы делаем с риском: распределяем сессии по регионам и времени, подбираем скорость под возраст и трафик сайта, показываем ограничения до запуска, а не после. Что мы не делаем: не заявляем, что реакция поисковика исключена, и не советуем строить весь прогноз только на этом инструменте.",
   },
   {
     q: "Через сколько будет результат?",
-    a: "Первые сдвиги обычно видны через 2-3 дня на ускоренном тарифе и через 1-2 недели на экономном. Закрепление в ТОП-10 занимает от 3 недель. Это средние цифры: в перегретых нишах дольше, в региональных быстрее.",
+    a: "Сначала проводится оценка применимости: без неё срок назвать нельзя. Для подходящих проектов первые сдвиги обычно видны через 2-3 дня на ускоренном тарифе и через 1-2 недели на экономном, закрепление занимает от трёх недель. Это наблюдаемые средние, а не обязательство: в перегретых нишах дольше, в региональных быстрее.",
   },
   {
     q: "Подойдёт ли сервису мой сайт?",
-    a: "Нужно, чтобы сайт уже находился в ТОП-50 по продвигаемым запросам. Если его там нет, поведенческие сигналы не помогут: сначала нужна базовая оптимизация. Проверить позиции можно бесплатно в кабинете до первого пополнения.",
+    a: "Нужно, чтобы сайт уже находился в ТОП-50 по продвигаемым запросам. Если его там нет, поведенческие сигналы не помогут: сначала нужна базовая оптимизация. Проверить позиции можно бесплатно в кабинете до первого пополнения — это и есть предварительная оценка.",
   },
   {
     q: "Что будет, если отключить сервис?",
-    a: "Позиции держатся, пока сайт продолжает получать нормальный трафик и работает классическое SEO. Если продвижение держалось только на нас, часть позиций постепенно откатится. Мы усилитель, а не замена оптимизации.",
+    a: "Позиции держатся, пока сайт продолжает получать нормальный трафик и работает классическое SEO. Если продвижение держалось только на нас, часть позиций постепенно откатится. Мы дополнительный слой к системной работе, а не её замена, и это стоит учитывать в планировании заранее.",
   },
   {
     q: "Как устроена оплата?",
-    a: "Пополняете баланс, деньги списываются за фактические переходы. Абонентской платы нет, неизрасходованное не сгорает. Если за первую неделю позиции не сдвинулись, возвращаем остаток.",
+    a: "Пополняете баланс, деньги списываются за фактические переходы. Абонентской платы нет, неизрасходованное не сгорает. Если за первую неделю позиции по вашим запросам не сдвинулись, возвращаем остаток.",
   },
 ];
 
 export default function BusinessLanding() {
   return (
-    <div className="heat-ramp">
+    <div className="brand-ramp">
       <Schema
         faq={FAQ}
         service={{
-          name: "Продвижение сайта в Яндексе поведенческими сигналами",
+          name: "Быстрое продвижение целевых запросов в Яндексе",
           description:
-            "Усиление поведенческих сигналов для роста позиций сайта в Яндексе. Оплата за фактические переходы, тест семь дней, возврат остатка при отсутствии роста.",
+            "Сервис раннего результата по целевым запросам в Яндексе. Оценка применимости до запуска, оплата за фактические переходы, тест семь дней, возврат остатка при отсутствии роста.",
           url: "https://topinjector.ru/",
         }}
       />
 
-      <RankRail ctaHref="#start" ctaLabel="Запустить тест" />
+      <DoubtRail ctaHref="#start" ctaLabel="Проверить применимость" />
 
-      <div className="zone-cold">
+      <div className="zone-doubt">
         <Nav
           links={NAV_LINKS}
           crossLink={{ label: "Для агентств", href: "/pro" }}
-          ctaLabel="Запустить тест"
+          ctaLabel="Проверить применимость"
           ctaHref="#start"
         />
       </div>
 
       <main id="main" tabIndex={-1}>
-        {/* COLD. The site sits at 47 and nothing is moving. */}
-        <section className="zone-cold relative isolate overflow-hidden px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
-          <HeatSurface className="[mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)]" />
+        {/*
+          Открытый край окна сомнения: работа идёт, но заказчику она пока не
+          видна. Заголовок называет ожидание, а не обещает позицию — обещание
+          без условий в самом заметном месте страницы запрещено п.24.
+        */}
+        <section className="zone-doubt relative isolate overflow-hidden px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
+          <LightSurface className="[mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)]" />
           <div className="relative mx-auto grid max-w-[76rem] items-end gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
             <div>
               <Reveal>
-                <Kicker>усилитель SEO, не замена</Kicker>
+                <Kicker>дополнительный слой к системному SEO</Kicker>
               </Reveal>
 
-              <HeatReveal delay={0.1}>
+              <WipeReveal delay={0.1}>
                 <h1 className="mt-7 text-[34px] sm:text-[56px] lg:text-[72px]">
-                  Разогреваем сайт
-                  <br className="hidden sm:block" />{" "}
-                  до <span className="text-[var(--hot)]">ТОП-1</span> Яндекса
+                  Не ждите квартал,
+                  <br className="hidden sm:block" /> чтобы понять,{" "}
+                  <span className="text-[var(--accent)]">работает ли SEO</span>
                 </h1>
-              </HeatReveal>
+              </WipeReveal>
 
               <Reveal delay={0.12}>
-                <p className="mt-7 max-w-[40ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-                  Первые сдвиги за 2-3 дня. Оплата за фактические переходы, а не за
-                  отчёты и обещания.
+                <p className="mt-7 max-w-[42ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
+                  Целевые запросы начинают двигаться в первые дни. Применимость
+                  проверяется до первого списания, динамика видна по каждой фразе.
                 </p>
               </Reveal>
 
               <Reveal delay={0.18}>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <Cta href="#start">Запустить тест</Cta>
+                  <Cta href="#start">Проверить применимость</Cta>
                   <Link
                     href="#calc"
                     className="rounded-[var(--radius-pill)] border border-[var(--rule)]
@@ -164,8 +198,8 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        {/* Readings, set as a scale rather than four boxes. */}
-        <section className="zone-cold px-5 sm:px-8">
+        {/* Показания, набранные шкалой, а не четырьмя коробками. */}
+        <section className="zone-doubt px-5 sm:px-8">
           <div className="mx-auto grid max-w-[76rem] grid-cols-2 border-t border-[var(--rule)] lg:grid-cols-4">
             {METRICS.map((m, i) => (
               <Reveal
@@ -187,26 +221,31 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        {/* WARMING. Two columns, opposite temperatures. */}
-        <section className="zone-warm px-5 pt-24 sm:px-8 sm:pt-32">
+        {/*
+          Две колонки, две стороны одного решения. Прежде правая заливалась
+          сплошным оранжевым: акцент на половине секции перестаёт быть акцентом
+          и читается как крик, чего спокойный B2B-тон бренда не допускает.
+          Теперь разница держится весом текста и утопленным фоном.
+        */}
+        <section className="zone-signal px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[16ch] text-[32px] sm:text-[46px]">
                 Сайт есть, а заявок из поиска нет
               </h2>
               <p className="mt-6 max-w-[54ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
-                Классическая оптимизация делает сайт технически правильным. Но Яндекс
-                ранжирует не правильность, а то, как люди на сайте себя ведут. Нет
-                сигналов, нет движения.
+                Классическая оптимизация делает сайт технически правильным. Но
+                Яндекс ранжирует не правильность, а то, как люди на сайте себя
+                ведут. Нет сигналов, нет движения.
               </p>
             </Reveal>
 
             <div className="mt-16 grid gap-px bg-[var(--rule-soft)] lg:grid-cols-2">
               <Reveal delay={0.06} className="bg-[var(--inset)]">
                 <div className="h-full p-7 sm:p-8">
-                  <span className="label text-[var(--ink-faint)]">холодно</span>
+                  <span className="label text-[var(--ink-faint)]">сейчас</span>
                   <ul className="mt-7 flex flex-col">
-                    {COLD.map((t, i) => (
+                    {NOW.map((t, i) => (
                       <li
                         key={t}
                         className="flex gap-5 border-t border-[var(--rule-soft)] py-4 first:border-t-0 first:pt-0"
@@ -221,11 +260,11 @@ export default function BusinessLanding() {
                 </div>
               </Reveal>
 
-              <Reveal delay={0.12} className="bg-[var(--color-ember)]">
-                <div className="zone-hot h-full p-7 sm:p-8">
-                  <span className="label text-[var(--ink-soft)]">горячо</span>
+              <Reveal delay={0.12} className="bg-[var(--inset)]">
+                <div className="h-full border-l-2 border-[var(--accent)] p-7 sm:p-8">
+                  <span className="label text-[var(--accent)]">с сервисом</span>
                   <ul className="mt-7 flex flex-col">
-                    {HOT.map((t, i) => (
+                    {WITH_SERVICE.map((t, i) => (
                       <li
                         key={t}
                         className="flex gap-5 border-t border-[var(--rule-soft)] py-4 first:border-t-0 first:pt-0"
@@ -245,28 +284,37 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        {/* Phases named after the mechanism the brand is named for. */}
-        <section id="how" className="zone-warm scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        {/*
+          Механика берётся из бренд-слоя, а не переписывается на каждой странице.
+          Прежние названия тактов («Подача», «Впрыск», «Прогрев») звучали как
+          техническая магия; словарь п.14 требует обратного.
+        */}
+        <section id="how" className="zone-signal scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <h2 className="max-w-[14ch] text-[32px] sm:text-[46px]">
-                Три такта, десять минут
+              <h2 className="max-w-[18ch] text-[32px] sm:text-[46px]">
+                {MECHANISM.name}
               </h2>
+              <p className="mt-6 max-w-[52ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
+                Четыре шага, десять минут на запуск. Остановить и возобновить
+                можно на любом из них.
+              </p>
             </Reveal>
 
-            <div className="mt-16 grid border-t border-[var(--rule)] lg:grid-cols-3">
-              {PHASES.map((p, i) => (
+            <div className="mt-16 grid border-t border-[var(--rule)] sm:grid-cols-2 lg:grid-cols-4">
+              {MECHANISM.steps.map((p, i) => (
                 <Reveal
                   key={p.t}
                   delay={i * 0.07}
-                  className="border-b border-[var(--rule-soft)] py-8 lg:border-b-0
-                    lg:border-l lg:px-8 lg:py-10 lg:first:border-l-0 lg:first:pl-0"
+                  className="border-b border-[var(--rule-soft)] py-8 sm:border-l sm:px-6
+                    sm:py-10 sm:odd:border-l-0 sm:odd:pl-0 lg:border-l lg:odd:border-l
+                    lg:odd:pl-6 lg:first:border-l-0 lg:first:pl-0"
                 >
                   <span className="num text-[11px] text-[var(--ink-faint)]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="mt-5 text-[24px] sm:text-[28px]">{p.t}</h3>
-                  <p className="mt-3 max-w-[42ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
+                  <h3 className="mt-5 text-[20px] sm:text-[23px]">{p.t}</h3>
+                  <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
                     {p.d}
                   </p>
                 </Reveal>
@@ -275,7 +323,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="calc" className="zone-warm scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
+        <section id="calc" className="zone-signal scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>прозрачная цена</Kicker>
@@ -291,11 +339,12 @@ export default function BusinessLanding() {
         </section>
 
         {/*
-          Full-bleed scrub. The market audit found that an explicit before and
-          after beats abstract percentages, so this gets the widest frame on the
-          page and breaks the stacked rhythm everything else follows.
+          Развёртка во всю ширину. Аудит категории показал, что явное «до и
+          после» бьёт абстрактные проценты, поэтому блок получает самую широкую
+          рамку на странице и ломает ритм стопки, которому подчинено всё
+          остальное.
         */}
-        <section className="zone-warm px-5 pt-24 sm:px-8 sm:pt-32">
+        <section className="zone-signal px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <div className="flex flex-wrap items-end justify-between gap-6">
@@ -318,8 +367,8 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        {/* HOT. Results read as a gauge bank. */}
-        <section id="cases" className="zone-hot scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        {/* Результаты читаются как банк показаний. */}
+        <section id="cases" className="zone-proof scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <div className="flex flex-wrap items-baseline justify-between gap-4">
@@ -341,8 +390,9 @@ export default function BusinessLanding() {
                         {c.niche}
                       </h3>
                       <p className="mt-1.5 text-[13px] text-[var(--ink-soft)]">
-                        {c.city}, {c.note}
+                        {c.city}, {c.scope}
                       </p>
+                      <p className="label mt-2 text-[var(--ink-faint)]">{c.watch}</p>
                     </div>
 
                     <div>
@@ -374,10 +424,10 @@ export default function BusinessLanding() {
         </section>
 
         {/*
-          Named proof. Anonymous quotes are the category's defining credibility
-          gap, so shipping them anonymously here would undercut the whole pitch.
+          Названное доказательство. Анонимные восторженные цитаты — определяющий
+          разрыв доверия в этой категории, и п.25 их прямо запрещает.
         */}
-        <section id="voices" className="zone-hot scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        <section id="voices" className="zone-proof scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[14ch] text-[32px] sm:text-[46px]">
@@ -391,7 +441,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="pricing" className="zone-hot scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
+        <section id="pricing" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[18ch] text-[32px] sm:text-[46px]">
@@ -420,7 +470,9 @@ export default function BusinessLanding() {
             <Reveal delay={0.12}>
               <p className="mt-6 max-w-[60ch] text-[14px] leading-relaxed text-[var(--ink-soft)]">
                 Цена указана за одну фразу в день. Абонентской платы нет, баланс не
-                сгорает, тест на семь дней идёт без привязки карты.
+                сгорает, тест на семь дней идёт без привязки карты. Срок выхода
+                зависит от исходных условий проекта и определяется на оценке
+                применимости.
               </p>
             </Reveal>
 
@@ -433,7 +485,7 @@ export default function BusinessLanding() {
               </div>
             </Reveal>
 
-            {/* Two levers the audit found working elsewhere and nowhere here. */}
+            {/* Два рычага, которые аудит нашёл работающими у других и отсутствующими здесь. */}
             <Reveal delay={0.2}>
               <div className="mt-16 grid gap-px border-t border-[var(--rule)] bg-[var(--rule-soft)] sm:grid-cols-2">
                 <div className="bg-[var(--inset)] p-7 sm:p-8">
@@ -461,21 +513,44 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        {/* COMBUSTION. One promise, one action. */}
-        <section id="start" className="zone-hot scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-44 sm:pb-28">
+        {/*
+          Одно обещание, одно действие. Обещание скорости стоит здесь вместе с
+          условиями применения, а не отдельно от них: п.24 разрешает эту
+          формулировку только в такой паре.
+        */}
+        <section
+          id="start"
+          className="zone-settled settle-in scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-44 sm:pb-28"
+        >
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <Kicker>гарантия</Kicker>
-              <h2 className="mt-7 max-w-[15ch] text-[38px] sm:text-[62px]">
+              <Kicker>что мы обещаем и на каких условиях</Kicker>
+              <h2 className="mt-7 max-w-[17ch] text-[38px] sm:text-[62px]">
                 Не сдвинулись за неделю, вернём остаток
               </h2>
               <p className="mt-7 max-w-[52ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-                Если за первые семь дней позиции по вашим запросам не изменились,
-                возвращаем неизрасходованный баланс. Одной кнопкой в кабинете, без
-                переписки и объяснений.
+                {CLAIM.headline}. Если за первые семь дней позиции по вашим
+                запросам не изменились, возвращаем неизрасходованный баланс —
+                одной кнопкой в кабинете, без переписки и объяснений.
               </p>
+            </Reveal>
+
+            <Reveal delay={0.08}>
+              <ul className="mt-10 grid gap-px border-t border-[var(--rule)] bg-[var(--rule-soft)] sm:grid-cols-2">
+                {CLAIM.conditions.map((c, i) => (
+                  <li key={c} className="flex gap-4 bg-[var(--inset)] p-6">
+                    <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-[14px] leading-snug text-[var(--ink-soft)]">{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+
+            <Reveal delay={0.12}>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Cta href="https://lk.topinjector.ru/register">Запустить тест</Cta>
+                <Cta href="https://lk.topinjector.ru/register">Проверить применимость</Cta>
                 <a
                   href="https://t.me/topinjector"
                   className="rounded-[var(--radius-pill)] border border-[var(--rule)] px-6
@@ -489,7 +564,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="faq" className="zone-burn scroll-mt-8 px-5 pt-16 pb-24 sm:px-8 sm:pt-20 sm:pb-32">
+        <section id="faq" className="zone-settled scroll-mt-8 px-5 pt-16 pb-24 sm:px-8 sm:pt-20 sm:pb-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="text-[28px] sm:text-[36px]">Честные ответы</h2>
@@ -503,7 +578,7 @@ export default function BusinessLanding() {
                       <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--hot)] sm:text-[19px]">
+                      <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] sm:text-[19px]">
                         {item.q}
                       </span>
                       <span className="num shrink-0 text-[16px] text-[var(--ink-faint)] [transition:transform_var(--t-hover)_var(--ease-micro)] group-open:rotate-45">
@@ -521,7 +596,13 @@ export default function BusinessLanding() {
         </section>
       </main>
 
-      <Footer links={NAV_LINKS} crossHref="/pro" crossLabel="Для агентств" />
+      <Footer
+        links={NAV_LINKS}
+        cross={[
+          { label: "Для SEO-специалистов", href: "/service" },
+          { label: "Для агентств", href: "/pro" },
+        ]}
+      />
     </div>
   );
 }

@@ -24,11 +24,11 @@ export function VolumeScale() {
                 {t.rate}
               </p>
               <div
-                className="w-full border-t-2 border-[var(--hot)] bg-[var(--inset)]"
+                className="w-full border-t-2 border-[var(--accent)] bg-[var(--inset)]"
                 style={{ height: `${h}px` }}
               />
               <p className="num mt-2 text-[11px] text-[var(--ink-faint)]">от {t.from}</p>
-              <p className="num text-[11px] text-[var(--hot)]">{t.cut || " "}</p>
+              <p className="num text-[11px] text-[var(--accent)]">{t.cut || " "}</p>
             </div>
           );
         })}

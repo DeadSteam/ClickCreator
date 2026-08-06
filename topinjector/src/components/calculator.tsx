@@ -69,7 +69,7 @@ export function Calculator() {
                   </span>
                   <span
                     className={`num text-[13px] ${
-                      active ? "text-[var(--color-ember-hot)]" : "text-[var(--ink-faint)]"
+                      active ? "text-[var(--accent)]" : "text-[var(--ink-faint)]"
                     }`}
                   >
                     {s.rate} ₽/день

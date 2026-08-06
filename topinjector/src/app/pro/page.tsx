@@ -6,39 +6,45 @@ import { Footer } from "@/components/footer";
 import { Cta, Kicker } from "@/components/cta";
 import { Reveal } from "@/components/reveal";
 import { MarginCalc } from "@/components/margin-calc";
-import { RankRail } from "@/components/rank-rail";
+import { DoubtRail } from "@/components/doubt-rail";
+import { CLAIM } from "@/brand/brand";
 
 export const metadata: Metadata = {
   title: "Партнёрам: продвижение под вашим брендом",
   description:
-    "Подключайте клиентов к поведенческим сигналам под своим брендом. Закупка по оптовой цене, ваш чек и ваша маржа, отчёты без упоминания сервиса.",
+    "Подключайте клиентов к раннему результату по целевым запросам под своим брендом. Закупка по оптовой цене, ваш чек и ваша маржа, отчёты без упоминания сервиса.",
 };
 
 const NAV_LINKS = [
   { label: "Экономика", href: "#economics" },
   { label: "Инструменты", href: "#tools" },
-  { label: "Риски", href: "#risks" },
+  { label: "Границы", href: "#limits" },
   { label: "Вопросы", href: "#faq" },
 ];
 
+/*
+  Неосновные сегменты бренда. Частные SEO-специалисты сюда сознательно не
+  включены: мастер-документ запрещает смешивать основной сегмент с этими в
+  одной коммуникации, и у него есть собственная ветка.
+*/
 const AUDIENCE = [
   {
-    role: "SEO-специалисты",
-    body: "Добавляете к своей работе рычаг, который двигает позиции за дни, и удерживаете клиента дольше первого квартала.",
-    figure: "×2",
-    note: "средний срок жизни клиента",
-  },
-  {
-    role: "Агентства и веб-студии",
+    role: "Агентства",
     body: "Продаёте новую услугу текущей базе без найма людей и без переписывания договоров.",
     figure: "00",
     note: "новых сотрудников в штат",
   },
   {
+    role: "Веб-студии",
+    body: "Добавляете к разработке услугу, которая показывает заказчику измеримое движение в первые недели после сдачи сайта.",
+    figure: "00",
+    note: "доступов к сайту клиента",
+  },
+  {
     role: "Директологи и маркетологи",
     body: "Приводите клиенту органику рядом с платным трафиком и снимаете зависимость от роста ставок.",
-    figure: "68",
-    note: "процентов маржи в среднем",
+    figure: "01",
+    note: "кабинет на все проекты",
   },
 ];
 
@@ -57,29 +63,36 @@ const TOOLS = [
   },
 ];
 
-const RISKS = [
+/*
+  Раздел, который конкуренты опускают. Прежняя версия называла метод «серой
+  зоной» — формулировка честная по намерению, но она сама создаёт образ
+  сомнительной схемы, чего критерий качества п.29 не допускает. Честность
+  сохранена там, где она реально работает: в условиях, границах и разделении
+  ответственности.
+*/
+const LIMITS = [
   {
-    t: "Говорите про метод честно",
-    d: "Поведенческие сигналы, быстрый эффект, серая зона. Обтекаемые формулировки про продвижение по технологии ИИ рушат доверие, когда клиент гуглит термин.",
+    t: "Говорите о механике, а не о чуде",
+    d: "Работа с поведенческими факторами, оценка применимости, наблюдение за динамикой. Обтекаемое «продвижение по технологии ИИ» рушит доверие, как только заказчик гуглит термин.",
   },
   {
     t: "Не продавайте это как всё SEO",
-    d: "Позиционируйте как ускоритель поверх базовой оптимизации. Если убрать инструмент, часть позиций откатится, и клиент должен знать это заранее.",
+    d: "Позиционируйте как дополнительный слой поверх базовой оптимизации. Если убрать инструмент, часть позиций откатится, и клиент должен знать это заранее.",
   },
   {
     t: "Фиксируйте ожидания письменно",
-    d: "Диапазон сроков, а не точная дата ТОП-1. В кабинете есть шаблон формулировок для коммерческого предложения.",
+    d: "Диапазон сроков и условия применимости, а не точная дата. В кабинете есть шаблон формулировок для коммерческого предложения.",
   },
 ];
 
 const FAQ = [
   {
     q: "Что говорить клиенту про метод?",
-    a: "Мы рекомендуем говорить прямо: это работа с поведенческими сигналами, она относится к серым методам и даёт быстрый, но поддерживаемый результат. Опыт партнёров показывает, что заказчики спокойнее реагируют на честное объяснение, чем на обтекаемое продвижение по технологии ИИ. В кабинете есть готовая формулировка для коммерческого предложения.",
+    a: "Прямо и по механике: сервис работает с поведенческими факторами ранжирования, применимость проверяется заранее, результат отслеживается по дням. Опыт партнёров показывает, что заказчики спокойнее реагируют на конкретное объяснение с границами, чем на обтекаемое «продвижение по технологии ИИ». В кабинете есть готовая формулировка для коммерческого предложения.",
   },
   {
     q: "Какие риски я беру на себя?",
-    a: "Основной риск в том, что поисковик может не засчитать часть сигналов, и тогда рост окажется медленнее обещанного клиенту. Санкции за поведенческие факторы обычно затрагивают отдельные запросы, а не весь сайт, но полностью исключить реакцию нельзя. Поэтому мы советуем не строить клиенту весь прогноз только на нашем инструменте и держать классическое SEO рядом.",
+    a: "Основной риск в том, что часть сигналов может не сработать, и рост окажется медленнее обещанного клиенту. Полностью исключить реакцию поисковика нельзя, и мы не заявляем обратного. Поэтому советуем не строить клиенту весь прогноз только на этом инструменте, держать классическое SEO рядом и фиксировать в договоре диапазон, а не дату.",
   },
   {
     q: "Какая закупочная цена?",
@@ -97,10 +110,10 @@ const FAQ = [
 
 export default function ProLanding() {
   return (
-    <div className="heat-ramp">
-      <RankRail ctaHref="#start" ctaLabel="Стать партнёром" />
+    <div className="brand-ramp">
+      <DoubtRail ctaHref="#start" ctaLabel="Стать партнёром" />
 
-      <div className="zone-cold">
+      <div className="zone-doubt">
         <Nav
           links={NAV_LINKS}
           crossLink={{ label: "Для бизнеса", href: "/" }}
@@ -110,24 +123,24 @@ export default function ProLanding() {
       </div>
 
       <main id="main" tabIndex={-1}>
-        {/* COLD. Type-led opening, deliberately unlike the business page. */}
-        <section className="zone-cold px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
+        {/* Открытие на типографике, сознательно непохожее на страницу для бизнеса. */}
+        <section className="zone-doubt px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>партнёрская программа</Kicker>
             </Reveal>
 
             <Reveal delay={0.06}>
-              <h1 className="mt-7 max-w-[14ch] text-[42px] sm:text-[64px] lg:text-[80px]">
-                Продавайте позиции <span className="text-[var(--hot)]">под своим</span> брендом
+              <h1 className="mt-7 max-w-[15ch] text-[42px] sm:text-[64px] lg:text-[80px]">
+                Продавайте результат <span className="text-[var(--accent)]">под своим</span> брендом
               </h1>
             </Reveal>
 
             <div className="mt-12 grid gap-10 border-t border-[var(--rule)] pt-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
               <Reveal delay={0.12}>
                 <p className="max-w-[46ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-                  Закупаете по оптовой цене, продаёте по своей. Клиент видит ваш отчёт
-                  и ваш логотип, а не наш.
+                  Закупаете по оптовой цене, продаёте по своей. Клиент видит ваш
+                  отчёт и ваш логотип, а не наш.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Cta href="#start">Стать партнёром</Cta>
@@ -142,23 +155,36 @@ export default function ProLanding() {
                 </div>
               </Reveal>
 
+              {/*
+                Здесь стояла крупная «68 % средняя маржа партнёра». Подтвердить
+                эту величину нечем, а маржу вообще задаёт сам партнёр своей
+                ценой, так что цифра была не показанием, а обещанием. Осталась
+                механика расчёта — она верна всегда.
+              */}
               <Reveal delay={0.18} className="shrink-0">
-                <div className="flex items-baseline gap-3">
-                  <span className="num text-[64px] leading-none font-semibold sm:text-[84px]">
-                    68
-                  </span>
-                  <span className="num text-[24px] text-[var(--hot)]">%</span>
-                </div>
-                <p className="label mt-3 text-[var(--ink-faint)]">
-                  средняя маржа партнёра
-                </p>
+                <dl className="border-t border-[var(--rule)] pt-4">
+                  <div className="flex items-baseline justify-between gap-8 border-b border-[var(--rule-soft)] py-2.5">
+                    <dt className="label text-[var(--ink-faint)]">ваша цена</dt>
+                    <dd className="num text-[15px] text-[var(--ink-soft)]">задаёте вы</dd>
+                  </div>
+                  <div className="flex items-baseline justify-between gap-8 border-b border-[var(--rule-soft)] py-2.5">
+                    <dt className="label text-[var(--ink-faint)]">минус закупка</dt>
+                    <dd className="num text-[15px] text-[var(--ink-soft)]">по объёму</dd>
+                  </div>
+                  <div className="flex items-baseline justify-between gap-8 py-2.5">
+                    <dt className="label text-[var(--accent)]">равно маржа</dt>
+                    <dd className="num text-[15px] font-semibold text-[var(--ink)]">
+                      остаётся у вас
+                    </dd>
+                  </div>
+                </dl>
               </Reveal>
             </div>
           </div>
         </section>
 
-        {/* Roles as a bank of readings. */}
-        <section className="zone-warm px-5 pt-24 sm:px-8 sm:pt-32">
+        {/* Роли как банк показаний. */}
+        <section className="zone-signal px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[16ch] text-[32px] sm:text-[46px]">Кому это считается</h2>
@@ -189,7 +215,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="economics" className="zone-warm scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
+        <section id="economics" className="zone-signal scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>экономика</Kicker>
@@ -208,7 +234,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="tools" className="zone-hot scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        <section id="tools" className="zone-proof scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[20ch] text-[32px] sm:text-[46px]">
@@ -237,32 +263,33 @@ export default function ProLanding() {
         </section>
 
         {/*
-          The section every competitor omits. It is the reason a professional
-          reseller trusts the offer, so it gets the hottest ground on the page.
+          Границы применимости получают самый заметный участок страницы: именно
+          они, а не обещания, дают профессиональному перепродавцу основание
+          доверять офферу.
         */}
-        <section id="risks" className="zone-hot scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
+        <section id="limits" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
-              <Kicker>риски</Kicker>
+              <Kicker>границы и ответственность</Kicker>
               <h2 className="mt-7 max-w-[18ch] text-[36px] sm:text-[58px]">
                 Что сказать клиенту, если спросит
               </h2>
               <p className="mt-7 max-w-[56ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-                Вы перепродаёте инструмент, который относится к серым методам. Прятать
-                это от заказчика невыгодно вам самим: вопрос всё равно возникнет, и
-                лучше, если ответ будет готов заранее.
+                Вы перепродаёте инструмент с понятной механикой и понятными
+                ограничениями. Вопрос о методе всё равно возникнет, и лучше,
+                если ответ будет готов заранее.
               </p>
             </Reveal>
 
             <div className="mt-16 grid gap-px border-t border-[var(--rule-soft)] bg-[var(--rule-soft)] lg:grid-cols-3">
-              {RISKS.map((r, i) => (
+              {LIMITS.map((r, i) => (
                 <Reveal
                   key={r.t}
                   delay={i * 0.06}
-                  className="zone-burn bg-[oklch(0.155_0.038_32)]"
+                  className="zone-settled"
                 >
                   <div className="h-full p-7 lg:p-8">
-                    <span className="num text-[11px] text-[var(--hot)]">
+                    <span className="num text-[11px] text-[var(--accent)]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <h3 className="mt-5 text-[19px] leading-snug font-semibold tracking-[-0.02em]">
@@ -275,10 +302,29 @@ export default function ProLanding() {
                 </Reveal>
               ))}
             </div>
+
+            <Reveal delay={0.2}>
+              <ul className="mt-12 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+                {CLAIM.limits.map((l) => (
+                  <li
+                    key={l}
+                    className="flex gap-3 border-t border-[var(--rule-soft)] pt-3 text-[14px] leading-snug text-[var(--ink-soft)]"
+                  >
+                    <span aria-hidden="true" className="num text-[var(--ink-faint)]">
+                      —
+                    </span>
+                    {l}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
         </section>
 
-        <section id="faq" className="zone-burn scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-32 sm:pb-24">
+        <section
+          id="faq"
+          className="zone-settled settle-in scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-32 sm:pb-24"
+        >
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="text-[28px] sm:text-[36px]">Вопросы партнёров</h2>
@@ -292,7 +338,7 @@ export default function ProLanding() {
                       <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--hot)] sm:text-[19px]">
+                      <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] sm:text-[19px]">
                         {item.q}
                       </span>
                       <span className="num shrink-0 text-[16px] text-[var(--ink-faint)] [transition:transform_var(--t-hover)_var(--ease-micro)] group-open:rotate-45">
@@ -309,7 +355,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="start" className="zone-burn scroll-mt-8 px-5 pb-28 sm:px-8 sm:pb-32">
+        <section id="start" className="zone-settled scroll-mt-8 px-5 pb-28 sm:px-8 sm:pb-32">
           <div className="mx-auto max-w-[76rem] border-t border-[var(--rule)] pt-16">
             <Reveal>
               <h2 className="max-w-[16ch] text-[34px] sm:text-[52px]">
@@ -335,7 +381,13 @@ export default function ProLanding() {
         </section>
       </main>
 
-      <Footer links={NAV_LINKS} crossHref="/" crossLabel="Для бизнеса" />
+      <Footer
+        links={NAV_LINKS}
+        cross={[
+          { label: "Для SEO-специалистов", href: "/service" },
+          { label: "Для бизнеса", href: "/" },
+        ]}
+      />
     </div>
   );
 }

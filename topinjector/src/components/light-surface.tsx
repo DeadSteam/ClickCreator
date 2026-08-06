@@ -3,16 +3,17 @@
 import { useEffect, useRef } from "react";
 
 /*
-  A thermal metal surface behind the hero. The pointer injects heat, the heat
-  bleeds outward through noise and cools over a couple of seconds.
+  Холодная поверхность за первым экраном. Курсор вносит свет, свет расплывается
+  по турбулентности и гаснет примерно за две секунды.
 
-  Defensible rather than decorative for this brand: the product is an injector,
-  the mark is a flame, and the page is built on прогрев. The surface is the
-  metaphor made physical.
+  Обоснованно, а не декоративно: страница построена на окне сомнения, и первый
+  экран — его открытый край. Работа специалиста уже идёт, но клиенту она пока
+  не видна. Поверхность показывает ровно это: под холодным светом что-то есть,
+  но проступает оно только там, где на него посмотрели.
 
-  Progressive enhancement is absolute here. No WebGL, reduced motion, or a
-  hidden tab and nothing initialises at all: the static ramp underneath is the
-  designed fallback, not a degraded one.
+  Прогрессивное улучшение здесь абсолютно. Нет WebGL, включено уменьшенное
+  движение или скрыта вкладка — не инициализируется вообще: статичная дуга под
+  ним является задуманным запасным вариантом, а не деградацией.
 */
 
 const TRAIL = 12;
@@ -60,50 +61,67 @@ void main() {
   vec2 uv = gl_FragCoord.xy / uRes;
   vec2 auv = vec2(uv.x * uAspect, uv.y);
 
-  /* Heavy turbulence. Without it the bloom reads as a radial gradient blob. */
+  /* Плотная турбулентность. Без неё пятно читается как радиальный градиент. */
   float n1 = fbm(auv * 2.6 + uTime * 0.05);
   float n2 = fbm(auv * 6.5 - uTime * 0.03);
   vec2 duv = auv + (n1 - 0.5) * 0.16;
 
-  float heat = 0.0;
+  float lum = 0.0;
   for (int i = 0; i < ${TRAIL}; i++) {
     vec3 p = uPoints[i];
-    /* Warmth rises, so the bloom sits slightly above its source. */
+    /* Свет ложится чуть выше источника, как отражение на наклонной плоскости. */
     vec2 pp = vec2(p.x * uAspect, p.y - 0.03);
     float d = distance(duv, pp);
-    heat += p.z * exp(-d * d * 44.0);
+    /*
+      Затухание держится крутым. При пологом узкий мобильный канвас растягивает
+      след в одно пятно во весь экран — то есть именно в кляксу, вместо которой
+      здесь и нарисованы изолинии.
+    */
+    lum += p.z * exp(-d * d * 44.0);
   }
 
   /*
-    The hero is the cold end of the page: the site is still sitting at 47. A
-    blazing first screen would contradict the premise, so the surface only ever
-    warms, and the ember at the foot of the page comes from the ramp itself.
+    Первый экран — холодный край страницы: окно сомнения ещё широко открыто.
+    Пылающий герой противоречил бы всей логике, поэтому поверхность доходит
+    только до едва тёплого. Насыщенный оранжевый живёт в акценте, а не в фоне
+    дуги.
   */
-  heat = clamp(heat, 0.0, 1.0);
-  heat *= 0.62 + 0.38 * n2;
-  heat = min(heat, 0.54);
+  lum = clamp(lum, 0.0, 1.0);
+  lum *= 0.62 + 0.38 * n2;
+  lum = min(lum, 0.54);
 
   /*
-    Isotherms, not a bloom. A smooth radial falloff reads as the mesh-gradient
-    blob every generated page ships; banding the field into contours reads as a
-    thermal instrument, which is what the rest of this page already is.
+    Изолинии, а не свечение. Гладкое радиальное затухание читается как
+    mesh-градиентный блоб, то есть как прямой AI-штамп; разбивка поля на
+    ступенчатые контуры читается как показание прибора, чем страница и
+    является.
   */
   float bands = 5.0;
-  float scaled = heat * bands;
+  float scaled = lum * bands;
   float idx = floor(scaled);
   float frac = fract(scaled);
   float edge = smoothstep(0.0, 0.09, frac) * smoothstep(1.0, 0.91, frac);
   float level = (idx + edge * 0.35) / bands;
 
+  /*
+    Палитра исходная: холодная сталь уходит в песок и останавливается на
+    тёплом. Поверхность живёт на первом экране, где дуга ещё холодная, поэтому
+    греется только до середины шкалы.
+  */
   vec3 col = vec3(0.878, 0.886, 0.898);
   col = mix(col, vec3(0.866, 0.806, 0.716), smoothstep(0.02, 0.36, level));
   col = mix(col, vec3(0.860, 0.678, 0.530), smoothstep(0.34, 0.70, level));
 
-  /* Contour lines sit on the band boundaries, drawn as a slight darkening. */
+  /*
+    Контурные линии стоят на границах ступеней. Их вес поднят относительно
+    заливки намеренно: при слабой линии поле схлопывается в мягкое пятно, то
+    есть ровно в тот mesh-градиентный блоб, ради ухода от которого изолинии и
+    рисуются.
+  */
   float line = (1.0 - smoothstep(0.0, 0.05, frac)) * step(1.0, idx);
-  col -= line * 0.05;
+  col -= line * 0.062;
 
-  /* Brushed grain, so the metal never reads as flat vector fill. */
+  /* Шлифовальное зерно, чтобы металл никогда не читался плоской заливкой. */
   col += (hash(gl_FragCoord.xy * 0.7 + uTime) - 0.5) * 0.016;
 
   gl_FragColor = vec4(col, 1.0);
@@ -122,7 +140,7 @@ function compile(gl: WebGLRenderingContext, type: number, src: string) {
   return sh;
 }
 
-export function HeatSurface({ className = "" }: { className?: string }) {
+export function LightSurface({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -165,16 +183,16 @@ export function HeatSurface({ className = "" }: { className?: string }) {
     const uTime = gl.getUniformLocation(prog, "uTime");
     const uAspect = gl.getUniformLocation(prog, "uAspect");
     /*
-      Array uniforms must be looked up by their first element on several drivers.
-      Querying the bare name returns null there, and every point silently reads
-      as zero, so the surface renders stone cold with no error anywhere.
+      Uniform-массивы на части драйверов надо запрашивать по первому элементу.
+      По голому имени там возвращается null, все точки молча читаются нулями, и
+      поверхность остаётся ледяной без единой ошибки в консоли.
     */
     const uPoints =
       gl.getUniformLocation(prog, "uPoints[0]") ??
       gl.getUniformLocation(prog, "uPoints");
     if (!uPoints) return;
 
-    /* xy in uv space, z is remaining strength. */
+    /* xy в uv-пространстве, z — остаток силы. */
     const pts = new Float32Array(TRAIL * 3);
     let head = 0;
     const data = { w: 0, h: 0, aspect: 1 };
@@ -210,13 +228,22 @@ export function HeatSurface({ className = "" }: { className?: string }) {
     const onPointer = (e: PointerEvent) => {
       lastInput = performance.now();
       inject(e.clientX, e.clientY, 0.34);
+      canvas.style.opacity = "1";
     };
     /*
-      Listen unconditionally rather than gating on a pointer media query. Hybrid
-      machines and touch laptops report inconsistently, and losing the listener
-      means the surface never responds to a real cursor at all.
+      Слушаем безусловно, а не по медиазапросу указателя. Гибридные машины и
+      ноутбуки с сенсором отвечают на него непоследовательно, а потеря
+      слушателя означает, что поверхность вообще не отвечает на реальный курсор.
     */
     window.addEventListener("pointermove", onPointer, { passive: true });
+
+    /*
+      Дрейф — только там, где есть чем водить. На телефоне поверхность нечем
+      возмущать, поэтому автономное пятно оказывалось не намёком на движение, а
+      кляксой поверх абзаца первого экрана. Без точного указателя остаётся
+      ровная холодная дуга, и это законченное состояние, а не пустое место.
+    */
+    const fine = window.matchMedia("(pointer: fine)").matches;
 
     let raf = 0;
     let running = false;
@@ -228,24 +255,22 @@ export function HeatSurface({ className = "" }: { className?: string }) {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
 
-      /* Cooling. Heat fades over roughly two seconds. */
+      /* Затухание. Свет гаснет примерно за две секунды. */
       for (let i = 2; i < pts.length; i += 3) {
         pts[i] = Math.max(0, pts[i] - dt * 0.75);
       }
 
-      if (now - lastInput > 1500) {
+      if (fine && now - lastInput > 1500) {
         /*
-          With no cursor to follow, the steel breathes along a slow drift. Kept
-        far weaker than a real cursor: at rest this should read as a faint warmth
-        in the metal, not as a shape parked behind the headline.
-          Driven by input recency rather than device class, so a phone gets
-          motion and a desktop hands control straight back to the pointer.
+          Без курсора поверхность дышит по медленному дрейфу. Держится заметно
+          слабее реального указателя: в покое это должно читаться как слабый
+          отсвет в металле, а не как фигура, припаркованная за заголовком.
         */
         drift += dt * 0.22;
         const i = head * 3;
         pts[i] = 0.5 + Math.cos(drift) * 0.28;
         pts[i + 1] = 0.55 + Math.sin(drift * 0.8) * 0.22;
-        pts[i + 2] = 0.13;
+        pts[i + 2] = 0.085;
         head = (head + 1) % TRAIL;
       }
 
@@ -269,7 +294,7 @@ export function HeatSurface({ className = "" }: { className?: string }) {
       cancelAnimationFrame(raf);
     };
 
-    /* Never render a surface nobody is looking at. */
+    /* Никогда не рисуем поверхность, на которую никто не смотрит. */
     const io = new IntersectionObserver(
       ([entry]) => (entry.isIntersecting && !document.hidden ? play() : pause()),
       { threshold: 0.01 },
@@ -279,7 +304,7 @@ export function HeatSurface({ className = "" }: { className?: string }) {
     const onVisibility = () => (document.hidden ? pause() : play());
     document.addEventListener("visibilitychange", onVisibility);
 
-    canvas.style.opacity = "1";
+    if (fine) canvas.style.opacity = "1";
 
     return () => {
       pause();

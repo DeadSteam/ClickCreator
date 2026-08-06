@@ -60,7 +60,7 @@ export function Voices() {
               </p>
             </div>
             <div className="shrink-0 text-right lg:mt-8 lg:text-left">
-              <p className="num text-[30px] leading-none font-semibold text-[var(--hot)] sm:text-[38px]">
+              <p className="num text-[30px] leading-none font-semibold text-[var(--accent)] sm:text-[38px]">
                 {lead.figure}
               </p>
               <p className="label mt-2 text-[var(--ink-faint)]">{lead.note}</p>
@@ -83,7 +83,7 @@ export function Voices() {
                     {v.role}, {v.org}
                   </p>
                 </div>
-                <p className="num shrink-0 text-[15px] text-[var(--hot)]">{v.figure}</p>
+                <p className="num shrink-0 text-[15px] text-[var(--accent)]">{v.figure}</p>
               </figcaption>
             </figure>
           </Reveal>

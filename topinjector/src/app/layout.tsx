@@ -18,12 +18,18 @@ const martian = Martian_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://topinjector.ru"),
+  /*
+    Обещание в заголовке названо ровно так, как разрешает п.24 мастер-документа:
+    возможность, а не гарантия, и рядом с условиями применения. Прежний
+    «продвижение сайта в ТОП-1 Яндекса» был обещанием без условий в самом
+    заметном месте сайта.
+  */
   title: {
-    default: "TopInjector: продвижение сайта в ТОП-1 Яндекса",
+    default: "TopInjector: ранний измеримый результат в поиске Яндекса",
     template: "%s · TopInjector",
   },
   description:
-    "Поднимаем позиции сайта в Яндексе за счёт поведенческих сигналов. Оплата за фактические переходы, тест 7 дней, возврат остатка при отсутствии роста.",
+    "Сервис быстрого продвижения целевых запросов в Яндексе для частных SEO-специалистов. Оценка применимости до запуска, контроль динамики по дням, ранний результат, который можно показать клиенту.",
   openGraph: { type: "website", locale: "ru_RU", siteName: "TopInjector" },
 };
 
@@ -46,9 +52,9 @@ export default function RootLayout({
         <a
           href="#main"
           className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-3 focus:left-3
-            focus:rounded-[var(--radius-pill)] focus:bg-[oklch(0.155_0.038_32)]
+            focus:rounded-[var(--radius-pill)] focus:bg-[oklch(0.172_0.014_252)]
             focus:px-4 focus:py-3 focus:text-[14px] focus:font-semibold
-            focus:text-[oklch(0.965_0.010_60)]"
+            focus:text-[oklch(0.962_0.004_250)]"
         >
           Перейти к содержимому
         </a>

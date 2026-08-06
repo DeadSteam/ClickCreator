@@ -60,7 +60,7 @@ export function MarginCalc() {
               className="block bg-[var(--ink)] opacity-25"
               style={{ width: `${COST_SHARE * 100}%` }}
             />
-            <span className="block flex-1 bg-[var(--hot)]" />
+            <span className="block flex-1 bg-[var(--accent)]" />
           </div>
           <dl className="mt-4 flex justify-between gap-6">
             <div>
@@ -86,7 +86,7 @@ export function MarginCalc() {
             {money(margin)}
             <span className="ml-1.5 text-[18px] text-[var(--ink-faint)]">₽</span>
           </p>
-          <p className="num mt-2 text-[13px] text-[var(--hot)]">{marginPct}% от чека</p>
+          <p className="num mt-2 text-[13px] text-[var(--accent)]">{marginPct}% от чека</p>
           <p className="mt-5 text-[13px] leading-relaxed text-[var(--ink-soft)]">
             Остаётся у вас после закупки. Клиент видит только ваш бренд и ваш отчёт,
             сервис в переписке не участвует.

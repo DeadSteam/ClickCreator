@@ -4,12 +4,12 @@ import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 
 /*
-  The headline arrives the way heat travels through metal: a wipe from the
-  leading edge rather than a fade. Used once per page, on the h1 only. A wipe
-  everywhere would be a gimmick; here it states the brand's premise before a
-  word is read.
+  Заголовок приходит так, как свет ложится на поверхность: развёрткой от
+  ведущего края, а не проявлением. Используется один раз на страницу и только
+  на h1. Развёртка везде была бы трюком; здесь она заявляет посылку бренда
+  раньше, чем прочитано первое слово.
 */
-export function HeatReveal({
+export function WipeReveal({
   children,
   delay = 0,
   className,
