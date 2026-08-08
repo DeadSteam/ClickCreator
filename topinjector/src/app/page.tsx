@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
-import { Cta, Kicker } from "@/components/cta";
+import { Kicker } from "@/components/cta";
+import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/reveal";
 import { WipeReveal } from "@/components/wipe-reveal";
 import { LightSurface } from "@/components/light-surface";
@@ -179,15 +180,12 @@ export default function BusinessLanding() {
 
               <Reveal delay={0.18}>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <Cta href="#start">Проверить применимость</Cta>
-                  <Link
-                    href="#calc"
-                    className="rounded-[var(--radius-pill)] border border-[var(--rule)]
-                      px-6 py-3.5 text-center text-[15px] font-semibold text-[var(--ink)]
-                      [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:border-[var(--ink)]"
-                  >
+                  <Button href="#start" size="lg" arrow>
+                    Проверить применимость
+                  </Button>
+                  <Button href="#calc" size="lg" variant="secondary">
                     Рассчитать бюджет
-                  </Link>
+                  </Button>
                 </div>
               </Reveal>
             </div>
@@ -550,15 +548,12 @@ export default function BusinessLanding() {
 
             <Reveal delay={0.12}>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Cta href="https://lk.topinjector.ru/register">Проверить применимость</Cta>
-                <a
-                  href="https://t.me/topinjector"
-                  className="rounded-[var(--radius-pill)] border border-[var(--rule)] px-6
-                    py-3.5 text-center text-[15px] font-semibold text-[var(--ink)]
-                    [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:border-[var(--ink)]"
-                >
+                <Button href="https://lk.topinjector.ru/register" size="lg" arrow>
+                  Проверить применимость
+                </Button>
+                <Button href="https://t.me/topinjector" size="lg" variant="secondary">
                   Задать вопрос в Telegram
-                </a>
+                </Button>
               </div>
             </Reveal>
           </div>

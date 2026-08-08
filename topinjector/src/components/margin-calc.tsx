@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Cta } from "./cta";
+import { Button } from "./ui/button";
 
 const money = (n: number) => new Intl.NumberFormat("ru-RU").format(Math.round(n));
 
@@ -93,9 +93,9 @@ export function MarginCalc() {
           </p>
         </div>
 
-        <Cta href="#start" className="w-full">
+        <Button href="#start" arrow block>
           Стать партнёром
-        </Cta>
+        </Button>
       </div>
     </div>
   );

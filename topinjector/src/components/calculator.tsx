@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Cta } from "./cta";
+import { Button } from "./ui/button";
 
 const SPEEDS = [
   { id: "eco", label: "Экономный", rate: 4, window: "14 до 30 дней" },
@@ -94,9 +94,9 @@ export function Calculator() {
           </p>
         </div>
 
-        <Cta href="#start" className="w-full">
+        <Button href="#start" arrow block>
           Запустить тест
-        </Cta>
+        </Button>
       </div>
     </div>
   );

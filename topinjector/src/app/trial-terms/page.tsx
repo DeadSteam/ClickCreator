@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { Clause, Items, LegalPage, Para } from "@/components/legal/legal-page";
-import { TRIAL } from "@/landing/config";
+import { TELEGRAM, TRIAL, TRIAL_GRANT } from "@/landing/config";
 
 export const metadata: Metadata = {
   title: "Условия тестового периода",
@@ -20,8 +20,29 @@ export default function TrialTermsPage() {
     <LegalPage
       title="Условия тестового периода"
       updated="февраля 2026"
-      intro="Тестовый период даёт возможность изучить интерфейс и пройти первый сценарий использования на собственном проекте."
+      intro="Тестовый период даёт возможность изучить интерфейс и пройти первый сценарий использования на собственном проекте. Бесплатные лимиты выдаются через Telegram-бота после проверки подписки на канал для SEO-специалистов."
     >
+      <Clause title="Как активируется бесплатный пакет">
+        <Para>
+          Запустите бота {TELEGRAM.bot}, подпишитесь на канал{" "}
+          {TELEGRAM.channelName} и подтвердите подписку. Бот проверит статус
+          участника канала автоматически и начислит пакет на привязанный
+          аккаунт.
+        </Para>
+        <Items items={[...TRIAL_GRANT]} />
+      </Clause>
+
+      <Clause title="Подписка на канал">
+        <Para>
+          Подписка является условием получения бесплатного пакета и должна
+          сохраняться, пока действуют начисленные лимиты.
+        </Para>
+        <Para>{TRIAL.onUnsubscribe}</Para>
+        <Para>{TRIAL.repeatBonusNote}</Para>
+        <Para>
+          На платных тарифах подписка на канал не требуется.
+        </Para>
+      </Clause>
       <Clause title="Основные параметры">
         <dl className="flex flex-col">
           {[

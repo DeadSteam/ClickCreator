@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { Schema } from "@/components/schema";
+import { Button } from "@/components/ui/button";
 import { LandingNav, LandingAnalytics, MobileCta, SIGNUP_URL } from "@/components/landing/chrome";
 import { AppPreview } from "@/components/landing/app-preview";
 import { DemoLink } from "@/components/landing/demo-link";
@@ -9,9 +10,10 @@ import { Faq } from "@/components/landing/faq";
 import { Appear, Cards, Chain, Contrast, Head, Section } from "@/components/landing/sections";
 import { LandingFooter } from "@/components/landing/footer";
 import { TrialCta } from "@/components/landing/trial-cta";
+import { ChannelValue, TelegramPath, TelegramSteps } from "@/components/landing/telegram";
 import { CaseStudy, ProofGrid } from "@/components/landing/proof";
 import { Pricing } from "@/components/landing/pricing";
-import { DISCLAIMER, PENDING, TRIAL } from "@/landing/config";
+import { DISCLAIMER, PENDING, TELEGRAM, TRIAL, TRIAL_GRANT } from "@/landing/config";
 import { orderOutcomes, personalParams, riskLine } from "@/landing/personal";
 import { CLAIM, DRIVERS } from "@/brand/brand";
 
@@ -217,23 +219,43 @@ export default async function ServiceLanding({
               )}
 
               <Appear delay={0.26}>
-                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <TrialCta event="hero_trial_click" place="hero">
-                    Начать бесплатный тест
+                {/*
+                  Выравнивание по низу: у основной кнопки сверху появилась
+                  подпись, и при растяжке по умолчанию вторичная вытягивалась
+                  на всю её высоту и переставала читаться как кнопка.
+                */}
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-end">
+                  <TrialCta
+                    event="hero_trial_click"
+                    place="hero"
+                    above="Получить бесплатные лимиты"
+                  >
+                    Telegram
                   </TrialCta>
                   <DemoLink place="hero">Посмотреть, как это работает</DemoLink>
                 </div>
               </Appear>
 
               <Appear delay={0.3}>
-                <p className="mt-4 text-[13px] text-[var(--ink-faint)]">
-                  Без оплаты на старте. Регистрация за 1 минуту. Помощь с первым
-                  запуском.
+                <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
+                  Подпишитесь на канал для SEO-специалистов, подтвердите подписку
+                  в боте и получите тестовые лимиты сервиса.
                 </p>
               </Appear>
 
+              {/*
+                Путь показывается до нажатия, а не после. Человек должен видеть,
+                что доступ выдаётся через Telegram, заранее — иначе переход в
+                мессенджер читается как подмена обещанной регистрации.
+              */}
               <Appear delay={0.34}>
-                <ul className="mt-10 grid gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-6 sm:grid-cols-3">
+                <div className="mt-8 border-t border-[var(--rule)] pt-6">
+                  <TelegramPath />
+                </div>
+              </Appear>
+
+              <Appear delay={0.38}>
+                <ul className="mt-8 grid gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-6 sm:grid-cols-3">
                   {[
                     "Ранний измеримый результат",
                     "Контроль динамики запросов",
@@ -345,12 +367,16 @@ export default async function ServiceLanding({
 
           <Appear delay={0.2}>
             <div className="mt-12">
-              <TrialCta event="hero_trial_click" place="how">
-                Попробовать на своём проекте
+              <TrialCta
+                event="hero_trial_click"
+                place="how"
+                above="Попробовать на своём проекте"
+              >
+                Telegram
               </TrialCta>
               <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
-                Бесплатный тест позволяет изучить интерфейс и пройти первый
-                сценарий использования.
+                Лимиты выдаются в Telegram: бот проверит подписку на канал и
+                начислит бесплатный пакет.
               </p>
             </div>
           </Appear>
@@ -499,14 +525,9 @@ export default async function ServiceLanding({
                 ))}
               </ul>
 
-              <a
-                href="/limits"
-                className="mt-10 inline-flex min-h-[48px] items-center rounded-[var(--radius-pill)]
-                  border border-[var(--rule)] px-6 text-[15px] font-semibold text-[var(--ink)]
-                  [transition:border-color_var(--t-hover)_var(--ease-micro)] hover:border-[var(--ink)]"
-              >
+              <Button href="/limits" variant="secondary" className="mt-10">
                 Изучить полные условия применения
-              </a>
+              </Button>
             </div>
           </Appear>
         </Section>
@@ -540,70 +561,73 @@ export default async function ServiceLanding({
           </Appear>
         </Section>
 
-        {/* ЭКРАН 12. Бесплатный тестовый период. */}
-        <Section zone="zone-proof">
+        {/*
+          ЭКРАН 12. Бесплатный тест через Telegram.
+
+          Раздел переписан под связку: лимиты выдаёт бот после проверки
+          подписки, поэтому здесь не «создайте аккаунт», а три шага активации и
+          прямой ответ на то, что происходит при отписке. Умолчание об этом
+          превращает обязательную подписку из условия в ловушку.
+        */}
+        <Section id="trial" zone="zone-proof">
           <Head
-            kicker="бесплатный тест"
-            title="Проверьте сервис на собственном проекте"
-            lead="Создайте аккаунт, изучите интерфейс и пройдите первый сценарий использования без оплаты на старте."
+            kicker="бесплатные лимиты"
+            title="Получите бесплатные лимиты за 3 шага"
+            lead="Подпишитесь на профессиональный Telegram-канал и получите тестовый пакет в сервисе. Проверку подписки и начисление бот выполняет автоматически."
           />
 
-          <div className="mt-14 grid gap-px bg-[var(--rule-soft)] lg:grid-cols-[1fr_1fr]">
-            <Appear className="bg-[var(--inset)] p-7 sm:p-8">
-              <p className="label text-[var(--ink-faint)]">что входит</p>
-              <ul className="mt-6 flex flex-col gap-2.5">
-                {TRIAL.includes.map((t) => (
-                  <li
-                    key={t}
-                    className="flex gap-3 text-[15px] leading-snug text-[var(--ink-soft)]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="num shrink-0"
-                      style={{ color: "var(--color-risk-low)" }}
-                    >
-                      ✓
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </Appear>
+          <TelegramSteps />
 
-            <Appear delay={0.1} className="bg-[var(--inset)] p-7 sm:p-8">
-              <dl className="flex flex-col">
-                {[
-                  ["Длительность", `${TRIAL.days} дней бесплатного доступа`],
-                  ["Лимиты", `до ${TRIAL.projects} проекта и ${TRIAL.queries} запросов`],
-                  [
-                    "Банковская карта",
-                    TRIAL.cardRequired ? "требуется" : "не требуется",
-                  ],
-                ].map(([k, v]) => (
-                  <div
-                    key={k}
-                    className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-[var(--rule-soft)] py-3.5 first:border-t-0 first:pt-0"
-                  >
-                    <dt className="label text-[var(--ink-faint)]">{k}</dt>
-                    <dd className="text-[15px] font-semibold">{v}</dd>
-                  </div>
-                ))}
-              </dl>
+          {/* Условия пакета: всё, что ТЗ требует указать прямо в блоке. */}
+          <Appear delay={0.24}>
+            <dl className="mt-14 grid gap-px border-t border-[var(--rule)] bg-[var(--rule-soft)] sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                ["Проекты", `${TRIAL.projects}`],
+                ["Запросы", `${TRIAL.queries}`],
+                ["Срок действия", `${TRIAL.days} дней`],
+                [
+                  "Банковская карта",
+                  TRIAL.cardRequired ? "требуется" : "не требуется",
+                ],
+              ].map(([k, v]) => (
+                <div key={k} className="bg-[var(--inset)] p-5">
+                  <dt className="label text-[var(--ink-faint)]">{k}</dt>
+                  <dd className="num mt-3 text-[24px] leading-none font-semibold">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </Appear>
 
-              <p className="mt-6 text-[14px] leading-relaxed text-[var(--ink-soft)]">
-                {TRIAL.afterTrial}
-              </p>
+          <Appear delay={0.28}>
+            <ul className="mt-10 flex flex-col gap-4 border-t border-[var(--rule-soft)] pt-8">
+              {[
+                ["Нужно ли сохранять подписку", `Да, пока действуют бесплатные лимиты.`],
+                ["Что будет при отписке", TRIAL.onUnsubscribe],
+                ["Выдаётся ли бонус повторно", TRIAL.repeatBonusNote],
+                ["Что после теста", TRIAL.afterTrial],
+              ].map(([k, v]) => (
+                <li key={k} className="grid gap-1.5 sm:grid-cols-[16rem_1fr] sm:gap-8">
+                  <span className="label text-[var(--ink-faint)]">{k}</span>
+                  <span className="max-w-[62ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
+                    {v}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Appear>
+        </Section>
 
-              <div className="mt-8">
-                <TrialCta event="final_trial_click" place="trial">
-                  Начать бесплатный тест
-                </TrialCta>
-                <p className="mt-4 text-[13px] text-[var(--ink-faint)]">
-                  Регистрация занимает около одной минуты.
-                </p>
-              </div>
-            </Appear>
-          </div>
+        {/*
+          Ценность канала. Стоит сразу после условия подписки: пока человек не
+          понимает, что получает в канале, обязательная подписка читается как
+          лишнее препятствие.
+        */}
+        <Section zone="zone-proof">
+          <Head
+            kicker="зачем канал"
+            title="Канал — не рекламная рассылка, а рабочая база для SEO"
+          />
+          <ChannelValue />
         </Section>
 
         {/* ЭКРАН 13. Тарифы. */}
@@ -719,22 +743,37 @@ export default async function ServiceLanding({
               помогает укрепить доверие, сократить количество объяснений и дать
               основной стратегии время сработать.
             </p>
+
+            {/*
+              Формулировка оффера по п.9 правок: не «бесплатный тест без
+              условий», а прямое называние условия. Скрытое требование подписки
+              на этом лендинге стоило бы дороже, чем названное.
+            */}
+            <p className="mt-5 max-w-[56ch] text-[17px] leading-relaxed text-[var(--ink)] sm:text-[19px]">
+              Получите инструмент, кейсы и поддержку первого запуска в одной
+              Telegram-связке: {TRIAL.days} дней доступа после подписки на
+              закрытый канал для SEO-специалистов.
+            </p>
           </Appear>
 
           <Appear delay={0.1}>
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <TrialCta event="final_trial_click" place="final">
-                Начать бесплатный тест
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-end">
+              <TrialCta
+                event="final_trial_click"
+                place="final"
+                above="Получить бесплатные лимиты"
+              >
+                Telegram
               </TrialCta>
               <DemoLink place="final">Посмотреть демонстрацию</DemoLink>
             </div>
           </Appear>
 
           <Appear delay={0.14}>
-            <p className="mt-4 text-[13px] text-[var(--ink-faint)]">
-              {TRIAL.days} дней бесплатно. Карта{" "}
-              {TRIAL.cardRequired ? "требуется" : "не требуется"}. Первый проект
-              можно добавить сразу после регистрации.
+            <p className="mt-4 max-w-[56ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
+              {TRIAL_GRANT.join(", ")}. Карта{" "}
+              {TRIAL.cardRequired ? "требуется" : "не требуется"}. Бот проверит
+              подписку на {TELEGRAM.channelName} и начислит пакет автоматически.
             </p>
           </Appear>
 

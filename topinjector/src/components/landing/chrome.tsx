@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
 import { track, type DiagnosticEvent } from "@/diagnostic/analytics";
+import { botLink } from "@/landing/config";
 
 const NAV = [
   { label: "Как работает", href: "#how" },
@@ -76,18 +78,18 @@ export function LandingNav() {
               Войти
             </a>
 
-            <a
-              href={SIGNUP_URL}
+            <Button
+              size="sm"
+              href={botLink("nav")}
               target="_blank"
               rel="noopener"
-              onClick={() => track("signup_start", { place: "nav" })}
-              className="rounded-[var(--radius-pill)] bg-[var(--btn-bg)] px-5 py-2.5 text-[14px]
-                font-semibold text-[var(--btn-ink)]
-                [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-                hover:bg-[var(--btn-bg-hover)] active:scale-[0.975]"
+              onClick={() => {
+                track("tg_cta_click", { place: "nav" });
+                track("tg_bot_open", { place: "nav" });
+              }}
             >
-              Начать бесплатно
-            </a>
+              Получить лимиты
+            </Button>
           </div>
 
           <button
@@ -163,7 +165,7 @@ export function LandingNav() {
 /**
  * Закреплённая нижняя кнопка мобильной версии. Появляется после первого экрана:
  * пока основной CTA виден сам, дублировать его снизу незачем — панель только
- * отнимала бы высоту у контента.
+ * отнимала бы высоту у контента. Ведёт в бота, как и все кнопки теста.
  */
 export function MobileCta() {
   const [show, setShow] = useState(false);
@@ -178,18 +180,25 @@ export function MobileCta() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[oklch(0.962_0.004_250/0.14)] bg-[oklch(0.172_0.014_252)] p-3 lg:hidden">
-      <a
-        href={SIGNUP_URL}
+    /*
+      Панель объявляет зону, а не выписывает цвета вручную: кнопка внутри берёт
+      ту же фаску и то же кольцо фокуса, что и остальные кнопки на графите.
+      Прежние захардкоженные oklch жили отдельно от токенов и потому не
+      получали ни одного их изменения.
+    */
+    <div className="zone-settled fixed inset-x-0 bottom-0 z-30 border-t border-[var(--rule-soft)] p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+      <Button
+        block
+        href={botLink("mobile_bar")}
         target="_blank"
         rel="noopener"
-        onClick={() => track("signup_start", { place: "mobile_bar" })}
-        className="flex min-h-[48px] items-center justify-center rounded-[var(--radius-pill)]
-          bg-[oklch(0.688_0.196_44)] px-6 text-[15px] font-semibold text-[oklch(0.172_0.014_252)]
-          [transition:transform_var(--t-press)_var(--ease-out)] active:scale-[0.99]"
+        onClick={() => {
+          track("tg_cta_click", { place: "mobile_bar" });
+          track("tg_bot_open", { place: "mobile_bar" });
+        }}
       >
-        Начать бесплатный тест
-      </a>
+        Получить лимиты в Telegram
+      </Button>
     </div>
   );
 }

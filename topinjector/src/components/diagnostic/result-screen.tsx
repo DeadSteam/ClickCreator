@@ -12,6 +12,7 @@ import {
   type SegmentId,
 } from "@/diagnostic/scoring";
 import { track } from "@/diagnostic/analytics";
+import { Button } from "@/components/ui/button";
 
 /*
   Цвет уровня риска. Строится из сегмента, а не из числа: сегмент — то, что
@@ -189,16 +190,14 @@ function ContactForm({ result }: { result: Result }) {
             [transition:border-color_var(--t-hover)_var(--ease-micro)]
             focus:border-[var(--ink)] focus:outline-none"
         />
-        <button
-          type="submit"
-          disabled={busy}
-          className="min-h-[48px] rounded-[var(--radius-pill)] bg-[var(--btn-bg)] px-6
-            text-[15px] font-semibold text-[var(--btn-ink)]
-            [transition:background-color_var(--t-hover)_var(--ease-micro),opacity_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-            enabled:active:scale-[0.975] disabled:opacity-50"
-        >
-          {busy ? "Отправляем" : "Отправить результат"}
-        </button>
+        {/*
+          Ожидание показывается спиннером поверх собственной подписи, а не
+          подменой текста на «Отправляем»: подмена меняла ширину кнопки в момент
+          нажатия и на узком экране перекладывала её на другую строку.
+        */}
+        <Button type="submit" loading={busy}>
+          Отправить результат
+        </Button>
       </div>
 
       <label className="mt-4 flex cursor-pointer items-start gap-3 text-[13px] leading-relaxed text-[var(--ink-soft)]">
@@ -413,7 +412,9 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
             ))}
           </ul>
 
-          <a
+          <Button
+            size="lg"
+            arrow
             href={storyHref}
             onClick={() =>
               track("story_cta_clicked", {
@@ -421,16 +422,10 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
                 index: result.index,
               })
             }
-            className="mt-9 inline-flex min-h-[48px] items-center gap-3 rounded-[var(--radius-pill)]
-              bg-[var(--btn-bg)] px-7 text-[16px] font-semibold text-[var(--btn-ink)]
-              [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-              hover:bg-[var(--btn-bg-hover)] active:scale-[0.975]"
+            className="mt-9"
           >
             {result.segment === "low" ? "Узнать, как это делают другие SEO" : seg.cta}
-            <span aria-hidden="true" className="num text-[13px]">
-              →
-            </span>
-          </a>
+          </Button>
 
           <p className="mt-4 text-[13px] text-[var(--ink-faint)]">
             Время чтения: 7–10 минут.
@@ -463,14 +458,14 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
             прогнозирует поведение конкретного клиента.
           </p>
 
-          <button
-            type="button"
+          <Button
+            variant="quiet"
+            size="sm"
             onClick={onRestart}
-            className="label mt-6 -ml-2 px-2 py-2 text-[var(--ink-faint)]
-              [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
+            className="label mt-6 -ml-2 px-2"
           >
             Пройти заново
-          </button>
+          </Button>
         </footer>
       </div>
     </div>

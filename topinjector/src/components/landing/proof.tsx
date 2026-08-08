@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { track } from "@/diagnostic/analytics";
 import { FEATURED_CASE, PROOFS } from "@/landing/config";
 import { Appear } from "./sections";
@@ -144,15 +145,14 @@ export function ProofGrid() {
       </div>
 
       <Appear delay={0.16}>
-        <a
+        <Button
+          variant="secondary"
           href="#cases"
           onClick={() => track("case_detail_click", { place: "proof_grid" })}
-          className="mt-10 inline-flex min-h-[48px] items-center rounded-[var(--radius-pill)]
-            border border-[var(--rule)] px-6 text-[15px] font-semibold text-[var(--ink)]
-            [transition:border-color_var(--t-hover)_var(--ease-micro)] hover:border-[var(--ink)]"
+          className="mt-10"
         >
           Смотреть все кейсы
-        </a>
+        </Button>
       </Appear>
     </div>
   );

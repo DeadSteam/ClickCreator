@@ -3,7 +3,8 @@ import Link from "next/link";
 
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
-import { Cta, Kicker } from "@/components/cta";
+import { Kicker } from "@/components/cta";
+import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/reveal";
 import { MarginCalc } from "@/components/margin-calc";
 import { DoubtRail } from "@/components/doubt-rail";
@@ -143,15 +144,12 @@ export default function ProLanding() {
                   отчёт и ваш логотип, а не наш.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Cta href="#start">Стать партнёром</Cta>
-                  <Link
-                    href="#economics"
-                    className="rounded-[var(--radius-pill)] border border-[var(--rule)] px-6
-                      py-3.5 text-center text-[15px] font-semibold text-[var(--ink)]
-                      [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:border-[var(--ink)]"
-                  >
+                  <Button href="#start" size="lg" arrow>
+                    Стать партнёром
+                  </Button>
+                  <Button href="#economics" size="lg" variant="secondary">
                     Посчитать маржу
-                  </Link>
+                  </Button>
                 </div>
               </Reveal>
 
@@ -366,15 +364,12 @@ export default function ProLanding() {
                 открываем после первого объёма.
               </p>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Cta href="https://lk.topinjector.ru/register">Стать партнёром</Cta>
-                <a
-                  href="https://t.me/topinjector"
-                  className="rounded-[var(--radius-pill)] border border-[var(--rule)] px-6
-                    py-3.5 text-center text-[15px] font-semibold text-[var(--ink)]
-                    [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] hover:border-[var(--ink)]"
-                >
+                <Button href="https://lk.topinjector.ru/register" size="lg" arrow>
+                  Стать партнёром
+                </Button>
+                <Button href="https://t.me/topinjector" size="lg" variant="secondary">
                   Обсудить объёмы в Telegram
-                </a>
+                </Button>
               </div>
             </Reveal>
           </div>

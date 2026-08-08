@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Logo } from "@/components/logo";
-import { Cta } from "@/components/cta";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Страница не найдена",
@@ -38,16 +38,12 @@ export default function NotFound() {
         </p>
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Cta href="/">На главную</Cta>
-          <Link
-            href="/pro"
-            className="rounded-[var(--radius-pill)] border border-[var(--rule)] px-6 py-3.5
-              text-center text-[15px] font-semibold text-[var(--ink)]
-              [transition:border-color_var(--t-hover)_var(--ease-micro)]
-              hover:border-[var(--ink)]"
-          >
+          <Button href="/" arrow>
+            На главную
+          </Button>
+          <Button href="/pro" variant="secondary">
             Раздел для агентств
-          </Link>
+          </Button>
         </div>
       </main>
 

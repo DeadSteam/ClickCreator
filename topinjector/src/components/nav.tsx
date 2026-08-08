@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Logo } from "./logo";
+import { Button } from "./ui/button";
 
 export type NavLink = { label: string; href: string };
 
@@ -65,15 +66,15 @@ export function Nav({
             >
               {crossLink.label}
             </Link>
-            <Link
-              href={ctaHref}
-              className="rounded-[var(--radius-pill)] bg-[var(--ink)] px-5 py-2.5 text-[14px]
-                font-semibold text-[var(--color-steel-100)]
-                [transition:opacity_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-                hover:opacity-85 active:scale-[0.975]"
-            >
+            {/*
+              Кнопка шапки стала такой же зелёной клавишей, как все остальные.
+              Раньше она была графитовой заливкой — единственной на сайте, и
+              человек, дошедший до нижнего CTA, встречал там другой цвет
+              главного действия, чем тот, который запомнил наверху.
+            */}
+            <Button size="sm" href={ctaHref}>
               {ctaLabel}
-            </Link>
+            </Button>
           </div>
 
           <button

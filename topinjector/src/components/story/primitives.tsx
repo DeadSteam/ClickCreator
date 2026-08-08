@@ -129,7 +129,7 @@ export function Flow({
     tone === "danger"
       ? "var(--color-risk-critical)"
       : tone === "good"
-        ? "var(--color-risk-low)"
+        ? "var(--accent)"
         : "var(--accent)";
 
   return (
@@ -345,7 +345,7 @@ export function Checks({ title, items }: { title: string; items: string[] }) {
               <span
                 aria-hidden="true"
                 className="num shrink-0"
-                style={{ color: "var(--color-risk-low)" }}
+                style={{ color: "var(--accent)" }}
               >
                 ✓
               </span>

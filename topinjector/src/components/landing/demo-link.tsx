@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 
+import { Button } from "@/components/ui/button";
 import { track, type DiagnosticEvent } from "@/diagnostic/analytics";
 
 /*
@@ -24,14 +25,25 @@ export function DemoLink({
   place: string;
 }) {
   return (
-    <a
+    /*
+      Размер lg, как у главного действия рядом: вторичная кнопка отличается
+      материалом, а не ростом. Разная высота в паре читалась как разный статус
+      элементов, хотя оба — шаги одного выбора.
+    */
+    <Button
+      variant="secondary"
+      size="lg"
+      block
       href={href}
       onClick={() => track(event, { place })}
-      className="flex min-h-[52px] items-center justify-center rounded-[var(--radius-pill)]
-        border border-[var(--rule)] px-6 text-center text-[15px] font-semibold text-[var(--ink)]
-        [transition:border-color_var(--t-hover)_var(--ease-micro)] hover:border-[var(--ink)]"
+      /*
+        На узком экране кнопка занимает всю ширину, на широком — только свою
+        подпись. Без ограничения она как flex-элемент забирала весь остаток
+        строки и оказывалась втрое шире главного действия рядом.
+      */
+      className="sm:w-auto"
     >
       {children}
-    </a>
+    </Button>
   );
 }

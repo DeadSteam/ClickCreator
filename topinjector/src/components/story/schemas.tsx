@@ -125,11 +125,15 @@ export function CrossoverChart() {
             strokeWidth="2"
           />
 
-          {/* Доказательства: с нуля вверх, пересекают тревогу. */}
+          {/*
+            Доказательства идут брендовым акцентом, а не статусным цветом
+            шкалы: это та самая величина, ради которой существует продукт, и
+            она должна читаться как его цвет.
+          */}
           <path
             d="M40 246 C 160 244, 250 224, 330 174 C 410 124, 500 62, 620 34"
             fill="none"
-            stroke="var(--color-risk-low)"
+            stroke="var(--accent)"
             strokeWidth="2"
           />
 
@@ -158,7 +162,7 @@ export function CrossoverChart() {
             x="470"
             y="24"
             className="label"
-            fill="var(--color-risk-low)"
+            fill="var(--accent)"
             style={{ fontSize: 10 }}
           >
             доказательства

@@ -1,14 +1,17 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { track } from "@/diagnostic/analytics";
-import { PLANS } from "@/landing/config";
-import { SIGNUP_URL } from "./chrome";
+import { PLANS, TELEGRAM, botLink } from "@/landing/config";
 import { Appear } from "./sections";
 
 /*
   Три тарифа. Выделенный отмечен линейкой и подписью, а не свечением и
   увеличенным масштабом: подсвеченная карточка посреди трёх одинаковых — самый
   узнаваемый штамп категории, и мастер-документ прямо требует его избегать.
+
+  Кнопки ведут в бота: бесплатный старт на любом тарифе начинается с проверки
+  подписки, и форма регистрации выдать лимиты не может.
 */
 export function Pricing() {
   return (
@@ -62,25 +65,31 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <a
-                href={SIGNUP_URL}
+              {/*
+                Командный тариф ведёт в поддержку, а не в бота активации: там
+                обсуждают лимиты и условия, а не получают бесплатный пакет.
+                Отправлять такой запрос в сценарий проверки подписки значит
+                оборвать разговор на первом же шаге.
+              */}
+              <Button
+                block
+                variant={p.featured ? "primary" : "secondary"}
+                href={
+                  p.id === "team" ? TELEGRAM.channel : botLink(`pricing_${p.id}`)
+                }
                 target="_blank"
                 rel="noopener"
                 onClick={() => {
                   track("pricing_plan_click", { plan: p.id });
-                  track("signup_start", { place: `pricing_${p.id}` });
+                  if (p.id !== "team") {
+                    track("tg_cta_click", { place: `pricing_${p.id}` });
+                    track("tg_bot_open", { place: `pricing_${p.id}` });
+                  }
                 }}
-                className={`mt-9 flex min-h-[48px] items-center justify-center rounded-[var(--radius-pill)]
-                  px-6 text-[15px] font-semibold
-                  [transition:background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-                  active:scale-[0.975] ${
-                    p.featured
-                      ? "bg-[var(--btn-bg)] text-[var(--btn-ink)] hover:bg-[var(--btn-bg-hover)]"
-                      : "border border-[var(--rule)] text-[var(--ink)] hover:border-[var(--ink)]"
-                  }`}
+                className="mt-9"
               >
                 {p.cta}
-              </a>
+              </Button>
             </div>
           </Appear>
         ))}

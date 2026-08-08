@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
+import { Button } from "@/components/ui/button";
 import type { Question } from "@/diagnostic/questions";
 import { GOAL_INSIGHTS } from "@/diagnostic/questions";
 
@@ -84,16 +85,22 @@ export function QuestionScreen({
           <span className="label text-[var(--ink-faint)]">
             Вопрос {step + 1} из {total}
           </span>
-          <button
-            type="button"
+          {/*
+            Возврат остаётся в габаритах системы (44 пикселя высоты, кольцо
+            фокуса), но набран подписью и потому не спорит с вопросом.
+            Отключённый прячется целиком: на первом вопросе возвращаться некуда,
+            и погашенная кнопка сообщала бы о недоступном действии вместо того,
+            чтобы не сообщать ни о чём.
+          */}
+          <Button
+            variant="quiet"
+            size="sm"
             onClick={onBack}
             disabled={!canBack}
-            className="label -mr-2 px-2 py-2 text-[var(--ink-faint)]
-              [transition:color_var(--t-hover)_var(--ease-micro)]
-              enabled:hover:text-[var(--ink)] disabled:opacity-0"
+            className="label -mr-2 px-2 disabled:opacity-0"
           >
             Назад
-          </button>
+          </Button>
         </div>
 
         <div className="mt-3 h-px w-full bg-[var(--rule)]">
@@ -164,17 +171,12 @@ export function QuestionScreen({
         */}
         {question.multiple && !revealed && (
           <div className="mt-6 self-start">
-            <button
-              type="button"
+            <Button
               onClick={() => (picked.length ? commit(picked) : setError(true))}
-              className="rounded-[var(--radius-pill)] bg-[var(--btn-bg)] px-6 py-3.5
-                text-[15px] font-semibold text-[var(--btn-ink)]
-                [transition:background-color_var(--t-hover)_var(--ease-micro),opacity_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-                active:scale-[0.975]"
               style={picked.length ? undefined : { opacity: 0.55 }}
             >
               Продолжить
-            </button>
+            </Button>
 
             {error && (
               <p
@@ -198,14 +200,15 @@ export function QuestionScreen({
             <p className="max-w-[62ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
               {insight}
             </p>
-            <button
-              type="button"
+            <Button
+              variant="quiet"
+              size="sm"
+              arrow
               onClick={advanceNow}
-              className="label mt-4 -ml-2 px-2 py-2 text-[var(--accent)]
-                [transition:opacity_var(--t-hover)_var(--ease-micro)] hover:opacity-70"
+              className="label mt-4 -ml-2 px-2 text-[var(--accent)]"
             >
-              Дальше →
-            </button>
+              Дальше
+            </Button>
           </motion.div>
         )}
       </div>

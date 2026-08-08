@@ -8,6 +8,7 @@ import { calculate, type Answers } from "@/diagnostic/scoring";
 import { track } from "@/diagnostic/analytics";
 import { clear, load, save } from "@/diagnostic/storage";
 import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
 import { QuestionScreen } from "./question-screen";
 import { ResultScreen } from "./result-screen";
 import { WindowFigure } from "./window-figure";
@@ -230,19 +231,9 @@ function StartScreen({ kicker, onStart }: { kicker: string; onStart: () => void 
             </ul>
           </div>
 
-          <button
-            type="button"
-            onClick={onStart}
-            className="mt-9 inline-flex min-h-[52px] items-center gap-3 rounded-[var(--radius-pill)]
-              bg-[var(--btn-bg)] px-7 text-[16px] font-semibold text-[var(--btn-ink)]
-              [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-              hover:bg-[var(--btn-bg-hover)] active:scale-[0.975]"
-          >
+          <Button size="lg" arrow onClick={onStart} className="mt-9">
             Начать диагностику
-            <span aria-hidden="true" className="num text-[13px]">
-              →
-            </span>
-          </button>
+          </Button>
 
           <p className="mt-4 text-[13px] text-[var(--ink-faint)]">
             12 вопросов. Без регистрации. Результат сразу.
@@ -273,17 +264,14 @@ function BriefScreen({ onStart }: { onStart: () => void }) {
         клиентский проект.
       </p>
 
-      <button
-        type="button"
+      <Button
+        size="lg"
+        block
         onClick={onStart}
-        className="mt-10 inline-flex min-h-[52px] w-full items-center justify-center gap-3
-          rounded-[var(--radius-pill)] bg-[var(--btn-bg)] px-7 text-[16px] font-semibold
-          text-[var(--btn-ink)] sm:w-auto sm:self-start
-          [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-          hover:bg-[var(--btn-bg-hover)] active:scale-[0.975]"
+        className="mt-10 sm:w-auto sm:self-start"
       >
         Понятно, начать
-      </button>
+      </Button>
     </div>
   );
 }

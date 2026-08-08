@@ -55,7 +55,23 @@ export type DiagnosticEvent =
   | "final_trial_click"
   | "signup_start"
   | "signup_complete"
-  | "trial_started";
+  | "trial_started"
+  /*
+    Telegram-связка. Лендинг видит только первые два события — клик и уход в
+    бота. Всё, что дальше (запуск бота, привязка аккаунта, переход в канал,
+    проверка подписки, начисление лимитов, возврат в сервис, первый проект),
+    происходит вне страницы и приходит от бота с тем же deep-link-параметром,
+    по которому эти цепочки и склеиваются.
+  */
+  | "tg_cta_click"
+  | "tg_bot_open"
+  | "tg_bot_start"
+  | "tg_account_linked"
+  | "tg_channel_open"
+  | "tg_subscription_confirmed"
+  | "tg_limits_granted"
+  | "tg_return_to_app"
+  | "first_project_created";
 
 export function track(event: DiagnosticEvent, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;

@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
+import { Button } from "@/components/ui/button";
 import { track } from "@/diagnostic/analytics";
 import { Flow, Rise } from "./primitives";
 
@@ -64,19 +63,15 @@ export function StoryCta({ query = "" }: { query?: string }) {
             по ним первый экран и порядок карточек результата. Обрывать цепочку
             здесь значило бы потерять её на последнем шаге.
           */}
-          <Link
+          <Button
+            size="lg"
+            arrow
             href={query ? `/service?${query}` : "/service"}
             onClick={() => track("story_cta_clicked", { from: "story" })}
-            className="mt-9 inline-flex min-h-[52px] items-center gap-3 rounded-[var(--radius-pill)]
-              bg-[var(--btn-bg)] px-7 text-[16px] font-semibold text-[var(--btn-ink)]
-              [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-              hover:bg-[var(--btn-bg-hover)] active:scale-[0.975]"
+            className="mt-9"
           >
             Посмотреть, как сократить окно сомнения
-            <span aria-hidden="true" className="num text-[13px]">
-              →
-            </span>
-          </Link>
+          </Button>
         </Rise>
 
         <Rise delay={0.3}>

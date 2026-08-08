@@ -49,12 +49,18 @@ export default function RootLayout({
           user tabs through the entire navigation on every visit before reaching
           a single word of content.
         */}
+        {/*
+          Пропуск навигации выглядит той же клавишей, что и остальные кнопки, —
+          он и есть кнопка, просто показывается одной аудитории. Радиус и высота
+          берутся из системы, а не выписываются здесь заново.
+        */}
         <a
           href="#main"
           className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-3 focus:left-3
-            focus:rounded-[var(--radius-pill)] focus:bg-[oklch(0.172_0.014_252)]
-            focus:px-4 focus:py-3 focus:text-[14px] focus:font-semibold
-            focus:text-[oklch(0.962_0.004_250)]"
+            focus:rounded-[var(--radius-btn)] focus:bg-[oklch(0.172_0.014_252)]
+            focus:px-5 focus:py-3.5 focus:text-[14px] focus:font-semibold
+            focus:text-[oklch(0.962_0.004_250)]
+            focus:shadow-[0_2px_0_oklch(0.100_0.012_252)]"
         >
           Перейти к содержимому
         </a>

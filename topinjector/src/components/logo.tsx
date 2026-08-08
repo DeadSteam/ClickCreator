@@ -1,6 +1,9 @@
 /*
-  Placeholder mark approximating the supplied flame (cold core, hot tongue).
-  Swap for the real asset per README-BRAND.md.
+  Временный знак: холодное ядро и зелёный язык.
+
+  Раньше язык был оранжевым — вместе со сменой акцента он остался единственным
+  тёплым пятном на сайте и читался как чужой элемент. Настоящий знак ставится
+  по инструкции в README-BRAND.md.
 */
 export function Flame({ className = "h-7 w-7" }: { className?: string }) {
   return (
@@ -11,8 +14,8 @@ export function Flame({ className = "h-7 w-7" }: { className?: string }) {
           <stop offset="100%" stopColor="oklch(0.58 0.13 246)" />
         </linearGradient>
         <linearGradient id="ti-hot" x1="0.2" y1="1" x2="0.8" y2="0">
-          <stop offset="0%" stopColor="oklch(0.58 0.19 32)" />
-          <stop offset="100%" stopColor="oklch(0.79 0.17 66)" />
+          <stop offset="0%" stopColor="oklch(0.52 0.14 150)" />
+          <stop offset="100%" stopColor="oklch(0.80 0.165 150)" />
         </linearGradient>
       </defs>
       <path
