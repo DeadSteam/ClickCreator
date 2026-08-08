@@ -515,7 +515,7 @@ export default async function StoryPage({
                   <span
                     aria-hidden="true"
                     className="num shrink-0 text-[18px]"
-                    style={{ color: "var(--accent)" }}
+                    style={{ color: "var(--positive)" }}
                   >
                     ✓
                   </span>

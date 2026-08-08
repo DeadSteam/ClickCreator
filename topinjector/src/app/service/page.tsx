@@ -7,7 +7,7 @@ import { AppPreview } from "@/components/landing/app-preview";
 import { DemoLink } from "@/components/landing/demo-link";
 import { LossCalc } from "@/components/landing/loss-calc";
 import { Faq } from "@/components/landing/faq";
-import { Appear, Cards, Chain, Contrast, Head, Section } from "@/components/landing/sections";
+import { Appear, Cards, Chain, Contrast, Head, Section, Steps } from "@/components/landing/sections";
 import { LandingFooter } from "@/components/landing/footer";
 import { TrialCta } from "@/components/landing/trial-cta";
 import { ChannelValue, TelegramPath, TelegramSteps } from "@/components/landing/telegram";
@@ -345,25 +345,7 @@ export default async function ServiceLanding({
             title="От первого проекта до измеримого результата — четыре шага"
           />
 
-          <div className="mt-14 grid border-t border-[var(--rule)] sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s, i) => (
-              <Appear
-                key={s.t}
-                delay={i * 0.07}
-                className="border-b border-[var(--rule-soft)] py-8 sm:border-l sm:px-6 sm:py-10
-                  sm:odd:border-l-0 sm:odd:pl-0 lg:border-l lg:odd:border-l lg:odd:pl-6
-                  lg:first:border-l-0 lg:first:pl-0"
-              >
-                <span className="num text-[11px] text-[var(--ink-faint)]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-5 text-[20px] leading-snug sm:text-[22px]">{s.t}</h3>
-                <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
-                  {s.d}
-                </p>
-              </Appear>
-            ))}
-          </div>
+          <Steps items={STEPS} />
 
           <Appear delay={0.2}>
             <div className="mt-12">

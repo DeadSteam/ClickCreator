@@ -119,18 +119,24 @@ export function AppPreview() {
             <span className="label text-[var(--accent)]">в работе</span>
           </div>
 
-          <svg viewBox="0 0 300 74" className="mt-3 h-auto w-full" aria-hidden="true">
-            <line x1="0" y1="73" x2="300" y2="73" stroke="var(--rule-soft)" strokeWidth="1" />
+          {/*
+            Высота поля 84 при разбросе точек в 50: сверху остаётся полоса под
+            подпись верхней точки. Раньше поле кончалось ровно на ней, и цифра
+            лучшей позиции — та, ради которой график и нарисован — срезалась
+            наполовину.
+          */}
+          <svg viewBox="0 0 300 84" className="mt-3 h-auto w-full" aria-hidden="true">
+            <line x1="0" y1="83" x2="300" y2="83" stroke="var(--rule-soft)" strokeWidth="1" />
             {[0, 1, 2].map((i) => {
               const x = 30 + i * 120;
-              const y = 8 + (PATH[i] / 20) * 56;
+              const y = 22 + (PATH[i] / 20) * 50;
               const on = i <= step;
               return (
                 <g key={i}>
                   {i > 0 && (
                     <motion.line
                       x1={30 + (i - 1) * 120}
-                      y1={8 + (PATH[i - 1] / 20) * 56}
+                      y1={22 + (PATH[i - 1] / 20) * 50}
                       x2={x}
                       y2={y}
                       stroke="var(--accent)"

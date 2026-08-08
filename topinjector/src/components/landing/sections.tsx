@@ -90,7 +90,7 @@ export function Cards({ items, cols = 3 }: { items: Card[]; cols?: 2 | 3 }) {
       }`}
     >
       {items.map((c, i) => (
-        <Appear key={c.t} delay={Math.min(i, 5) * 0.06} className="bg-[var(--inset)]">
+        <Appear key={c.t} delay={Math.min(i, 5) * 0.06} className="cell">
           <div className="h-full p-6 sm:p-7">
             <span className="num text-[11px] text-[var(--ink-faint)]">
               {String(i + 1).padStart(2, "0")}
@@ -121,7 +121,7 @@ export function Contrast({
   return (
     <div className="mt-14">
       <div className="grid gap-px bg-[var(--rule-soft)] lg:grid-cols-2">
-        <Appear className="bg-[var(--inset)]">
+        <Appear className="cell">
           <div className="h-full p-7 sm:p-8">
             <p className="label text-[var(--ink-faint)]">{left.title}</p>
             <ul className="mt-6 flex flex-col">
@@ -137,7 +137,7 @@ export function Contrast({
           </div>
         </Appear>
 
-        <Appear delay={0.1} className="bg-[var(--inset)]">
+        <Appear delay={0.1} className="cell">
           <div className="h-full border-l-2 border-[var(--accent)] p-7 sm:p-8">
             <p className="label text-[var(--accent)]">{right.title}</p>
             <ul className="mt-6 flex flex-col">
@@ -190,5 +190,59 @@ export function Chain({ steps, accentAt }: { steps: string[]; accentAt?: number 
         ))}
       </ol>
     </Appear>
+  );
+}
+
+export type Step = { t: string; d: string };
+
+/**
+ * Шаги процесса на рельсе.
+ *
+ * Раньше это была сетка колонок с номерами — список, а не последовательность:
+ * ничто не говорило, что шаг 2 следует за шагом 1, кроме порядка чтения. Узел
+ * на общей линии превращает перечисление в процесс, и делает это языком самой
+ * страницы: здесь всё держится линейками, а не рамками.
+ *
+ * Первый узел закрашен акцентом, остальные полые. Так видно, где вход: у ряда
+ * одинаковых точек начала нет.
+ */
+export function Steps({ items }: { items: Step[] }) {
+  return (
+    <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4">
+      {items.map((s, i) => (
+        <Appear
+          key={s.t}
+          delay={i * 0.07}
+          /*
+            Колонки расходятся правым полем, а не левым: узел на рельсе и
+            подпись под ним обязаны стоять на одной вертикали, а левый отступ
+            сдвигал текст и оставлял точку висеть отдельно.
+          */
+          className="relative border-t border-[var(--rule)] pt-8 pb-8 sm:pr-8 lg:pb-0"
+        >
+          {/*
+            Узел сидит верхом на линии: половина сверху, половина снизу.
+            Смещение по вертикали ровно в половину диаметра, иначе точка
+            «висит» рядом с рельсой, а не на ней.
+          */}
+          <span
+            aria-hidden="true"
+            className={`absolute -top-[5px] left-0 block h-[9px] w-[9px] rounded-full ${
+                i === 0
+                  ? "bg-[var(--accent)]"
+                  : "border border-[var(--rule)] bg-[var(--bg-node)]"
+              }`}
+          />
+
+          <span className="num text-[11px] text-[var(--ink-faint)]">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <h3 className="mt-5 text-[20px] leading-snug sm:text-[22px]">{s.t}</h3>
+          <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
+            {s.d}
+          </p>
+        </Appear>
+      ))}
+    </div>
   );
 }

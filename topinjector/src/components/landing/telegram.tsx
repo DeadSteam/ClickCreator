@@ -35,7 +35,7 @@ export function TelegramSteps() {
     <>
       <div className="mt-14 grid gap-px bg-[var(--rule-soft)] lg:grid-cols-3">
         {STEPS.map((s, i) => (
-          <Appear key={s.t} delay={i * 0.08} className="bg-[var(--inset)]">
+          <Appear key={s.t} delay={i * 0.08} className="cell">
             <div className="h-full p-7 sm:p-8">
               <span className="num text-[11px] text-[var(--accent)]">
                 Шаг {i + 1}
@@ -66,7 +66,7 @@ export function TelegramSteps() {
                 <span
                   aria-hidden="true"
                   className="num shrink-0"
-                  style={{ color: "var(--accent)" }}
+                  style={{ color: "var(--positive)" }}
                 >
                   ✓
                 </span>
@@ -99,7 +99,7 @@ export function TelegramSteps() {
 export function ChannelValue() {
   return (
     <div className="mt-14 grid gap-px bg-[var(--rule-soft)] lg:grid-cols-[1.1fr_0.9fr]">
-      <Appear className="bg-[var(--inset)] p-7 sm:p-8">
+      <Appear className="cell p-7 sm:p-8">
         <p className="label text-[var(--ink-faint)]">в канале вы получаете</p>
         <ul className="mt-6 flex flex-col gap-2.5">
           {CHANNEL_VALUE.map((v) => (
@@ -116,7 +116,7 @@ export function ChannelValue() {
         </ul>
       </Appear>
 
-      <Appear delay={0.1} className="bg-[var(--inset)] p-7 sm:p-8">
+      <Appear delay={0.1} className="cell p-7 sm:p-8">
         <p className="max-w-[26ch] text-[21px] leading-snug font-extrabold tracking-[-0.03em] sm:text-[26px]">
           Сервис даёт инструмент. Канал помогает использовать его
           профессионально.

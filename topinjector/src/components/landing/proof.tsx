@@ -19,7 +19,7 @@ export function CaseStudy() {
 
   return (
     <div className="mt-14 grid gap-px bg-[var(--rule-soft)] lg:grid-cols-[1fr_1fr]">
-      <Appear className="bg-[var(--inset)] p-7 sm:p-8">
+      <Appear className="cell p-7 sm:p-8">
         <p className="label text-[var(--ink-faint)]">ситуация</p>
         <p className="mt-5 max-w-[46ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
           Частный SEO-специалист начал работу с проектом в нише «{c.niche}».
@@ -47,7 +47,7 @@ export function CaseStudy() {
         </dl>
       </Appear>
 
-      <Appear delay={0.1} className="bg-[var(--inset)] p-7 sm:p-8">
+      <Appear delay={0.1} className="cell p-7 sm:p-8">
         <p className="label text-[var(--ink-faint)]">динамика по дням</p>
 
         <ul className="mt-6 flex flex-col">
@@ -106,7 +106,7 @@ export function ProofGrid() {
 
       <div className="mt-10 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
         {PROOFS.map((p, i) => (
-          <Appear key={p.query} delay={Math.min(i, 4) * 0.06} className="bg-[var(--inset)]">
+          <Appear key={p.query} delay={Math.min(i, 4) * 0.06} className="cell">
             <article className="h-full p-6 sm:p-7">
               <div className="flex items-baseline justify-between gap-4">
                 <h4 className="text-[17px] font-semibold tracking-[-0.02em]">{p.niche}</h4>

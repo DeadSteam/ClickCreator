@@ -394,6 +394,13 @@ export default function BusinessLanding() {
                     </div>
 
                     <div>
+                      {/*
+                        Тёмный отрезок — исходное положение, акцентный — то, что
+                        добавилось. Раньше прирост был тем же чернильным цветом
+                        на тридцати процентах прозрачности, и полоса читалась
+                        как одна выцветающая линия: главную величину блока —
+                        насколько выросло — приходилось вычитать глазом.
+                      */}
                       <div className="flex h-2 w-full overflow-hidden bg-[var(--rule-soft)]">
                         <span
                           className="block bg-[var(--ink)]"
@@ -401,8 +408,9 @@ export default function BusinessLanding() {
                           title={`было ${c.was}%`}
                         />
                         <span
-                          className="block bg-[var(--ink)] opacity-30"
+                          className="block bg-[var(--accent)]"
                           style={{ width: `${c.top - c.was}%` }}
+                          title={`прирост ${c.top - c.was} процентных пунктов`}
                         />
                       </div>
                       <p className="label mt-2.5 text-[var(--ink-soft)]">

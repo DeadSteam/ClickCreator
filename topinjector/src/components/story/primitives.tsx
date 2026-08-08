@@ -125,12 +125,14 @@ export function Flow({
   accentAt?: number;
   tone?: "plain" | "danger" | "good";
 }) {
+  /*
+    Тон различает только опасность: и обычная, и «хорошая» ступень идут
+    брендовым акцентом. Зелёный на схемах не появляется — он закреплён за
+    кнопками и чекмарками, и третий цвет в цепочке из пяти пунктов читался бы
+    как ещё один статус, которого в схеме нет.
+  */
   const accentColor =
-    tone === "danger"
-      ? "var(--color-risk-critical)"
-      : tone === "good"
-        ? "var(--accent)"
-        : "var(--accent)";
+    tone === "danger" ? "var(--color-risk-critical)" : "var(--accent)";
 
   return (
     <ol className="mt-8 flex flex-col items-start">
@@ -345,7 +347,7 @@ export function Checks({ title, items }: { title: string; items: string[] }) {
               <span
                 aria-hidden="true"
                 className="num shrink-0"
-                style={{ color: "var(--accent)" }}
+                style={{ color: "var(--positive)" }}
               >
                 ✓
               </span>
