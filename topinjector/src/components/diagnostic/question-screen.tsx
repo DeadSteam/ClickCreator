@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import type { Question } from "@/diagnostic/questions";
 import { GOAL_INSIGHTS } from "@/diagnostic/questions";
+import { EASE_OUT } from "@/motion/tokens";
 
 /* Пауза между выбором и сменой экрана: успеть прочитать микроинсайт. */
 const AUTO_ADVANCE_MS = 2200;
@@ -113,7 +114,7 @@ export function QuestionScreen({
             className="h-px bg-[var(--accent)]"
             initial={false}
             animate={{ width: `${progress}%` }}
-            transition={reduce ? { duration: 0 } : { duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+            transition={reduce ? { duration: 0 } : { duration: 0.4, ease: EASE_OUT }}
           />
         </div>
       </div>
@@ -199,7 +200,7 @@ export function QuestionScreen({
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.32, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: 0.32, ease: EASE_OUT }}
             className="mt-8 border-t border-[var(--rule)] pt-5"
           >
             <p className="max-w-[62ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">

@@ -128,7 +128,7 @@ export function DoubtRail({
       <div className="fixed inset-x-0 bottom-0 z-40 xl:hidden">
         <div className="flex items-stretch border-t border-[color-mix(in_oklab,var(--settled-ink)_14%,transparent)] bg-[var(--settled-bg)]">
           <div className="flex shrink-0 flex-col justify-center px-4 py-2.5">
-            <span className="label text-[9px] text-[oklch(0.640_0.014_248)]">
+            <span className="label text-[9px] text-[color-mix(in_oklab,var(--settled-ink)_62%,transparent)]">
               {caption}
             </span>
             <span className="num text-[19px] leading-none font-semibold text-[var(--settled-ink)]">
@@ -141,7 +141,7 @@ export function DoubtRail({
           <Link
             href={ctaHref}
             className="flex flex-1 items-center justify-center bg-[var(--color-green)]
-              px-4 py-3.5 text-[15px] font-semibold text-[oklch(0.172_0.014_252)]
+              px-4 py-3.5 text-[15px] font-semibold text-[var(--btn-ink)]
               [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)] active:scale-[0.99] active:bg-[var(--color-green-lit)]"
           >
             {ctaLabel}

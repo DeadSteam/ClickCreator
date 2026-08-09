@@ -5,6 +5,7 @@ import { track } from "@/diagnostic/analytics";
 import { CHANNEL_VALUE, TELEGRAM, TRIAL, TRIAL_GRANT, botLink } from "@/landing/config";
 import { Appear } from "./sections";
 import { TrialCta } from "./trial-cta";
+import { ordinal } from "@/format";
 
 /*
   Два блока Telegram-связки.
@@ -170,7 +171,7 @@ export function TelegramPath() {
             </span>
           )}
           <span className="num text-[11px] text-[var(--ink-faint)]">
-            {String(i + 1).padStart(2, "0")}
+            {ordinal(i)}
           </span>
           <span className="text-[13px] leading-snug text-[var(--ink-soft)]">{s}</span>
         </li>

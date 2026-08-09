@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Logo } from "./logo";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./ui/theme-toggle";
+import { MenuButton, useMenuState } from "./ui/mobile-menu";
+import { EASE_HAPTIC } from "@/motion/tokens";
+import { ordinal } from "@/format";
 
 export type NavLink = { label: string; href: string };
 
@@ -25,25 +27,20 @@ export function Nav({
   ctaLabel: string;
   ctaHref: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen, toggle } = useMenuState();
   const reduce = useReducedMotion();
-
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
 
   return (
     <>
-      <header className="relative z-30 px-5 sm:px-8">
+      {/*
+        При открытом меню шапка поднимается над оверлеем. Слой z-30 задаёт
+        собственный контекст наложения, и кнопка закрытия внутри него не могла
+        подняться выше соседнего оверлея с z-40, каким бы z-index ей ни задали:
+        меню открывалось, а закрыть его нажатием было нечем.
+      */}
+      <header
+        className={`relative px-5 sm:px-8 ${open ? "z-50" : "z-30"}`}
+      >
         <nav className="mx-auto flex max-w-[76rem] items-center justify-between gap-6 border-b border-[var(--rule-soft)] py-5">
           <Link href="/" aria-label="TopInjector, на главную">
             <Logo />
@@ -84,30 +81,7 @@ export function Nav({
             <ThemeToggle />
           </div>
 
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Закрыть меню" : "Открыть меню"}
-            aria-expanded={open}
-            className="relative z-50 -mr-2 flex h-11 w-11 items-center justify-center lg:hidden"
-          >
-            <span className="relative block h-3 w-5">
-              <span
-                className={`absolute left-0 block h-[1.5px] w-5 [transition:top_var(--t-panel)_var(--ease-haptic),transform_var(--t-panel)_var(--ease-haptic),background-color_var(--t-panel)_var(--ease-haptic)] ${
-                    open
-                      ? "top-[5px] rotate-45 bg-[oklch(0.962_0.004_250)]"
-                      : "top-0 bg-[var(--ink)]"
-                  }`}
-              />
-              <span
-                className={`absolute left-0 block h-[1.5px] w-5 [transition:top_var(--t-panel)_var(--ease-haptic),transform_var(--t-panel)_var(--ease-haptic),background-color_var(--t-panel)_var(--ease-haptic)] ${
-                    open
-                      ? "top-[5px] -rotate-45 bg-[oklch(0.962_0.004_250)]"
-                      : "top-[10px] bg-[var(--ink)]"
-                  }`}
-              />
-            </span>
-          </button>
+          <MenuButton open={open} onClick={toggle} className="lg:hidden" />
         </nav>
       </header>
 
@@ -117,7 +91,7 @@ export function Nav({
             initial={reduce ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+            transition={{ duration: 0.28, ease: EASE_HAPTIC }}
             className="zone-settled fixed inset-0 z-40 overflow-y-auto overscroll-contain
               px-5 pt-24 pb-10 lg:hidden"
           >
@@ -130,7 +104,7 @@ export function Nav({
                   transition={{
                     duration: 0.5,
                     delay: 0.04 + i * 0.04,
-                    ease: [0.32, 0.72, 0, 1],
+                    ease: EASE_HAPTIC,
                   }}
                 >
                   <Link
@@ -139,7 +113,7 @@ export function Nav({
                     className="flex items-baseline gap-4 border-b border-[var(--rule-soft)] py-5"
                   >
                     <span className="num text-[11px] text-[var(--ink-faint)]">
-                      {String(i + 1).padStart(2, "0")}
+                      {ordinal(i)}
                     </span>
                     <span className="text-[24px] font-extrabold tracking-[-0.03em] text-[var(--ink)]">
                       {l.label}

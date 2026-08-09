@@ -15,6 +15,7 @@ import { RankClimb } from "@/components/rank-climb";
 import { Calculator } from "@/components/calculator";
 import { DoubtRail } from "@/components/doubt-rail";
 import { CLAIM, MECHANISM } from "@/brand/brand";
+import { ordinal } from "@/format";
 
 const NAV_LINKS = [
   { label: "Как работает", href: "#how" },
@@ -249,7 +250,7 @@ export default function BusinessLanding() {
                         className="flex gap-5 border-t border-[var(--rule-soft)] py-4 first:border-t-0 first:pt-0"
                       >
                         <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                          {String(i + 1).padStart(2, "0")}
+                          {ordinal(i)}
                         </span>
                         <span className="text-[15px] leading-snug text-[var(--ink-soft)]">{t}</span>
                       </li>
@@ -268,7 +269,7 @@ export default function BusinessLanding() {
                         className="flex gap-5 border-t border-[var(--rule-soft)] py-4 first:border-t-0 first:pt-0"
                       >
                         <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                          {String(i + 1).padStart(2, "0")}
+                          {ordinal(i)}
                         </span>
                         <span className="text-[15px] leading-snug font-semibold text-[var(--ink)]">
                           {t}
@@ -309,7 +310,7 @@ export default function BusinessLanding() {
                     lg:odd:pl-6 lg:first:border-l-0 lg:first:pl-0"
                 >
                   <span className="num text-[11px] text-[var(--ink-faint)]">
-                    {String(i + 1).padStart(2, "0")}
+                    {ordinal(i)}
                   </span>
                   <h3 className="mt-5 text-[20px] sm:text-[23px]">{p.t}</h3>
                   <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
@@ -546,7 +547,7 @@ export default function BusinessLanding() {
                 {CLAIM.conditions.map((c, i) => (
                   <li key={c} className="flex gap-4 bg-[var(--inset)] p-6">
                     <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                      {String(i + 1).padStart(2, "0")}
+                      {ordinal(i)}
                     </span>
                     <span className="text-[14px] leading-snug text-[var(--ink-soft)]">{c}</span>
                   </li>
@@ -579,7 +580,7 @@ export default function BusinessLanding() {
                   <details className="group border-b border-[var(--rule-soft)]">
                     <summary className="flex cursor-pointer list-none items-baseline gap-5 py-6">
                       <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                        {String(i + 1).padStart(2, "0")}
+                        {ordinal(i)}
                       </span>
                       <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] sm:text-[19px]">
                         {item.q}

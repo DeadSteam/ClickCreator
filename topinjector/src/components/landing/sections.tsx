@@ -1,35 +1,17 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion, useReducedMotion } from "motion/react";
+
+import { Appear } from "@/motion/appear";
+import { ordinal } from "@/format";
 
 /* Общие формы лендинга. Один язык секций вместо семнадцати самодельных. */
 
-const EASE = [0.23, 1, 0.32, 1] as const;
-
-export function Appear({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const reduce = useReducedMotion();
-
-  return (
-    <motion.div
-      className={className}
-      initial={reduce ? false : { opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.32, delay, ease: EASE }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+/*
+  Реэкспорт: секции лендинга зовут появление как `Appear` из соседнего модуля,
+  и обход двух десятков файлов ради смены пути импорта не даёт ничего.
+*/
+export { Appear };
 
 export function Section({
   id,
@@ -93,7 +75,7 @@ export function Cards({ items, cols = 3 }: { items: Card[]; cols?: 2 | 3 }) {
         <Appear key={c.t} delay={Math.min(i, 5) * 0.06} className="cell">
           <div className="h-full p-6 sm:p-7">
             <span className="num text-[11px] text-[var(--ink-faint)]">
-              {String(i + 1).padStart(2, "0")}
+              {ordinal(i)}
             </span>
             <h3 className="mt-4 max-w-[24ch] text-[18px] leading-snug font-semibold tracking-[-0.02em] sm:text-[20px]">
               {c.t}
@@ -235,7 +217,7 @@ export function Steps({ items }: { items: Step[] }) {
           />
 
           <span className="num text-[11px] text-[var(--ink-faint)]">
-            {String(i + 1).padStart(2, "0")}
+            {ordinal(i)}
           </span>
           <h3 className="mt-5 text-[20px] leading-snug sm:text-[22px]">{s.t}</h3>
           <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">

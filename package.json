@@ -2,10 +2,9 @@
   "name": "clickcreator-landings",
   "private": true,
   "version": "0.0.0",
-  "description": "Шесть независимых лендингов одного продукта. Каждый проверяет свою гипотезу продажи, поэтому у каждого свой бренд, своя дизайн-система и свой домен.",
+  "description": "Сайт TopInjector: воронка для частных SEO-специалистов и страницы для бизнеса и агентств.",
   "workspaces": [
-    "topinjector",
-    "sites/*"
+    "topinjector"
   ],
   "scripts": {
     "dev": "node scripts/run-all.mjs",
@@ -20,11 +19,6 @@
     "stop": "node scripts/stop-all.mjs",
     "dev:stop": "node scripts/stop-all.mjs",
 
-    "dev:topinjector": "npm run dev -w topinjector",
-    "dev:reestr": "npm run dev -w @landings/reestr",
-    "dev:porog": "npm run dev -w @landings/porog",
-    "dev:klik": "npm run dev -w @landings/klik",
-    "dev:rech": "npm run dev -w @landings/rech",
-    "dev:razgon": "npm run dev -w @landings/razgon"
+    "dev:topinjector": "npm run dev -w topinjector"
   }
 }

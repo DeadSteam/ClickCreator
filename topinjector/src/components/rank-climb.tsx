@@ -10,6 +10,8 @@ import {
   useTransform,
 } from "motion/react";
 
+import { EASE_OUT } from "@/motion/tokens";
+
 /* Position by day, 14 days. Demo figures. */
 const SERIES = [47, 46, 44, 41, 38, 33, 29, 24, 19, 15, 11, 8, 6, 4, 3];
 const START = SERIES[0];
@@ -53,7 +55,7 @@ export function RankClimb() {
     }
     const controls = animate(count, END, {
       duration: 1.5,
-      ease: [0.23, 1, 0.32, 1],
+      ease: EASE_OUT,
     });
     return () => controls.stop();
   }, [inView, reduce, count]);
@@ -137,7 +139,7 @@ export function RankClimb() {
             vectorEffect="non-scaling-stroke"
             initial={reduce ? false : { pathLength: 0 }}
             animate={inView ? { pathLength: 1 } : {}}
-            transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: 1.5, ease: EASE_OUT }}
           />
         </svg>
 

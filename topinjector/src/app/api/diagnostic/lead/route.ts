@@ -10,17 +10,25 @@
   диагностика лидом не считается: пользователь согласия не давал.
 */
 
+import {
+  RISK_IDS,
+  SEGMENT_IDS,
+  type RiskId,
+  type SegmentId,
+} from "@/diagnostic/scoring";
+
 type LeadPayload = {
   contact: string;
   index: number;
-  segment: string;
-  risk: string;
+  segment: SegmentId;
+  risk: RiskId;
   goals: string[];
   source: string;
 };
 
-const SEGMENTS = new Set(["low", "medium", "high", "critical"]);
-const RISKS = new Set(["distrust", "visibility", "control"]);
+/* Списки приходят из расчёта: держать здесь их копию значит однажды разойтись. */
+const SEGMENTS: ReadonlySet<string> = new Set(SEGMENT_IDS);
+const RISKS: ReadonlySet<string> = new Set(RISK_IDS);
 
 function parse(body: unknown): LeadPayload | null {
   if (typeof body !== "object" || body === null) return null;
@@ -41,8 +49,8 @@ function parse(body: unknown): LeadPayload | null {
   return {
     contact,
     index,
-    segment,
-    risk,
+    segment: segment as SegmentId,
+    risk: risk as RiskId,
     goals: Array.isArray(b.goals) ? b.goals.filter((g): g is string => typeof g === "string") : [],
     /* Обрезаем: строка запроса приходит от клиента и в лог идёт как есть. */
     source: typeof b.source === "string" ? b.source.slice(0, 500) : "",

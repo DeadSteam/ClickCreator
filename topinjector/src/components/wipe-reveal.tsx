@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
+import { EASE_OUT } from "@/motion/tokens";
 
 /*
   Заголовок приходит так, как свет ложится на поверхность: развёрткой от
@@ -28,7 +29,7 @@ export function WipeReveal({
       initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0.4 }}
       animate={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
       transition={{
-        clipPath: { duration: 0.95, delay, ease: [0.23, 1, 0.32, 1] },
+        clipPath: { duration: 0.95, delay, ease: EASE_OUT },
         opacity: { duration: 0.3, delay },
       }}
     >

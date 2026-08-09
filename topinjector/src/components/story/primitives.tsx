@@ -1,7 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion, useReducedMotion } from "motion/react";
+
+import { Appear } from "@/motion/appear";
 
 /*
   Примитивы редакционных схем.
@@ -15,8 +16,7 @@ import { motion, useReducedMotion } from "motion/react";
   Сложных эффектов нет нигде: это статья, а не демонстрация возможностей.
 */
 
-const EASE = [0.23, 1, 0.32, 1] as const;
-
+/** Появление в темпе чтения. Механика — в общем `Appear`. */
 export function Rise({
   children,
   delay = 0,
@@ -26,18 +26,10 @@ export function Rise({
   delay?: number;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
-
   return (
-    <motion.div
-      className={className}
-      initial={reduce ? false : { opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.3, delay, ease: EASE }}
-    >
+    <Appear speed="reading" delay={delay} className={className}>
       {children}
-    </motion.div>
+    </Appear>
   );
 }
 

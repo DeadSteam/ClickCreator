@@ -1,11 +1,13 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 
+import { Appear } from "@/motion/appear";
+
 /*
-  Restrained by direction: a short lift, no blur, no scale. Motion here only
-  establishes reading order; the temperature ramp is the page's real movement.
+  Появление крупных блоков страницы. Сохранено как имя: им пользуются главная,
+  `/pro` и их секции, и переименование ничего бы не улучшило. Вся механика
+  живёт в общем `Appear` — здесь остаётся только выбор скорости.
 */
 export function Reveal({
   children,
@@ -16,17 +18,9 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
-
   return (
-    <motion.div
-      className={className}
-      initial={reduce ? false : { opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.55, delay, ease: [0.32, 0.72, 0, 1] }}
-    >
+    <Appear speed="calm" delay={delay} className={className}>
       {children}
-    </motion.div>
+    </Appear>
   );
 }

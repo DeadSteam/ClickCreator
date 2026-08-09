@@ -4,6 +4,7 @@ import { track } from "@/diagnostic/analytics";
 import { PLANS, TELEGRAM, botLink } from "@/landing/config";
 import { Button } from "@/components/ui/button";
 import { Appear } from "./sections";
+import { groupDigits } from "@/format";
 
 /*
   Три тарифа.
@@ -20,12 +21,6 @@ import { Appear } from "./sections";
   Кнопки ведут в бота: бесплатный старт на любом тарифе начинается с проверки
   подписки, и форма регистрации выдать лимиты не может.
 */
-
-/*
-  Внутри цены обычный пробел растягивается моноширинным трекингом в дыру, и
-  «1 900» читается как два числа. Узкий неразрывный пробел держит разряд группой.
-*/
-const groupDigits = (price: string) => price.replace(/\s/g, " ");
 
 export function Pricing() {
   return (

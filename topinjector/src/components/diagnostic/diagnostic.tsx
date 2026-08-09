@@ -13,6 +13,8 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { QuestionScreen } from "./question-screen";
 import { ResultScreen } from "./result-screen";
 import { WindowFigure } from "./window-figure";
+import { EASE_OUT } from "@/motion/tokens";
+import { ordinal } from "@/format";
 
 /*
   Шаги прохождения. Отрицательные значения — экраны до вопросов, поэтому индекс
@@ -156,7 +158,7 @@ export function Diagnostic({ kicker }: { kicker: string }) {
         initial={reduce ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         exit={reduce ? { opacity: 1 } : { opacity: 0, y: -8 }}
-        transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.28, ease: EASE_OUT }}
       >
         {step === START && <StartScreen kicker={kicker} onStart={() => setStep(BRIEF)} />}
 
@@ -308,7 +310,7 @@ function ComputingScreen() {
             className="flex items-baseline gap-4 border-b border-[var(--rule-soft)] py-4"
           >
             <span className="num text-[11px] text-[var(--accent)]">
-              {String(i + 1).padStart(2, "0")}
+              {ordinal(i)}
             </span>
             <span className="text-[15px] leading-snug text-[var(--ink-soft)]">{s}</span>
           </motion.li>

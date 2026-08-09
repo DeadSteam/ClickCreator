@@ -1,4 +1,4 @@
-# Запуск всех шести сайтов на Linux-сервере под systemd.
+# Запуск сайта на Linux-сервере под systemd.
 #
 # Foreground-скрипт сам по себе для сервера не годится: он умрёт вместе с
 # ssh-сессией и не поднимется после перезагрузки. systemd закрывает обе дыры.
@@ -17,7 +17,7 @@
 #   git pull && npm ci && npm run build:all && sudo systemctl restart landings
 
 [Unit]
-Description=Шесть лендингов ClickCreator (порты 3000-3005)
+Description=TopInjector (порт 3000)
 After=network.target
 
 [Service]
@@ -36,8 +36,8 @@ Environment=NODE_ENV=production
 # гасит, когда вывод не в терминал, но переменная снимает вопрос окончательно.
 Environment=NO_COLOR=1
 
-# --host 0.0.0.0 нужен, только если ходить будут прямо в порты. За nginx
-# правильнее оставить localhost: тогда 3000-3005 не торчат наружу вовсе.
+# --host 0.0.0.0 нужен, только если ходить будут прямо в порт. За nginx
+# правильнее оставить localhost: тогда 3000 не торчит наружу вовсе.
 ExecStart=/usr/bin/node scripts/run-all.mjs --mode start
 
 # Раннер пробрасывает сигнал детям и гасит группу процессов, поэтому

@@ -75,7 +75,7 @@ export default function RootLayout({
             focus:rounded-[var(--radius-btn)] focus:bg-[var(--settled-bg)]
             focus:px-5 focus:py-3.5 focus:text-[14px] focus:font-semibold
             focus:text-[var(--settled-ink)]
-            focus:shadow-[0_2px_0_oklch(0.100_0.012_252)]"
+            focus:shadow-[0_2px_0_color-mix(in_oklab,var(--settled-bg)_70%,black)]"
         >
           Перейти к содержимому
         </a>

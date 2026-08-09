@@ -16,8 +16,18 @@ import { QUESTIONS, type Question } from "./questions";
 
 export type Answers = Record<string, string[]>;
 
-export type SegmentId = "low" | "medium" | "high" | "critical";
-export type RiskId = "distrust" | "visibility" | "control";
+/*
+  Идентификаторы объявлены значениями, а типы выведены из них, а не наоборот.
+  Обработчику лида нужно проверить пришедшее с клиента, а из типа во время
+  выполнения список не достать — и он держал собственную копию этих же строк.
+  Копия молчаливо разошлась бы при первом переименовании: расчёт продолжил бы
+  работать, а лиды начали отбраковываться с 422.
+*/
+export const SEGMENT_IDS = ["low", "medium", "high", "critical"] as const;
+export const RISK_IDS = ["distrust", "visibility", "control"] as const;
+
+export type SegmentId = (typeof SEGMENT_IDS)[number];
+export type RiskId = (typeof RISK_IDS)[number];
 
 /** Подиндексы. Состав вопросов задан п.9 ТЗ. */
 const SUBINDEXES: { id: RiskId; questions: string[] }[] = [

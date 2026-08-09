@@ -9,7 +9,8 @@
 import { execFileSync } from "node:child_process";
 import { connect } from "node:net";
 
-export const PORTS = [3000, 3001, 3002, 3003, 3004, 3005];
+/* Порт остался один: лендинги-гипотезы на 3001-3005 удалены вместе с sites/. */
+export const PORTS = [3000];
 export const isWin = process.platform === "win32";
 
 const run = (cmd, args) => {

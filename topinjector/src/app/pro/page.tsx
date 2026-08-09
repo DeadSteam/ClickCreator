@@ -9,6 +9,7 @@ import { Reveal } from "@/components/reveal";
 import { MarginCalc } from "@/components/margin-calc";
 import { DoubtRail } from "@/components/doubt-rail";
 import { CLAIM } from "@/brand/brand";
+import { ordinal } from "@/format";
 
 export const metadata: Metadata = {
   title: "Партнёрам: продвижение под вашим брендом",
@@ -245,7 +246,7 @@ export default function ProLanding() {
                 <Reveal key={t.t} delay={i * 0.06}>
                   <div className="grid gap-3 border-b border-[var(--rule-soft)] py-8 sm:grid-cols-[auto_1fr_1.5fr] sm:gap-10">
                     <span className="num text-[11px] text-[var(--ink-soft)]">
-                      {String(i + 1).padStart(2, "0")}
+                      {ordinal(i)}
                     </span>
                     <h3 className="text-[19px] leading-snug font-semibold tracking-[-0.02em]">
                       {t.t}
@@ -288,7 +289,7 @@ export default function ProLanding() {
                 >
                   <div className="h-full p-7 lg:p-8">
                     <span className="num text-[11px] text-[var(--accent)]">
-                      {String(i + 1).padStart(2, "0")}
+                      {ordinal(i)}
                     </span>
                     <h3 className="mt-5 text-[19px] leading-snug font-semibold tracking-[-0.02em]">
                       {r.t}
@@ -334,7 +335,7 @@ export default function ProLanding() {
                   <details className="group border-b border-[var(--rule-soft)]">
                     <summary className="flex cursor-pointer list-none items-baseline gap-5 py-6">
                       <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                        {String(i + 1).padStart(2, "0")}
+                        {ordinal(i)}
                       </span>
                       <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] sm:text-[19px]">
                         {item.q}

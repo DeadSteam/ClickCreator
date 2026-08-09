@@ -1,6 +1,7 @@
 "use client";
 
 import { Rise } from "./primitives";
+import { ordinal } from "@/format";
 
 /*
   Три схемы, ради которых статья написана. Остальные строятся из примитивов, а
@@ -292,7 +293,7 @@ export function ExplanationLoop() {
           <Rise key={s} delay={i * 0.08} className="bg-[var(--inset)]">
             <li className="flex h-full items-baseline gap-3.5 p-5">
               <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                {String(i + 1).padStart(2, "0")}
+                {ordinal(i)}
               </span>
               <span
                 className="text-[15px] leading-snug"

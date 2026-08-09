@@ -1,5 +1,9 @@
 /*
-  Запуск всех шести сайтов сразу - в разработке или в продакшне.
+  Запуск сайтов репозитория - в разработке или в продакшне.
+
+  Пять лендингов-гипотез (sites/) удалены: проверка закончена, дальше идёт
+  один сайт. Раннер оставлен как есть - он читает порты из package.json
+  каждой папки и одинаково работает хоть на одной, хоть на шести.
 
   Зачем свой скрипт, а не concurrently: зависимость ради сотни строк не нужна,
   а три вещи, которые здесь важнее всего, готовые обёртки делают неправильно
@@ -26,7 +30,7 @@
     node scripts/run-all.mjs                        разработка, localhost
     node scripts/run-all.mjs --mode start           продакшн, нужна сборка
     node scripts/run-all.mjs --host 0.0.0.0         принимать извне
-    node scripts/run-all.mjs reestr klik            только названные
+    node scripts/run-all.mjs topinjector            только названные
     node scripts/run-all.mjs --force                освободить порты и запустить
 */
 
@@ -40,14 +44,7 @@ import { freePorts, isBusy, isWin } from "./ports.mjs";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 /* Папки сайтов относительно корня. Порядок задаёт порядок в выводе. */
-const DIRS = [
-  "topinjector",
-  "sites/reestr",
-  "sites/porog",
-  "sites/klik",
-  "sites/rech",
-  "sites/razgon",
-];
+const DIRS = ["topinjector"];
 
 /*
   Цвета для префиксов. Восьмицветной палитры хватает: различать нужно шесть

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { EASE_OUT } from "@/motion/tokens";
 
 /*
   Макет кабинета для первого экрана. ТЗ требует показать проекты, запросы,
@@ -99,7 +100,7 @@ export function AppPreview() {
                 key={pos}
                 initial={reduce ? false : { opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ duration: 0.28, ease: EASE_OUT }}
                 className="num text-right text-[17px] font-semibold text-[var(--accent)] sm:text-[19px]"
               >
                 {pos}
@@ -143,7 +144,7 @@ export function AppPreview() {
                       strokeWidth="2"
                       initial={reduce ? false : { pathLength: 0 }}
                       animate={{ pathLength: on ? 1 : 0 }}
-                      transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                      transition={{ duration: 0.5, ease: EASE_OUT }}
                     />
                   )}
                   <circle

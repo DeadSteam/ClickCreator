@@ -3,6 +3,7 @@
 import { track } from "@/diagnostic/analytics";
 import { TRIAL } from "@/landing/config";
 import { Appear } from "./sections";
+import { ordinal } from "@/format";
 
 /*
   Вопросы из п.19 ТЗ плюс шесть про Telegram-связку из правок.
@@ -98,7 +99,7 @@ export function Faq() {
           >
             <summary className="flex cursor-pointer list-none items-baseline gap-5 py-6">
               <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                {String(i + 1).padStart(2, "0")}
+                {ordinal(i)}
               </span>
               <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] sm:text-[19px]">
                 {item.q}

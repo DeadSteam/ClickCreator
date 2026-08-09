@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { RISK_VERDICTS, SEGMENTS, type RiskId, type SegmentId } from "@/diagnostic/scoring";
+import { EASE_OUT } from "@/motion/tokens";
 
 /*
   Привязка к результату диагностики (п.19 ТЗ на диагностику: параметры приходят
@@ -37,7 +38,7 @@ export function PersonalNote({
     <motion.aside
       initial={reduce ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
+      transition={{ duration: 0.3, delay: 0.3, ease: EASE_OUT }}
       className="mt-10 border-l-2 border-[var(--accent)] py-1 pl-5"
     >
       <p className="label text-[var(--accent)]">ваш результат диагностики</p>

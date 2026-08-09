@@ -7,8 +7,11 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { MenuButton, useMenuState } from "@/components/ui/mobile-menu";
 import { track, type DiagnosticEvent } from "@/diagnostic/analytics";
 import { botLink } from "@/landing/config";
+import { EASE_HAPTIC } from "@/motion/tokens";
+import { ordinal } from "@/format";
 
 const NAV = [
   { label: "Как работает", href: "#how" },
@@ -28,7 +31,7 @@ export const SIGNUP_URL = "https://lk.topinjector.ru/register";
 */
 export function LandingNav() {
   const [stuck, setStuck] = useState(false);
-  const [open, setOpen] = useState(false);
+  const { open, setOpen, toggle } = useMenuState();
   const reduce = useReducedMotion();
 
   useEffect(() => {
@@ -38,17 +41,10 @@ export function LandingNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
   return (
     <>
       <header
-        className={`sticky top-0 z-40 px-5 sm:px-8 ${
+        className={`sticky top-0 px-5 sm:px-8 ${open ? "z-50" : "z-40"} ${
           stuck
             ? "border-b border-[var(--rule-soft)] bg-[color-mix(in_oklab,var(--page-bg)_88%,transparent)] backdrop-blur-md"
             : ""
@@ -99,30 +95,7 @@ export function LandingNav() {
             <ThemeToggle />
           </div>
 
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Закрыть меню" : "Открыть меню"}
-            aria-expanded={open}
-            className="relative z-50 -mr-2 flex h-11 w-11 items-center justify-center lg:hidden"
-          >
-            <span className="relative block h-3 w-5">
-              <span
-                className={`absolute left-0 block h-[1.5px] w-5 [transition:top_var(--t-panel)_var(--ease-haptic),transform_var(--t-panel)_var(--ease-haptic),background-color_var(--t-panel)_var(--ease-haptic)] ${
-                  open
-                    ? "top-[5px] rotate-45 bg-[oklch(0.962_0.004_250)]"
-                    : "top-0 bg-[var(--ink)]"
-                }`}
-              />
-              <span
-                className={`absolute left-0 block h-[1.5px] w-5 [transition:top_var(--t-panel)_var(--ease-haptic),transform_var(--t-panel)_var(--ease-haptic),background-color_var(--t-panel)_var(--ease-haptic)] ${
-                  open
-                    ? "top-[5px] -rotate-45 bg-[oklch(0.962_0.004_250)]"
-                    : "top-[10px] bg-[var(--ink)]"
-                }`}
-              />
-            </span>
-          </button>
+          <MenuButton open={open} onClick={toggle} className="lg:hidden" />
         </nav>
       </header>
 
@@ -132,7 +105,7 @@ export function LandingNav() {
             initial={reduce ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+            transition={{ duration: 0.28, ease: EASE_HAPTIC }}
             className="zone-settled fixed inset-0 z-40 overflow-y-auto overscroll-contain
               px-5 pt-24 pb-28 lg:hidden"
           >
@@ -145,7 +118,7 @@ export function LandingNav() {
                     className="flex items-baseline gap-4 border-b border-[var(--rule-soft)] py-5"
                   >
                     <span className="num text-[11px] text-[var(--ink-faint)]">
-                      {String(i + 1).padStart(2, "0")}
+                      {ordinal(i)}
                     </span>
                     <span className="text-[22px] font-extrabold tracking-[-0.03em] text-[var(--ink)]">
                       {l.label}

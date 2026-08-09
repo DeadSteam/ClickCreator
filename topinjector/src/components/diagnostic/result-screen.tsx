@@ -14,6 +14,8 @@ import {
 import { track } from "@/diagnostic/analytics";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { EASE_OUT } from "@/motion/tokens";
+import { ordinal } from "@/format";
 
 /*
   Цвет уровня риска. Строится из сегмента, а не из числа: сегмент — то, что
@@ -92,7 +94,7 @@ function Gauge({ index, segment }: { index: number; segment: SegmentId }) {
           className="absolute top-0 block h-3 w-[2px] bg-[var(--ink)]"
           initial={reduce ? false : { left: "0%" }}
           animate={{ left: `${index}%` }}
-          transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1], delay: 0.2 }}
+          transition={{ duration: 0.9, ease: EASE_OUT, delay: 0.2 }}
         />
       </div>
 
@@ -258,7 +260,7 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
             <motion.p
               initial={reduce ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ duration: 0.5, ease: EASE_OUT }}
               className="num text-[72px] leading-none font-semibold sm:text-[104px]"
             >
               {result.index}
@@ -353,7 +355,7 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
                 className="grid gap-2 border-b border-[var(--rule-soft)] py-5 sm:grid-cols-[auto_1fr_2fr] sm:gap-8"
               >
                 <span className="num text-[11px] text-[var(--ink-faint)]">
-                  {String(i + 1).padStart(2, "0")}
+                  {ordinal(i)}
                 </span>
                 <h3 className="text-[17px] font-semibold tracking-[-0.02em]">{l.t}</h3>
                 <p className="max-w-[54ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">

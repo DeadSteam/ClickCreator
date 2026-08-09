@@ -16,6 +16,7 @@ import { Pricing } from "@/components/landing/pricing";
 import { DISCLAIMER, PENDING, TELEGRAM, TRIAL, TRIAL_GRANT } from "@/landing/config";
 import { orderOutcomes, personalParams, riskLine } from "@/landing/personal";
 import { CLAIM, DRIVERS } from "@/brand/brand";
+import { ordinal } from "@/format";
 
 export const metadata: Metadata = {
   title: "Сервис раннего SEO-результата для частных специалистов",
@@ -527,7 +528,7 @@ export default async function ServiceLanding({
               {DECISIONS.map((d, i) => (
                 <li key={d} className="flex gap-4 border-t border-[var(--rule-soft)] pt-3">
                   <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                    {String(i + 1).padStart(2, "0")}
+                    {ordinal(i)}
                   </span>
                   <span className="text-[15px] leading-snug text-[var(--ink-soft)]">{d}</span>
                 </li>
