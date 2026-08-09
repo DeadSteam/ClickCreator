@@ -1,7 +1,0 @@
-{
-  "database": "dolt",
-  "backend": "dolt",
-  "dolt_mode": "embedded",
-  "dolt_database": "ClickCreator",
-  "project_id": "65698f7a-3c26-429d-8970-3a7955f04270"
-}
