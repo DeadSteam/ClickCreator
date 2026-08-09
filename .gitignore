@@ -14,10 +14,42 @@
 .env*.local
 
 .DS_Store
-.idea/
 
-# Beads / Dolt files (added by bd init)
+# Редакторы и IDE
+.idea/
+.vscode/
+
+# ---------------------------------------------------------------------------
+# Рабочая обвязка: всё, что нужно для процесса разработки, но не является сайтом.
+# Эти файлы остаются на диске и продолжают работать локально — просто не едут в git.
+# ---------------------------------------------------------------------------
+
+# Агенты и харнесс качества
+.claude/
+.codex/
+.agents/
+completely.toml
+CLAUDE.md
+AGENTS.md
+**/CLAUDE.md
+**/AGENTS.md
+
+# Beads / Dolt (трекер задач)
+.beads/
 .dolt/
 *.db
 .beads-credential-key
-.beads/proxieddb/
+
+# Артефакты MCP-инструментов и браузерных прогонов
+.playwright-mcp/
+.chrome-devtools-mcp/
+*.lighthouse.json
+
+# Рабочие материалы: ТЗ, стратегии, аудиты, черновики
+*.docx
+*.doc
+*.pdf
+ТЗстраницы/
+seo-landings-audit.html
+/scratch/
+/tmp/

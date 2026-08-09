@@ -12,6 +12,11 @@
 
     "build:all": "npm run build --workspaces --if-present",
 
+    "//check": "Быстрый гейт качества: только типы. Полный гейт перед «готово» — check:full.",
+    "check": "npm run typecheck --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "check:full": "npm run typecheck --workspaces --if-present && npm run build:all",
+
     "start:all": "node scripts/run-all.mjs --mode start",
     "//serve": "Сборка и запуск в продакшне снаружи: то, что нужно на сервере.",
     "serve": "npm run build:all && node scripts/run-all.mjs --mode start --host 0.0.0.0",
