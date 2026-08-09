@@ -38,6 +38,19 @@ export type DiagnosticEvent =
   | "story_eureka_reached"
   | "story_time_on_page"
   | "story_cta_clicked"
+  /*
+    Предфрейминговые лендинги (п.20 ТЗ UX-дизайнеру). Десять версий первых
+    экранов ходят одним набором событий: различает их параметр `hypothesis`, а
+    не имя события. Иначе словарь распух бы вдесятеро, и ни один отчёт не смог
+    бы сравнить гипотезы между собой.
+  */
+  | "pf_view"
+  | "pf_leave"
+  | "pf_hero_cta_click"
+  | "pf_secondary_click"
+  | "pf_block_view"
+  | "pf_block_time"
+  | "pf_continue_click"
   /* Лендинг */
   | "landing_view"
   | "landing_leave"
