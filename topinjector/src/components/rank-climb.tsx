@@ -37,7 +37,13 @@ export function RankClimb() {
   const reduce = useReducedMotion();
 
   const count = useMotionValue(START);
-  const shown = useTransform(count, (v) => String(Math.round(v)).padStart(2, "0"));
+  /*
+    Без ведущего нуля: «03» — это запись счётчика, а не позиция. Показание
+    прибора должно читаться тем же числом, которое человек увидит в выдаче.
+    Ширина держится табличными цифрами шрифта, поэтому счётчик не дёргается,
+    когда двузначное число сменяется однозначным.
+  */
+  const shown = useTransform(count, (v) => String(Math.round(v)));
 
   useEffect(() => {
     if (!inView) return;

@@ -13,6 +13,7 @@ import {
 } from "@/diagnostic/scoring";
 import { track } from "@/diagnostic/analytics";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 /*
   Цвет уровня риска. Строится из сегмента, а не из числа: сегмент — то, что
@@ -236,12 +237,22 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
 
   const storyHref = `/istoriya?${handoffQuery(result)}`;
 
+  /*
+    Результат стоит на светлом, как и вопросы, но зоной глубже: zone-proof даёт
+    более плотные чернила и линейки, и финал читается тяжелее анкеты, не
+    переключая человека на другой материал. Графит здесь был единственным тёмным
+    экраном во всей воронке — переход к нему после двенадцати светлых вопросов
+    ощущался сменой сайта, а не выводом.
+  */
   return (
-    <div className="zone-settled min-h-dvh px-5 py-12 sm:px-8 sm:py-16">
+    <div className="zone-proof min-h-dvh px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-[52rem]">
         {/* Блок 1. Итог. */}
         <section>
-          <span className="label text-[var(--ink-faint)]">ваш индекс окна сомнения</span>
+          <div className="flex items-start justify-between gap-4">
+            <span className="label text-[var(--ink-faint)]">ваш индекс окна сомнения</span>
+            <ThemeToggle className="-mt-2" />
+          </div>
 
           <div className="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2">
             <motion.p
@@ -254,10 +265,18 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
               <span className="text-[32px] sm:text-[44px]">%</span>
             </motion.p>
 
-            <p
-              className="text-[20px] font-semibold tracking-[-0.02em] sm:text-[24px]"
-              style={{ color: RISK_COLOR[result.segment] }}
-            >
+            {/*
+              Слово набрано чернилами, уровень несёт метка перед ним. Цветным
+              словом на светлом фоне пришлось бы жертвовать либо читаемостью,
+              либо самим цветом: затемнённый до 4.5:1 золотой «средний» уходит
+              в болотный. Метка от текста не зависит и держит узнавание уровня.
+            */}
+            <p className="flex items-center gap-2.5 text-[20px] font-semibold tracking-[-0.02em] sm:text-[24px]">
+              <span
+                aria-hidden="true"
+                className="block h-3 w-3 shrink-0"
+                style={{ backgroundColor: RISK_COLOR[result.segment] }}
+              />
               {seg.risk} риск
             </p>
           </div>
@@ -459,10 +478,15 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
           </p>
 
           <Button
-            variant="quiet"
+            variant="secondary"
             size="sm"
             onClick={onRestart}
-            className="label mt-6 -ml-2 px-2"
+            icon={
+              <span aria-hidden="true" className="num text-[0.95em] leading-none">
+                ↺
+              </span>
+            }
+            className="mt-6"
           >
             Пройти заново
           </Button>

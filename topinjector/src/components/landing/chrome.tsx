@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { track, type DiagnosticEvent } from "@/diagnostic/analytics";
 import { botLink } from "@/landing/config";
 
@@ -49,7 +50,7 @@ export function LandingNav() {
       <header
         className={`sticky top-0 z-40 px-5 sm:px-8 ${
           stuck
-            ? "border-b border-[var(--rule-soft)] bg-[oklch(0.905_0.006_240/0.88)] backdrop-blur-md"
+            ? "border-b border-[var(--rule-soft)] bg-[color-mix(in_oklab,var(--page-bg)_88%,transparent)] backdrop-blur-md"
             : ""
         } [transition:background-color_var(--t-panel)_var(--ease-micro),border-color_var(--t-panel)_var(--ease-micro)]`}
       >
@@ -90,6 +91,12 @@ export function LandingNav() {
             >
               Получить лимиты
             </Button>
+
+            <ThemeToggle />
+          </div>
+
+          <div className="ml-auto flex items-center lg:hidden">
+            <ThemeToggle />
           </div>
 
           <button

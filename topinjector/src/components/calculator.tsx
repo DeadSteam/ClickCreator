@@ -62,14 +62,14 @@ export function Calculator() {
                 >
                   <span
                     className={`text-[15px] font-semibold ${
-                      active ? "text-[var(--color-steel-100)]" : "text-[var(--ink-soft)]"
+                      active ? "text-[var(--on-ink)]" : "text-[var(--ink-soft)]"
                     }`}
                   >
                     {s.label}
                   </span>
                   <span
                     className={`num text-[13px] ${
-                      active ? "text-[var(--accent)]" : "text-[var(--ink-faint)]"
+                      active ? "text-[var(--accent-on-ink)]" : "text-[var(--ink-faint)]"
                     }`}
                   >
                     {s.rate} ₽/день

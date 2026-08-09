@@ -33,7 +33,7 @@ export function DoubtWindow() {
             }}
           >
             {/* Подложка: поверх штриховки подпись иначе теряет контур. */}
-            <span className="label bg-[oklch(0.958_0.004_250)] px-2 py-1 text-center font-semibold text-[var(--ink)]">
+            <span className="label bg-[var(--reading-bg)] px-2 py-1 text-center font-semibold text-[var(--ink)]">
               окно сомнения
             </span>
           </div>

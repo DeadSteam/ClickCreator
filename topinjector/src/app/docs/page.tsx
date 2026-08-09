@@ -20,6 +20,24 @@ export const metadata: Metadata = {
   сломанный сайт.
 */
 
+const READY = [
+  {
+    t: "Ограничения и риски",
+    d: "Условия применения, границы сценария, где сервис не подойдёт",
+    href: "/limits",
+  },
+  {
+    t: "Тестовый период",
+    d: "Что входит в бесплатный доступ и как он заканчивается",
+    href: "/trial-terms",
+  },
+  {
+    t: "Соглашение",
+    d: "Расчёты, ответственность сторон, порядок возврата",
+    href: "/terms",
+  },
+];
+
 const SECTIONS = [
   {
     t: "Первый запуск",
@@ -62,28 +80,37 @@ export default function DocsPage() {
     <LegalPage
       title="База знаний"
       updated="февраля 2026"
+      kicker="справочник"
+      toc={false}
       pending={false}
       intro="Инструкции по работе с сервисом. Раздел наполняется вместе с продуктом: ниже — структура и то, что уже доступно."
     >
       <Clause title="Что уже доступно">
         <Para>
-          Условия применения, границы сценария и известные риски описаны на
-          странице{" "}
-          <Link href="/limits" className="underline underline-offset-2 hover:text-[var(--ink)]">
-            «Ограничения и риски»
-          </Link>
-          . Условия бесплатного доступа — на странице{" "}
-          <Link
-            href="/trial-terms"
-            className="underline underline-offset-2 hover:text-[var(--ink)]"
-          >
-            «Условия тестового периода»
-          </Link>
-          .
+          Пока статьи готовятся, ответы на большинство вопросов уже есть в
+          документах. Помощь при первом запуске входит в тестовый период.
         </Para>
+
+        {/*
+          Три ответа карточками, а не абзацем со ссылками внутри. Ссылка,
+          вшитая в предложение, требует прочитать всё предложение, чтобы
+          понять, куда она ведёт; карточка отвечает на это заголовком.
+        */}
+        <div className="mt-2 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-3">
+          {READY.map((r) => (
+            <Link key={r.href} href={r.href} className="cell block p-5">
+              <span className="block text-[15px] font-semibold tracking-[-0.01em]">
+                {r.t}
+              </span>
+              <span className="mt-1.5 block text-[13px] leading-snug text-[var(--ink-soft)]">
+                {r.d}
+              </span>
+            </Link>
+          ))}
+        </div>
+
         <Para>
-          Помощь при первом запуске входит в тестовый период: напишите в
-          Telegram{" "}
+          Не нашли ответ — напишите в Telegram{" "}
           <a
             href="https://t.me/topinjector"
             className="underline underline-offset-2 hover:text-[var(--ink)]"
@@ -94,23 +121,43 @@ export default function DocsPage() {
         </Para>
       </Clause>
 
-      {SECTIONS.map((s) => (
-        <Clause key={s.t} title={s.t}>
-          <ul className="flex flex-col">
-            {s.items.map((i) => (
-              <li
-                key={i}
-                className="flex items-baseline gap-4 border-t border-[var(--rule-soft)] py-3 text-[16px] leading-snug text-[var(--ink-soft)] first:border-t-0 first:pt-0"
-              >
-                <span className="flex-1">{i}</span>
-                <span className="label shrink-0 text-[var(--ink-faint)]">
-                  готовится
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Clause>
-      ))}
+      {/*
+        Разделы базы знаний идут сеткой ячеек, а не колонкой заголовков со
+        списками: это оглавление будущего справочника, и увидеть его целиком
+        полезнее, чем прочитать по порядку. Каждая тема помечена статусом —
+        раздел, который молча пуст, читается как сломанный.
+      */}
+      <Clause title="Разделы справочника">
+        <Para>
+          Структура повторяет реальный путь работы с сервисом: от первого
+          запуска до разговора с клиентом о результате.
+        </Para>
+
+        <div className="mt-2 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+          {SECTIONS.map((s) => (
+            <div key={s.t} className="cell p-6">
+              <h3 className="text-[16px] font-semibold tracking-[-0.01em]">{s.t}</h3>
+              <ul className="mt-4 flex flex-col gap-2.5">
+                {s.items.map((i) => (
+                  <li
+                    key={i}
+                    className="flex items-baseline gap-3 text-[14px] leading-snug text-[var(--ink-soft)]"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-[7px] block h-[5px] w-[5px] shrink-0 rounded-full bg-[var(--rule)]"
+                    />
+                    <span className="flex-1">{i}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="label mt-5 border-t border-[var(--rule-soft)] pt-4 text-[var(--ink-faint)]">
+                готовится
+              </p>
+            </div>
+          ))}
+        </div>
+      </Clause>
     </LegalPage>
   );
 }

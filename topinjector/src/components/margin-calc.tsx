@@ -23,7 +23,7 @@ export function MarginCalc() {
         <label htmlFor="clients" className="flex items-baseline justify-between gap-4">
           <span className="label text-[var(--ink-faint)]">клиентов на продвижении</span>
           <span className="num text-[22px] leading-none font-semibold text-[var(--ink)]">
-            {String(clients).padStart(2, "0")}
+            {clients}
           </span>
         </label>
         <input

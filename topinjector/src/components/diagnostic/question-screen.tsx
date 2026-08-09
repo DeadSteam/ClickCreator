@@ -93,11 +93,16 @@ export function QuestionScreen({
             чтобы не сообщать ни о чём.
           */}
           <Button
-            variant="quiet"
+            variant="secondary"
             size="sm"
             onClick={onBack}
             disabled={!canBack}
-            className="label -mr-2 px-2 disabled:opacity-0"
+            icon={
+              <span aria-hidden="true" className="num text-[0.9em] leading-none">
+                ←
+              </span>
+            }
+            className="-mr-1 disabled:opacity-0"
           >
             Назад
           </Button>

@@ -31,6 +31,17 @@ uniform float uTime;
 uniform float uAspect;
 uniform vec3 uPoints[${TRAIL}];
 
+/*
+  Палитра приходит извне, а не зашита в шейдер: поверхность непрозрачна и сама
+  красит первый экран. С зашитой светлой палитрой тёмная тема получала светлую
+  заливку поверх собственного фона, и заголовок пропадал целиком.
+*/
+uniform vec3 uCold;
+uniform vec3 uWarm;
+uniform vec3 uHot;
+/* Знак контурной линии: на светлом она темнее заливки, на тёмном светлее. */
+uniform float uLine;
+
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
@@ -108,9 +119,9 @@ void main() {
     тёплом. Поверхность живёт на первом экране, где дуга ещё холодная, поэтому
     греется только до середины шкалы.
   */
-  vec3 col = vec3(0.878, 0.886, 0.898);
-  col = mix(col, vec3(0.866, 0.806, 0.716), smoothstep(0.02, 0.36, level));
-  col = mix(col, vec3(0.860, 0.678, 0.530), smoothstep(0.34, 0.70, level));
+  vec3 col = uCold;
+  col = mix(col, uWarm, smoothstep(0.02, 0.36, level));
+  col = mix(col, uHot, smoothstep(0.34, 0.70, level));
 
   /*
     Контурные линии стоят на границах ступеней. Их вес поднят относительно
@@ -119,7 +130,7 @@ void main() {
     рисуются.
   */
   float line = (1.0 - smoothstep(0.0, 0.05, frac)) * step(1.0, idx);
-  col -= line * 0.062;
+  col += line * uLine;
 
   /* Шлифовальное зерно, чтобы металл никогда не читался плоской заливкой. */
   col += (hash(gl_FragCoord.xy * 0.7 + uTime) - 0.5) * 0.016;
@@ -178,6 +189,40 @@ export function LightSurface({ className = "" }: { className?: string }) {
     const aPos = gl.getAttribLocation(prog, "aPos");
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    /*
+      Две палитры одного материала. Тёплый конец в тёмной теме темнее холодного
+      по светлоте, но насыщеннее: греется он всё равно, просто вглубь, а не
+      вверх — иначе на тёмном фоне пятно читалось бы прожектором.
+    */
+    const PALETTE = {
+      light: {
+        cold: [0.878, 0.886, 0.898],
+        warm: [0.866, 0.806, 0.716],
+        hot: [0.860, 0.678, 0.530],
+        line: -0.062,
+      },
+      dark: {
+        cold: [0.097, 0.118, 0.139],
+        warm: [0.245, 0.158, 0.071],
+        hot: [0.404, 0.220, 0.046],
+        line: 0.05,
+      },
+    };
+    /*
+      Палитра берётся из атрибута на каждом кадре, а не запоминается при
+      монтировании. Подписка на изменение казалась достаточной, но вкладка,
+      пережившая переключение темы где-то ещё, оставалась со светлой заливкой
+      поверх тёмного фона — и первый экран пропадал целиком. Чтение одного
+      атрибута стоит дешевле, чем любой сценарий, в котором они расходятся.
+    */
+    const currentPalette = () =>
+      document.documentElement.dataset.theme === "dark" ? PALETTE.dark : PALETTE.light;
+
+    const uCold = gl.getUniformLocation(prog, "uCold");
+    const uWarm = gl.getUniformLocation(prog, "uWarm");
+    const uHot = gl.getUniformLocation(prog, "uHot");
+    const uLine = gl.getUniformLocation(prog, "uLine");
 
     const uRes = gl.getUniformLocation(prog, "uRes");
     const uTime = gl.getUniformLocation(prog, "uTime");
@@ -251,6 +296,20 @@ export function LightSurface({ className = "" }: { className?: string }) {
     const start = last;
     let drift = 0;
 
+    /* Отрисовка отделена от цикла: её же зовёт смена темы на паузе. */
+    const draw = (now: number) => {
+      const palette = currentPalette();
+      gl.uniform3fv(uCold, palette.cold);
+      gl.uniform3fv(uWarm, palette.warm);
+      gl.uniform3fv(uHot, palette.hot);
+      gl.uniform1f(uLine, palette.line);
+      gl.uniform2f(uRes, data.w, data.h);
+      gl.uniform1f(uTime, (now - start) / 1000);
+      gl.uniform1f(uAspect, data.aspect);
+      gl.uniform3fv(uPoints, pts);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
     const frame = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
@@ -274,12 +333,7 @@ export function LightSurface({ className = "" }: { className?: string }) {
         head = (head + 1) % TRAIL;
       }
 
-      gl.uniform2f(uRes, data.w, data.h);
-      gl.uniform1f(uTime, (now - start) / 1000);
-      gl.uniform1f(uAspect, data.aspect);
-      gl.uniform3fv(uPoints, pts);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-
+      draw(now);
       raf = requestAnimationFrame(frame);
     };
 
@@ -304,10 +358,24 @@ export function LightSurface({ className = "" }: { className?: string }) {
     const onVisibility = () => (document.hidden ? pause() : play());
     document.addEventListener("visibilitychange", onVisibility);
 
+    /*
+      Тему могут переключить, пока цикл стоит на паузе — например на длинной
+      странице, где первый экран уже уехал вверх. Один принудительный кадр
+      оставляет поверхность в согласии с фоном к моменту возврата.
+    */
+    const themeWatch = new MutationObserver(() => {
+      if (!running) draw(performance.now());
+    });
+    themeWatch.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
     if (fine) canvas.style.opacity = "1";
 
     return () => {
       pause();
+      themeWatch.disconnect();
       io.disconnect();
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);

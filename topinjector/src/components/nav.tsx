@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Logo } from "./logo";
 import { Button } from "./ui/button";
+import { ThemeToggle } from "./ui/theme-toggle";
 
 export type NavLink = { label: string; href: string };
 
@@ -75,6 +76,12 @@ export function Nav({
             <Button size="sm" href={ctaHref}>
               {ctaLabel}
             </Button>
+
+            <ThemeToggle />
+          </div>
+
+          <div className="ml-auto flex items-center lg:hidden">
+            <ThemeToggle />
           </div>
 
           <button
@@ -112,7 +119,7 @@ export function Nav({
             exit={reduce ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
             className="zone-settled fixed inset-0 z-40 overflow-y-auto overscroll-contain
-              bg-[oklch(0.172_0.014_252)] px-5 pt-24 pb-10 lg:hidden"
+              px-5 pt-24 pb-10 lg:hidden"
           >
             <ul className="flex flex-col">
               {[...links, crossLink].map((l, i) => (

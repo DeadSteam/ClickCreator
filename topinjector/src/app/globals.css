@@ -63,15 +63,25 @@
     профессиональный аудит в результат теста из соцсети.
 
     Каждый уровень уведён от обоих брендовых цветов: низкий в бирюзовую сторону
-    от зелёного действия, высокий в жёлтую от оранжевого акцента, критический
+    от зелёного действия, высокий в оранжево-красную от акцента, критический
     глубже в красный. Иначе «низкий риск» читается как кнопка, а «высокий» — как
-    обычное выделение текста. Светлота выставлена так, чтобы каждый цвет держал
-    4.5:1 на графите, где шкала и живёт.
+    обычное выделение текста.
+
+    Светлота посчитана под светлый фон: шкала жила на графите и была набрана
+    светлыми тонами, а на светлом они давали 1.3-2.7:1 — на месте шкалы
+    оставалась почти пустая полоса. Средний уровень уведён с жёлто-зелёного тона
+    на золотой: любой жёлтый, затемнённый до читаемости на светлом, становится
+    болотным, и шкала риска пачкала страницу коричневым.
+
+    Критический держит 4.5:1 в каждой светлой зоне — он единственный работает
+    ещё и текстом (ошибки формы, опасные ветки схем в статье). Остальные три —
+    только заливка: рядом с ними подпись набрана чернилами, и цвет отвечает лишь
+    за узнавание уровня, а не за чтение слова.
   */
-  --color-risk-low: oklch(0.672 0.082 192);
-  --color-risk-medium: oklch(0.705 0.090 104);
-  --color-risk-high: oklch(0.782 0.108 86);
-  --color-risk-critical: oklch(0.612 0.148 18);
+  --color-risk-low: oklch(0.560 0.085 195);
+  --color-risk-medium: oklch(0.640 0.125 78);
+  --color-risk-high: oklch(0.575 0.155 52);
+  --color-risk-critical: oklch(0.485 0.190 25);
 
   --font-sans: var(--font-onest), system-ui, sans-serif;
   --font-mono: var(--font-martian), ui-monospace, monospace;
@@ -106,8 +116,47 @@
 }
 
 @layer base {
+  /*
+    ТРИ ПОВЕРХНОСТИ.
+
+    Каждая страница стоит на одной из них, и тема переключает именно их, а не
+    цвета по месту. Раньше фоны были вписаны в разметку значениями oklch —
+    и любая смена темы означала бы обход всех компонентов.
+
+    --page-bg     общий фон сайта;
+    --reading-bg  бумага статьи: светлее общего фона, длинный текст на ней
+                  читается спокойнее;
+    --settled-bg  зона установленного доверия. В светлой теме это графит и
+                  единственное тёмное место страницы, в тёмной — наоборот,
+                  приподнятая поверхность светлее фона. Роль одна: выделенный
+                  участок, который держит финал и главные действия.
+  */
+  :root {
+    --page-bg: oklch(0.905 0.006 240);
+    --reading-bg: oklch(0.958 0.004 250);
+    --settled-bg: var(--color-graphite);
+    /* Чернила на settled-поверхности: их берут элементы вне зоны — рейка, скип-ссылка. */
+    --settled-ink: oklch(0.962 0.004 250);
+
+    /*
+      Инверсия: заливка цветом --ink. Так отмечается выбранная строка расчёта и
+      выбранный ответ анкеты. Что писать поверх такой заливки — вопрос темы, а
+      не зоны: в светлой она тёмная, в тёмной почти белая, и один и тот же
+      светлый текст на ней однажды пропадает целиком.
+
+      Акцент здесь тоже свой. Обычный --accent на чернильной заливке давал
+      2.9:1 — цена под выбранной скоростью не читалась ни в одной теме.
+    */
+    --on-ink: oklch(0.905 0.006 240);
+    --accent-on-ink: oklch(0.800 0.155 62);
+
+    /* Приподнятая клавиша: всегда на ступень светлее фона, в любой теме. */
+    --raised-bg: oklch(0.965 0.003 250);
+    color-scheme: light;
+  }
+
   html {
-    background-color: var(--color-steel-200);
+    background-color: var(--page-bg);
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -128,6 +177,7 @@
 
   body {
     color: var(--color-steel-900);
+    background-color: var(--page-bg);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
@@ -285,7 +335,7 @@
     остаётся общим для всего сайта.
   */
   .brand-flat {
-    background-color: oklch(0.905 0.006 240);
+    background-color: var(--page-bg);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='t' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncG type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncB type='linear' slope='0.16' intercept='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E");
     background-size: 600px 600px;
     background-blend-mode: soft-light;
@@ -389,8 +439,8 @@
     что стык остаётся невидимым при любой длине страницы.
   */
   .zone-settled {
-    background-color: var(--color-graphite);
-    --bg-node: var(--color-graphite);
+    background-color: var(--settled-bg);
+    --bg-node: var(--settled-bg);
     --ink: oklch(0.962 0.004 250);
     --ink-soft: oklch(0.808 0.010 248);
     --ink-faint: oklch(0.640 0.014 248);
@@ -421,21 +471,137 @@
   }
 
   /*
+    ТЁМНАЯ ТЕМА.
+
+    Ставится атрибутом на <html> — inline-скрипт в разметке успевает выставить
+    его до первой отрисовки, поэтому светлой вспышки при загрузке нет.
+
+    Зоны сохраняют имена и смысл, но перестают различаться по светлоте фона:
+    в тёмной теме дуга идёт в узком диапазоне, и четыре ступени графита на нём
+    не читались бы как стадии — они читались бы как неровная заливка. Порядок
+    держат чернила и линейки, которые уплотняются к низу страницы.
+
+    Зона установленного доверия здесь единственная переворачивается: в светлой
+    теме она темнее фона, в тёмной — светлее. Роль остаётся той же (выделенный
+    участок под финал и главные действия), меняется только способ выделения,
+    потому что темнее тёмного фона выделять уже нечем.
+  */
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --page-bg: oklch(0.205 0.014 251);
+    --reading-bg: oklch(0.185 0.014 252);
+    --settled-bg: oklch(0.265 0.013 250);
+    --on-ink: oklch(0.205 0.014 251);
+    --accent-on-ink: oklch(0.446 0.156 44);
+    --raised-bg: oklch(0.352 0.012 250);
+  }
+
+  /* База текста для всего, что стоит вне зон. */
+  [data-theme="dark"] body {
+    color: oklch(0.962 0.004 250);
+  }
+
+  [data-theme="dark"] .zone-doubt,
+  [data-theme="dark"] .zone-signal,
+  [data-theme="dark"] .zone-proof,
+  [data-theme="dark"] .zone-settled {
+    --ink: oklch(0.962 0.004 250);
+    --accent: oklch(0.800 0.155 62);
+    --positive: oklch(0.800 0.165 150);
+    --btn-bg: oklch(0.727 0.192 146);
+    --btn-ink: oklch(0.172 0.014 252);
+    --btn-edge: oklch(0.620 0.168 147);
+    --btn-sheen: oklch(0.812 0.162 151);
+    --btn-glow: oklch(0.727 0.192 146 / 0.26);
+    --btn-ring: oklch(0.800 0.165 150);
+    --btn-ghost-bg: oklch(0.962 0.004 250 / 0.09);
+  }
+
+  /* Ступени зон: к низу страницы текст и линейки набирают плотность. */
+  [data-theme="dark"] .zone-doubt {
+    --bg-node: var(--page-bg);
+    --ink-soft: oklch(0.775 0.010 248);
+    --ink-faint: oklch(0.618 0.014 248);
+    --rule: oklch(0.962 0.004 250 / 0.17);
+    --rule-soft: oklch(0.962 0.004 250 / 0.09);
+    --inset: oklch(0.962 0.004 250 / 0.04);
+  }
+
+  [data-theme="dark"] .zone-signal {
+    --bg-node: var(--page-bg);
+    --ink-soft: oklch(0.792 0.010 248);
+    --ink-faint: oklch(0.630 0.014 248);
+    --rule: oklch(0.962 0.004 250 / 0.20);
+    --rule-soft: oklch(0.962 0.004 250 / 0.11);
+    --inset: oklch(0.962 0.004 250 / 0.048);
+  }
+
+  [data-theme="dark"] .zone-proof {
+    --bg-node: var(--page-bg);
+    --ink-soft: oklch(0.808 0.010 248);
+    --ink-faint: oklch(0.640 0.014 248);
+    --rule: oklch(0.962 0.004 250 / 0.22);
+    --rule-soft: oklch(0.962 0.004 250 / 0.12);
+    --inset: oklch(0.962 0.004 250 / 0.055);
+  }
+
+  [data-theme="dark"] .zone-settled {
+    --ink-soft: oklch(0.815 0.010 248);
+    --ink-faint: oklch(0.655 0.014 248);
+    --rule: oklch(0.962 0.004 250 / 0.24);
+    --rule-soft: oklch(0.962 0.004 250 / 0.13);
+    --inset: oklch(0.962 0.004 250 / 0.06);
+  }
+
+  /*
+    Шкала риска возвращается к светлым тонам: на тёмном фоне они и были
+    рассчитаны, и золотой средний уровень здесь не уходит в болото, потому что
+    его не приходится затемнять. Критический чуть светлее исходного — он один
+    работает текстом и должен держать 4.5:1 даже на приподнятой поверхности.
+  */
+  [data-theme="dark"] {
+    --color-risk-low: oklch(0.672 0.082 192);
+    --color-risk-medium: oklch(0.705 0.090 104);
+    --color-risk-high: oklch(0.782 0.108 86);
+    --color-risk-critical: oklch(0.648 0.152 20);
+  }
+
+  /*
+    Дуга в тёмной теме идёт в собственном диапазоне и не гаснет в графит:
+    гаснуть ей теперь некуда, а сохранить движение сверху вниз нужно.
+  */
+  [data-theme="dark"] .brand-ramp {
+    background-color: oklch(0.175 0.014 252);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='t' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.022' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncG type='linear' slope='0.16' intercept='0.42'/%3E%3CfeFuncB type='linear' slope='0.16' intercept='0.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
+      linear-gradient(
+        180deg,
+        oklch(0.232 0.013 249) 0%,
+        oklch(0.222 0.013 250) 30%,
+        oklch(0.208 0.014 251) 58%,
+        oklch(0.192 0.014 251) 80%,
+        oklch(0.175 0.014 252) 94%,
+        oklch(0.175 0.014 252) 100%
+      );
+  }
+
+  /*
     Вход в графит. Ставится на первую секцию zone-settled на странице: сплошная
     заливка встык с дугой дала бы видимый горизонт ровно там, где страница
     просто сменила секцию. Двести пикселей растушёвки прячут стык, где бы он ни
     оказался, поэтому длину страниц можно менять, не пересчитывая проценты
     градиента.
 
-    Прозрачность берётся от самого графита, а не от ключевого слова transparent:
-    оно раскрывается в прозрачный чёрный, и интерполяция уводит переход в грязь.
+    Прозрачность берётся от самой поверхности, а не от ключевого слова
+    transparent: оно раскрывается в прозрачный чёрный, и интерполяция уводит
+    переход в грязь.
   */
   .settle-in {
     background-color: transparent;
     background-image: linear-gradient(
       180deg,
       oklch(0.172 0.014 252 / 0) 0,
-      var(--color-graphite) 200px
+      var(--settled-bg) 200px
     );
   }
 
@@ -598,9 +764,10 @@
   }
 
   /*
-    Третья ступень — без корпуса. Для «Назад», «Пройти заново» и прочих
-    действий, которым нельзя конкурировать с главным: они должны быть найдены,
-    когда их ищут, и не притягивать внимание, когда не ищут.
+    Третья ступень — без корпуса. Для действий, которым нельзя конкурировать с
+    главным. Навигация сюда не относится: «Назад» и «Пройти заново» без корпуса
+    читались как подпись, а не как кнопка, и человек не понимал, что по ним
+    можно нажать. Тихими остаются только действия внутри уже понятного блока.
   */
   .btn-quiet {
     background-color: transparent;
@@ -711,7 +878,7 @@
   */
   .zone-settled.cell,
   .zone-settled .cell {
-    background: var(--color-graphite);
+    background: var(--settled-bg);
   }
 
   .zone-settled.cell::before,
@@ -741,7 +908,7 @@
 
     .zone-settled.cell:hover,
     .zone-settled .cell:hover {
-      background: color-mix(in oklab, var(--color-graphite) 88%, var(--ink) 12%);
+      background: color-mix(in oklab, var(--settled-bg) 88%, var(--ink) 12%);
     }
 
     .cell:hover::after {

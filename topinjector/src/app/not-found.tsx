@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 */
 export default function NotFound() {
   return (
-    <div className="zone-settled flex min-h-dvh flex-col bg-[oklch(0.172_0.014_252)] px-5 py-8 sm:px-8">
+    <div className="zone-proof flex min-h-dvh flex-col px-5 py-8 sm:px-8">
       <header>
         <Link href="/" aria-label="TopInjector, на главную">
           <Logo />

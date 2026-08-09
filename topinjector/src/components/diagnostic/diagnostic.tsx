@@ -9,6 +9,7 @@ import { track } from "@/diagnostic/analytics";
 import { clear, load, save } from "@/diagnostic/storage";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { QuestionScreen } from "./question-screen";
 import { ResultScreen } from "./result-screen";
 import { WindowFigure } from "./window-figure";
@@ -195,8 +196,9 @@ function StartScreen({ kicker, onStart }: { kicker: string; onStart: () => void 
         Логотип без навигации. Меню, тарифы и ссылки на странице диагностики
         запрещены п.3 ТЗ: любой выход отсюда — это потерянное прохождение.
       */}
-      <header className="mx-auto max-w-[68rem]">
+      <header className="mx-auto flex max-w-[68rem] items-center justify-between gap-4">
         <Logo />
+        <ThemeToggle />
       </header>
 
       <main className="mx-auto mt-12 grid max-w-[68rem] gap-14 sm:mt-20 lg:grid-cols-[1fr_0.78fr] lg:items-start lg:gap-16">

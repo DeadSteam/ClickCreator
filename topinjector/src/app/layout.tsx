@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Onest, Martian_Mono } from "next/font/google";
 import "./globals.css";
+import { THEME_SCRIPT, ThemeSync } from "@/components/ui/theme-toggle";
 
 /* Two families, two jobs: Onest speaks, Martian Mono measures. */
 const onest = Onest({
@@ -33,16 +34,30 @@ export const metadata: Metadata = {
   openGraph: { type: "website", locale: "ru_RU", siteName: "TopInjector" },
 };
 
+/*
+  Цвет системной обводки браузера идёт за темой. Одно фиксированное значение
+  оставляло светлую полосу над тёмной страницей на мобильных.
+*/
 export const viewport: Viewport = {
-  themeColor: "#dcdee2",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#dcdee2" },
+    { media: "(prefers-color-scheme: dark)", color: "#12181f" },
+  ],
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ru" className={`${onest.variable} ${martian.variable}`}>
+    <html lang="ru" className={`${onest.variable} ${martian.variable}`} suppressHydrationWarning>
+      <head>
+        {/*
+          Тема выставляется до первой отрисовки. Через React это невозможно:
+          разметка уходит с сервера, где сохранённого выбора не видно, и любая
+          тёмная страница начиналась бы со вспышки светлой.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="dither min-h-dvh antialiased">
         {/*
           The page runs to roughly nine thousand pixels. Without this a keyboard
@@ -57,13 +72,14 @@ export default function RootLayout({
         <a
           href="#main"
           className="sr-only z-50 focus:not-sr-only focus:fixed focus:top-3 focus:left-3
-            focus:rounded-[var(--radius-btn)] focus:bg-[oklch(0.172_0.014_252)]
+            focus:rounded-[var(--radius-btn)] focus:bg-[var(--settled-bg)]
             focus:px-5 focus:py-3.5 focus:text-[14px] focus:font-semibold
-            focus:text-[oklch(0.962_0.004_250)]
+            focus:text-[var(--settled-ink)]
             focus:shadow-[0_2px_0_oklch(0.100_0.012_252)]"
         >
           Перейти к содержимому
         </a>
+        <ThemeSync />
         {children}
       </body>
     </html>

@@ -96,8 +96,8 @@ export function BeforeAfter() {
           aria-hidden="true"
         >
           <span className="absolute top-1/2 left-1/2 flex h-10 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-[var(--ink)]">
-            <span className="block h-3 w-px bg-[var(--btn-ink)]" />
-            <span className="ml-1 block h-3 w-px bg-[var(--btn-ink)]" />
+            <span className="block h-3 w-px bg-[var(--on-ink)]" />
+            <span className="ml-1 block h-3 w-px bg-[var(--on-ink)]" />
           </span>
         </div>
 

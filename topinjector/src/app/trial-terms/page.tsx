@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Clause, Items, LegalPage, Para } from "@/components/legal/legal-page";
+import { Clause, Defs, Items, LegalPage, Note, Para } from "@/components/legal/legal-page";
 import { TELEGRAM, TRIAL, TRIAL_GRANT } from "@/landing/config";
 
 export const metadata: Metadata = {
@@ -37,35 +37,34 @@ export default function TrialTermsPage() {
           Подписка является условием получения бесплатного пакета и должна
           сохраняться, пока действуют начисленные лимиты.
         </Para>
-        <Para>{TRIAL.onUnsubscribe}</Para>
-        <Para>{TRIAL.repeatBonusNote}</Para>
+        {/*
+          Два условия, из-за которых чаще всего возникает спор: что происходит
+          при отписке и сколько раз даётся бонус. В общем потоке абзацев их
+          пропускают, а потом считают, что их скрыли.
+        */}
+        <Note>{TRIAL.onUnsubscribe}</Note>
+        <Note>{TRIAL.repeatBonusNote}</Note>
         <Para>
           На платных тарифах подписка на канал не требуется.
         </Para>
       </Clause>
       <Clause title="Основные параметры">
-        <dl className="flex flex-col">
-          {[
-            ["Длительность", `${TRIAL.days} дней с момента регистрации`],
-            [
-              "Лимиты",
-              `до ${TRIAL.projects} проекта и ${TRIAL.queries} запросов`,
-            ],
-            [
-              "Банковская карта",
-              TRIAL.cardRequired ? "требуется при регистрации" : "не требуется",
-            ],
-            ["Стоимость", "бесплатно"],
-          ].map(([k, v]) => (
-            <div
-              key={k}
-              className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-[var(--rule-soft)] py-3 first:border-t-0 first:pt-0"
-            >
-              <dt className="label text-[var(--ink-faint)]">{k}</dt>
-              <dd className="text-[16px] font-semibold">{v}</dd>
-            </div>
-          ))}
-        </dl>
+        <Defs
+          items={[
+            { t: "Длительность", d: `${TRIAL.days} дней с момента регистрации` },
+            {
+              t: "Лимиты",
+              d: `до ${TRIAL.projects} проекта и ${TRIAL.queries} запросов`,
+            },
+            {
+              t: "Банковская карта",
+              d: TRIAL.cardRequired
+                ? "требуется при регистрации"
+                : "не требуется",
+            },
+            { t: "Стоимость", d: "бесплатно" },
+          ]}
+        />
       </Clause>
 
       <Clause title="Что входит">

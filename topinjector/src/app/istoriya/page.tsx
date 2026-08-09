@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { StoryAnalytics } from "@/components/story/story-analytics";
 import { StoryCta } from "@/components/story/story-cta";
 import { PersonalNote } from "@/components/story/personal-note";
@@ -45,7 +46,7 @@ export default async function StoryPage({
   };
 
   return (
-    <div className="zone-doubt min-h-dvh bg-[oklch(0.958_0.004_250)]">
+    <div className="zone-doubt min-h-dvh bg-[var(--reading-bg)]">
       <StoryAnalytics />
 
       {/*
@@ -53,8 +54,9 @@ export default async function StoryPage({
         меню, боковые панели, рекомендации и любые ссылки: всё внимание
         принадлежит тексту, а единственный выход стоит в конце.
       */}
-      <header className="mx-auto max-w-[47rem] px-5 pt-8 sm:px-8">
+      <header className="mx-auto flex max-w-[47rem] items-center justify-between gap-4 px-5 pt-8 sm:px-8">
         <Logo />
+        <ThemeToggle />
       </header>
 
       <main
