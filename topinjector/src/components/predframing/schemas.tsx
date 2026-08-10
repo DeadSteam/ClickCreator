@@ -102,6 +102,71 @@ export function AdvantageDrift() {
 }
 
 /**
+ * Визуал Hero гипотезы №1: два рабочих маршрута из одной точки. ТЗ прямо
+ * запрещает объявлять победителя на этом экране — поэтому оба ряда набраны
+ * одним весом, расхождение выражено только положением подписи «дальше», а не
+ * цветом или зачёркиванием. Маркер Topinjector стоит отдельной строкой снизу:
+ * это не третий равноправный маршрут, а подсказка, что оба можно свести в один
+ * тест.
+ */
+export function HeroCompare() {
+  const ROWS: { title: string; steps: string[] }[] = [
+    { title: "Текущий процесс", steps: ["Задача", "Привычный сценарий", "Результат"] },
+    { title: "Альтернативный процесс", steps: ["Задача", "Ещё не проверенный сценарий", "Результат"] },
+  ];
+
+  return (
+    <figure className="border border-[var(--rule-soft)] bg-[var(--reading-bg)] p-6 sm:p-8">
+      <p className="label text-[var(--ink-faint)]">с чего начинается проверка</p>
+
+      <div className="mt-7 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+        {ROWS.map((row, ri) => (
+          <Fade key={row.title} delay={ri * 0.1} className="cell">
+            <div className="h-full p-5 sm:p-6">
+              <p className="text-[14px] font-semibold tracking-[-0.01em] text-[var(--ink)] sm:text-[15px]">
+                {row.title}
+              </p>
+              <ol className="mt-5 flex flex-col items-start">
+                {row.steps.map((s, i) => (
+                  <FadeItem key={s} delay={0.1 + i * 0.08} className="w-full">
+                    {i > 0 && (
+                      <span aria-hidden="true" className="ml-[8px] block h-4 w-px bg-[var(--rule)]" />
+                    )}
+                    <span className="inline-flex items-center gap-3 text-[14px] leading-snug text-[var(--ink-soft)] sm:text-[15px]">
+                      <span
+                        aria-hidden="true"
+                        className="ml-[5px] block h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--ink-faint)]"
+                      />
+                      {s}
+                    </span>
+                  </FadeItem>
+                ))}
+              </ol>
+            </div>
+          </Fade>
+        ))}
+      </div>
+
+      <Fade delay={0.3}>
+        <div className="mt-px flex items-center gap-3 border border-t-0 border-[var(--rule-soft)] bg-[var(--inset)] p-5 sm:p-6">
+          <span aria-hidden="true" className="block h-[3px] w-6 shrink-0 bg-[var(--accent)]" />
+          <p className="text-[13px] leading-snug text-[var(--ink-soft)] sm:text-[14px]">
+            <span className="font-semibold text-[var(--ink)]">Topinjector</span> — проверить
+            альтернативный маршрут параллельно, не отказываясь от текущего
+          </p>
+        </div>
+      </Fade>
+
+      <figcaption className="mt-6 border-t border-[var(--rule-soft)] pt-5 text-[13px] leading-relaxed text-[var(--ink-faint)] sm:text-[14px]">
+        В начале маршруты почти не отличаются. Разница в длине цикла и числе
+        контрольных точек проявляется дальше — и заранее неизвестно, в чью
+        пользу.
+      </figcaption>
+    </figure>
+  );
+}
+
+/**
  * «Как обычно ищут проблему». Цепочка привычных версий упирается в вопрос, а
  * настоящая причина стоит отдельно и подсвечена: в этот список она не попадает.
  */

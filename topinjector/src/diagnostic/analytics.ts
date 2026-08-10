@@ -103,7 +103,31 @@ export type DiagnosticEvent =
   | "universal_faq_open"
   | "universal_form_start"
   | `universal_form_step_${number}_complete`
-  | "universal_form_submit";
+  | "universal_form_submit"
+  /*
+    Психологические спец-лендинги (Мастер-промпт + ТЗ 1.1/1.2). Одна страница
+    на гипотезу, один набор событий на все гипотезы — различает их параметр
+    `hypothesis_id` в payload, а не имя события, тем же приёмом, что и pf_*.
+  */
+  | "hero_view"
+  | "hero_cta_click"
+  | "belief_shift_view"
+  | "practical_consequence_view"
+  | "product_bridge_view"
+  | "product_bridge_cta_click"
+  | "mechanism_view"
+  | "interface_view"
+  | "free_limits_view"
+  | "free_limits_cta_click"
+  | "parallel_test_view"
+  | "calculator_view"
+  | "calculator_use"
+  | "final_cta_view"
+  | "final_cta_click"
+  | "first_limit_used"
+  | "free_limits_exhausted"
+  | "payment_start"
+  | "first_payment";
 
 export function track(event: DiagnosticEvent, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;

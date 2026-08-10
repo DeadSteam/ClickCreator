@@ -47,6 +47,8 @@ export function PredframingHero({
   visual,
   /** Время чтения своё у каждого ТЗ (5–7 у гипотезы №1, 6 у №2 и так далее). */
   readingMinutes = READING_MINUTES,
+  primaryAction,
+  secondaryLabel,
 }: {
   hypothesis: HypothesisId;
   kicker: string;
@@ -57,6 +59,17 @@ export function PredframingHero({
   micro: string[];
   visual: ReactNode;
   readingMinutes?: string;
+  /**
+   * Заменяет кнопку-якорь настоящим продуктовым действием (например,
+   * `TrialCta` в Telegram). Новая архитектура ТЗ 1.1 требует, чтобы главный CTA
+   * гипотезы вёл сразу к бесплатным лимитам, а не только листал страницу вниз —
+   * но девять остальных гипотез ещё живут по старому ТЗ («никакой заметной
+   * кнопки до конца разбора»), поэтому по умолчанию (без этого пропса) кнопка
+   * остаётся якорем, и их поведение не меняется ни на пиксель.
+   */
+  primaryAction?: ReactNode;
+  /** Текст вторичной ссылки-якоря. По умолчанию — время чтения. */
+  secondaryLabel?: string;
 }) {
   return (
     /*
@@ -102,15 +115,17 @@ export function PredframingHero({
 
             <Fade delay={0.32}>
               <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
-                <Button
-                  href={`#${RAZBOR_ANCHOR}`}
-                  variant="secondary"
-                  size="lg"
-                  arrow
-                  onClick={() => pfClick("pf_hero_cta_click", hypothesis, "hero")}
-                >
-                  {cta}
-                </Button>
+                {primaryAction ?? (
+                  <Button
+                    href={`#${RAZBOR_ANCHOR}`}
+                    variant="secondary"
+                    size="lg"
+                    arrow
+                    onClick={() => pfClick("pf_hero_cta_click", hypothesis, "hero")}
+                  >
+                    {cta}
+                  </Button>
+                )}
 
                 <a
                   href={`#${RAZBOR_ANCHOR}`}
@@ -118,7 +133,7 @@ export function PredframingHero({
                   className="text-[15px] text-[var(--ink-soft)] underline decoration-[var(--rule)] underline-offset-4
                     [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
                 >
-                  Читать исследование ({readingMinutes})
+                  {secondaryLabel ?? `Читать исследование (${readingMinutes})`}
                 </a>
               </div>
             </Fade>

@@ -27,6 +27,14 @@ export function Section({
   return (
     <section
       id={id}
+      /*
+        Атрибут инертен везде, кроме предфрейминговых страниц: там
+        `usePredframingAnalytics` слушает `[data-pf-block]`, чтобы мерить
+        просмотр и время по блокам. Ставится автоматически по `id`, а не
+        отдельным пропсом — второй источник правды для одного и того же
+        идентификатора расходится быстрее, чем успевает пригодиться.
+      */
+      data-pf-block={id}
       className={`scroll-mt-20 px-5 pt-24 sm:px-8 sm:pt-32 ${zone} ${className}`}
     >
       <div className="mx-auto max-w-[76rem]">{children}</div>
@@ -65,6 +73,14 @@ export type Card = { t: string; d: string; id?: string };
  * структуру на этом сайте держат линейки и нумерация.
  */
 export function Cards({ items, cols = 3 }: { items: Card[]; cols?: 2 | 3 }) {
+  /*
+    Нечётный хвост иначе оставляет пустую ячейку рядом с последней карточкой:
+    сетка не рисует под неё контент, и сквозь пустое место просвечивает фон
+    секции — на тёмной зоне это читается как случайный чёрный прямоугольник.
+    Последняя одинокая карточка растягивается на всю строку вместо него.
+  */
+  const lastAlone = cols === 2 && items.length % 2 === 1;
+
   return (
     <div
       className={`mt-14 grid gap-px bg-[var(--rule-soft)] ${
@@ -72,7 +88,11 @@ export function Cards({ items, cols = 3 }: { items: Card[]; cols?: 2 | 3 }) {
       }`}
     >
       {items.map((c, i) => (
-        <Appear key={c.t} delay={Math.min(i, 5) * 0.06} className="cell">
+        <Appear
+          key={c.t}
+          delay={Math.min(i, 5) * 0.06}
+          className={`cell ${lastAlone && i === items.length - 1 ? "sm:col-span-2" : ""}`}
+        >
           <div className="h-full p-6 sm:p-7">
             <span className="num text-[11px] text-[var(--ink-faint)]">
               {ordinal(i)}

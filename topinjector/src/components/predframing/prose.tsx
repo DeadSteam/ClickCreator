@@ -325,6 +325,13 @@ export function Aside({ children }: { children: ReactNode }) {
  * своим бликом по кромке и акцентной засечкой на наведение.
  */
 export function Points({ items, caption }: { items: string[]; caption?: string }) {
+  /*
+    Нечётное число пунктов иначе оставляет пустую ячейку рядом с последним —
+    сквозь неё просвечивает фон секции, а не карточка. Одинокий последний
+    пункт растягивается на всю строку вместо этого.
+  */
+  const lastAlone = items.length % 2 === 1;
+
   return (
     <Breakout>
       {caption && (
@@ -338,7 +345,9 @@ export function Points({ items, caption }: { items: string[]; caption?: string }
           <FadeItem
             key={t}
             delay={Math.min(i, 6) * 0.05}
-            className="cell flex items-start gap-5 p-6 sm:p-7"
+            className={`cell flex items-start gap-5 p-6 sm:p-7 ${
+              lastAlone && i === items.length - 1 ? "sm:col-span-2" : ""
+            }`}
           >
             <span className="num shrink-0 text-[15px] leading-[1.5] tabular-nums text-[var(--ink-faint)]">
               {ordinal(i)}

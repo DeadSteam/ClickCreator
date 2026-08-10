@@ -2,7 +2,7 @@
 
 import { Appear } from "./sections";
 import { ordinal } from "@/format";
-import type { COMPARE_ROWS, PRODUCT_SCREENS, SUITABILITY } from "@/landing/universal";
+import type { PRODUCT_SCREENS, SUITABILITY } from "@/landing/universal";
 
 /*
   Структурные блоки основного лендинга /universal, специфичные для его ТЗ:
@@ -11,13 +11,16 @@ import type { COMPARE_ROWS, PRODUCT_SCREENS, SUITABILITY } from "@/landing/unive
   и `sections.tsx` — это язык одной страницы, а не примитивы всего сайта.
 */
 
+/** Структурный тип строки сравнения — та же причина, что и у `Plan` в `pricing.tsx`: строгий `(typeof COMPARE_ROWS)[number]` не принял бы собственные строки /loss при совпадающей форме данных. */
+type CompareRow = { criterion: string; current: string; tested: string };
+
 /**
  * Таблица сравнения текущего процесса с проверяемым (п.9 ТЗ). Требование ТЗ
  * прямое: не заполнять колонку текущего процесса негативными утверждениями и
  * не объявлять новый подход победителем — обе колонки набраны одним весом,
  * без зачёркиваний и крестов.
  */
-export function CompareTable({ rows }: { rows: readonly (typeof COMPARE_ROWS)[number][] }) {
+export function CompareTable({ rows }: { rows: readonly CompareRow[] }) {
   return (
     <Appear className="mt-14 overflow-x-auto">
       <table className="w-full min-w-[36rem] border-collapse">
