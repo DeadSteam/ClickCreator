@@ -123,7 +123,7 @@ export default function LossPage() {
             cta="Получить бесплатные лимиты Topinjector →"
             primaryAction={
               <TrialCta event="hero_cta_click" place="hero">
-                Telegram
+                Получить бесплатные лимиты Topinjector
               </TrialCta>
             }
             secondaryLabel="Сначала разобраться, что именно сравнивать ↓"
@@ -201,10 +201,34 @@ export default function LossPage() {
                 разница обычно проявляется не в количестве красивых функций.
                 Она проявляется в ежедневной работе.
               </Text>
+
+              {/*
+                Ранний product teaser (56A.2 production-патча) — компактная
+                вставка сразу после первого belief shift, до полноценного
+                Product Bridge в Блоке 4. Не раскрывает механику продукта, только
+                напоминает, что страница уже про конкретную проверку.
+              */}
+              <div className="mt-12 border border-[var(--rule-soft)] bg-[var(--inset)] p-6 sm:p-7">
+                <p className="label text-[var(--ink-faint)]">проверить это можно на своей задаче</p>
+                <div className="mt-5 flex flex-wrap items-center gap-3 text-[14px] text-[var(--ink-soft)] sm:text-[15px]">
+                  <span>Текущий процесс</span>
+                  <span aria-hidden="true" className="num text-[var(--ink-faint)]">vs</span>
+                  <span className="font-medium text-[var(--ink)]">Topinjector</span>
+                  <span aria-hidden="true" className="num text-[var(--ink-faint)]">→</span>
+                  <span>одна ограниченная SEO-задача</span>
+                  <span aria-hidden="true" className="num text-[var(--ink-faint)]">→</span>
+                  <span>собственные данные</span>
+                </div>
+                <div className="mt-6">
+                  <TrialCta event="hero_cta_click" place="teaser">
+                    Получить бесплатные лимиты
+                  </TrialCta>
+                </div>
+              </div>
             </Chapter>
 
             {/* ── Блок 3. Практическое следствие ─────────────────────────── */}
-            <Chapter id="posledstviya" index={1} label="Практическое следствие">
+            <Chapter id="posledstviya" index={1} label="Практическое следствие" tight>
               <Heading>
                 Самая дорогая разница может выглядеть как несколько лишних
                 действий каждый день
@@ -259,7 +283,7 @@ export default function LossPage() {
             </Chapter>
 
             {/* ── Блок 4. Product Bridge ──────────────────────────────────── */}
-            <Chapter id="product-bridge" index={2} label="Topinjector">
+            <Chapter id="product-bridge" index={2} label="Topinjector" tight>
               <Heading>Вот где имеет смысл посмотреть Topinjector</Heading>
 
               <Text lead>
@@ -294,11 +318,26 @@ export default function LossPage() {
               </Statement>
 
               {/*
-                Первое крупное появление реального интерфейса — п.17 ТЗ 1.1:
-                визуальная система переходит от метафор к продукту именно здесь.
+                Первое крупное появление реального интерфейса — п.17 ТЗ 1.1.
+                Три подписи (56A.4 production-патча) отвечают на «это реальный
+                рабочий инструмент?» раньше, чем страница перейдёт к остальным
+                экранам кабинета в Блоке 7.
               */}
               <div className="my-12 -mx-2 sm:-mx-6 xl:-mx-16 2xl:-mx-24">
                 <AppPreview />
+                <div className="mt-8 grid gap-6 px-2 sm:grid-cols-3 sm:px-6 xl:px-16 2xl:px-24">
+                  {[
+                    { t: "Что задаёт специалист", d: "Проект, регион, группу запросов." },
+                    { t: "Что контролируется", d: "Статус запуска и объём проверки." },
+                    { t: "Какие данные получает", d: "Позиции и динамику по дням." },
+                  ].map((a, i) => (
+                    <div key={a.t}>
+                      <span className="num text-[11px] text-[var(--ink-faint)]">{String(i + 1).padStart(2, "0")}</span>
+                      <p className="mt-2 text-[14px] font-medium text-[var(--ink)]">{a.t}</p>
+                      <p className="mt-1 text-[13px] leading-relaxed text-[var(--ink-soft)]">{a.d}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <Ladder
@@ -311,9 +350,9 @@ export default function LossPage() {
                 <TrialCta
                   event="product_bridge_cta_click"
                   place="product_bridge"
-                  above="Получить бесплатные лимиты и проверить Topinjector"
+                  above="Проверить Topinjector на своей задаче"
                 >
-                  Telegram
+                  Получить бесплатные лимиты
                 </TrialCta>
                 <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
                   Лимиты выдаются через Telegram-бота после проверки подписки на
@@ -482,8 +521,8 @@ export default function LossPage() {
           )}
           <Appear delay={0.2}>
             <div className="mt-14">
-              <TrialCta event="free_limits_cta_click" place="cases" above="Получить бесплатные лимиты и проверить самому">
-                Telegram
+              <TrialCta event="free_limits_cta_click" place="cases" above="Проверить самому">
+                Получить бесплатные лимиты
               </TrialCta>
             </div>
           </Appear>
@@ -503,8 +542,8 @@ export default function LossPage() {
                 до покупки рабочего объёма.
               </p>
               <div className="mt-5">
-                <TrialCta event="free_limits_cta_click" place="calculator" above="Получить бесплатные лимиты">
-                  Telegram
+                <TrialCta event="free_limits_cta_click" place="calculator">
+                  Получить бесплатные лимиты
                 </TrialCta>
               </div>
             </div>
@@ -582,19 +621,17 @@ export default function LossPage() {
               SaaS тоже не может. Но его можно проверить.
             </p>
             <p className="mt-5 max-w-[58ch] text-[17px] leading-relaxed text-[var(--ink)] sm:text-[19px]">
-              Оставьте текущий рабочий стек. Выберите подходящую задачу.
-              Получите бесплатные лимиты Topinjector. Посмотрите на процесс и
-              собственные данные. Если Topinjector даст практическое
-              преимущество — у вас появится объективная причина использовать
-              его дальше. Если нет — вы сохраните текущий подход, но уже будете
-              знать, что проверили альтернативу.
+              Не меняйте рабочий инструмент из-за рекламы. Но и не оставляйте
+              его лучшим только по привычке. Возьмите одну задачу. Получите
+              бесплатные лимиты. Сравните Topinjector со своим текущим
+              процессом. Дальше решат ваши данные.
             </p>
           </Appear>
 
           <Appear delay={0.1}>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-end">
-              <TrialCta event="final_cta_click" place="final" above="Получить бесплатные лимиты Topinjector">
-                Telegram
+              <TrialCta event="final_cta_click" place="final">
+                Получить бесплатные лимиты Topinjector
               </TrialCta>
               <a
                 href="#calculator"

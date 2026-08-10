@@ -162,6 +162,7 @@ export function Chapter({
   label,
   children,
   peek = false,
+  tight = false,
 }: {
   id: string;
   /** Порядковый номер главы. Показывается в шапке и в рельсе. */
@@ -175,12 +176,19 @@ export function Chapter({
     первый экран читается как конец страницы.
   */
   peek?: boolean;
+  /**
+   * Для глав, которые продолжают одну мысль без смены темы (56A.7
+   * production-патча психологического спец-лендинга): полный отступ между
+   * главами читается как «новая глава статьи» даже когда следующая мысль —
+   * прямое продолжение предыдущей, а не новая тема.
+   */
+  tight?: boolean;
 }) {
   return (
     <section
       id={id}
       data-pf-block={id}
-      className={peek ? "mt-14 sm:mt-16" : "mt-28 sm:mt-40"}
+      className={peek ? "mt-14 sm:mt-16" : tight ? "mt-16 sm:mt-20" : "mt-28 sm:mt-40"}
     >
       <Fade>
         <header className="flex items-center gap-4 sm:gap-6">

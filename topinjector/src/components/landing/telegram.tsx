@@ -80,12 +80,8 @@ export function TelegramSteps() {
 
       <Appear delay={0.2}>
         <div className="mt-10">
-          <TrialCta
-            event="hero_trial_click"
-            place="steps"
-            above="Получить бесплатные лимиты"
-          >
-            Telegram
+          <TrialCta event="hero_trial_click" place="steps">
+            Получить бесплатные лимиты
           </TrialCta>
           <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
             Банковская карта {TRIAL.cardRequired ? "требуется" : "не требуется"}.{" "}
