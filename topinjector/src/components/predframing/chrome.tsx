@@ -6,7 +6,7 @@ import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { pfClick, usePredframingAnalytics } from "@/predframing/analytics";
-import { UNIVERSAL_ROUTE, type HypothesisId } from "@/predframing/hypotheses";
+import { universalRoute, type HypothesisId } from "@/predframing/hypotheses";
 
 /*
   Обвязка предфрейминговой страницы.
@@ -69,7 +69,7 @@ export function PredframingHeader({ hypothesis }: { hypothesis: HypothesisId }) 
           {showCta && (
             <Button
               size="sm"
-              href={UNIVERSAL_ROUTE}
+              href={universalRoute(hypothesis)}
               arrow
               className="hidden sm:inline-flex"
               onClick={() => pfClick("pf_continue_click", hypothesis, "header")}
@@ -113,7 +113,7 @@ export function PredframingMobileCta({ hypothesis }: { hypothesis: HypothesisId 
     <div className="zone-settled fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-[var(--rule-soft)] p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
       <Button
         block
-        href={UNIVERSAL_ROUTE}
+        href={universalRoute(hypothesis)}
         arrow
         onClick={() => pfClick("pf_continue_click", hypothesis, "mobile_bar")}
       >
@@ -174,7 +174,7 @@ export function PredframingContinue({
   return (
     <div className="mt-14">
       <Button
-        href={UNIVERSAL_ROUTE}
+        href={universalRoute(hypothesis)}
         size="lg"
         arrow
         onClick={() => pfClick("pf_continue_click", hypothesis, "final")}

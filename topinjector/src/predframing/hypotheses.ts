@@ -42,5 +42,15 @@ export function hypothesisId(slug: HypothesisSlug): HypothesisId {
  */
 export const UNIVERSAL_ROUTE = "/universal";
 
+/**
+ * Адрес перехода в универсальную часть с параметром гипотезы. П.26 ТЗ
+ * основного лендинга требует «гипотезу предфрейминга» как обязательный
+ * параметр аналитики на /universal — без него десять точек входа
+ * склеиваются в одну и сравнивать гипотезы между собой становится нечем.
+ */
+export function universalRoute(hypothesis: HypothesisId): string {
+  return `${UNIVERSAL_ROUTE}?hyp=${hypothesis}`;
+}
+
 /** Сколько читается предфрейминговая часть. Показывается во вторичной ссылке Hero. */
 export const READING_MINUTES = "5–7 минут";

@@ -34,6 +34,9 @@ import { READING_MINUTES, type HypothesisId } from "@/predframing/hypotheses";
 /** Якорь первого смыслового блока. Обе ссылки обложки ведут сюда. */
 export const RAZBOR_ANCHOR = "razbor";
 
+/** Id обложки. По нему рельс глав узнаёт, что она ещё видна, и не встаёт поверх неё. */
+export const HERO_ID = "pf-hero";
+
 export function PredframingHero({
   hypothesis,
   kicker,
@@ -42,6 +45,8 @@ export function PredframingHero({
   cta,
   micro,
   visual,
+  /** Время чтения своё у каждого ТЗ (5–7 у гипотезы №1, 6 у №2 и так далее). */
+  readingMinutes = READING_MINUTES,
 }: {
   hypothesis: HypothesisId;
   kicker: string;
@@ -51,6 +56,7 @@ export function PredframingHero({
   cta: string;
   micro: string[];
   visual: ReactNode;
+  readingMinutes?: string;
 }) {
   return (
     /*
@@ -59,14 +65,14 @@ export function PredframingHero({
       задаётся числом, — иначе на низком ноутбуке CTA уезжает за сгиб, а на
       большом мониторе под текстом остаётся пустое поле.
     */
-    <section className="border-b border-[var(--rule)] bg-[var(--inset)]">
+    <section id={HERO_ID} className="border-b border-[var(--rule)] bg-[var(--inset)]">
       <div className="mx-auto max-w-[88rem] px-5 pt-8 pb-16 sm:pt-10 sm:pb-20">
         <Fade>
           <div className="flex items-center gap-5">
             <p className="label shrink-0 text-[var(--ink-faint)]">{kicker}</p>
             <span aria-hidden="true" className="h-px min-w-4 flex-1 bg-[var(--rule)]" />
             <p className="label hidden shrink-0 text-[var(--ink-faint)] sm:block">
-              {READING_MINUTES} чтения
+              {readingMinutes} чтения
             </p>
           </div>
         </Fade>
@@ -112,7 +118,7 @@ export function PredframingHero({
                   className="text-[15px] text-[var(--ink-soft)] underline decoration-[var(--rule)] underline-offset-4
                     [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
                 >
-                  Читать исследование ({READING_MINUTES})
+                  Читать исследование ({readingMinutes})
                 </a>
               </div>
             </Fade>

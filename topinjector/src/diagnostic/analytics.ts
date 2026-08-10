@@ -84,7 +84,26 @@ export type DiagnosticEvent =
   | "tg_subscription_confirmed"
   | "tg_limits_granted"
   | "tg_return_to_app"
-  | "first_project_created";
+  | "first_project_created"
+  /*
+    Основной лендинг /universal (п.26 ТЗ основного лендинга). Продолжает
+    предфрейминговую воронку: гипотеза передаётся параметром `hypothesis` в
+    каждом событии, а не отдельным именем — так десять версий входа остаются
+    сравнимыми на одном экране аналитики.
+  */
+  | "universal_view"
+  | "universal_hero_cta_click"
+  | "universal_how_it_works_click"
+  | "universal_scenarios_view"
+  | "universal_mechanism_interact"
+  | "universal_case_view"
+  | "universal_limits_open"
+  | "universal_pricing_view"
+  | "universal_plan_select"
+  | "universal_faq_open"
+  | "universal_form_start"
+  | `universal_form_step_${number}_complete`
+  | "universal_form_submit";
 
 export function track(event: DiagnosticEvent, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;

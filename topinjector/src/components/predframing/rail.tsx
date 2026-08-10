@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
+import { HERO_ID } from "./hero";
 import { ordinal } from "@/format";
 
 /*
@@ -27,9 +28,6 @@ import { ordinal } from "@/format";
 */
 
 export type RailItem = { id: string; label: string };
-
-/** Высота обложки, после которой рельс имеет смысл. */
-const RAIL_AFTER_PX = 320;
 
 /** Активная глава: та, чей блок пересёк верхнюю треть окна последней. */
 function useActiveChapter(items: RailItem[]) {
@@ -60,22 +58,35 @@ function useActiveChapter(items: RailItem[]) {
   return active;
 }
 
-function useScrolledPastPx(px: number) {
+/*
+  Рельс не должен появляться, пока видна обложка: она не резервирует под него
+  поле слева (это отдельный, более широкий слой — см. комментарий в hero.tsx),
+  поэтому фиксированный порог в пикселях рано или поздно наезжал на кнопку
+  обложки на любом экране, где она выше этого порога. Наблюдатель следит за
+  самой обложкой и включает рельс ровно тогда, когда она полностью ушла
+  вверх — независимо от её реальной высоты на конкретном экране.
+*/
+function useScrolledPastHero() {
   const [past, setPast] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setPast(window.scrollY > px);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [px]);
+    const hero = document.getElementById(HERO_ID);
+    if (!hero) {
+      setPast(true);
+      return;
+    }
+
+    const io = new IntersectionObserver(([entry]) => setPast(!entry.isIntersecting));
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
 
   return past;
 }
 
 export function ReadingRail({ items }: { items: RailItem[] }) {
   const active = useActiveChapter(items);
-  const shown = useScrolledPastPx(RAIL_AFTER_PX);
+  const shown = useScrolledPastHero();
 
   /*
     Скрытый рельс удаляется из разметки целиком, а не прячется прозрачностью:

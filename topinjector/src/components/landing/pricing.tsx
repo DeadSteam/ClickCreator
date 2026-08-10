@@ -1,6 +1,6 @@
 "use client";
 
-import { track } from "@/diagnostic/analytics";
+import { track, type DiagnosticEvent } from "@/diagnostic/analytics";
 import { PLANS, TELEGRAM, botLink } from "@/landing/config";
 import { Button } from "@/components/ui/button";
 import { Appear } from "./sections";
@@ -22,11 +22,48 @@ import { groupDigits } from "@/format";
   подписки, и форма регистрации выдать лимиты не может.
 */
 
-export function Pricing() {
+/*
+  Структурный тип, а не `(typeof PLANS)[number]`: тот жёстко фиксирует
+  литералы /service («Старт», «Получить лимиты» и так далее), и любой другой
+  набор тарифов — например, /universal — переставал бы подходить по типам,
+  хотя форма данных совпадает полностью.
+*/
+type Plan = {
+  id: string;
+  name: string;
+  who: string;
+  price: string;
+  features: readonly string[];
+  cta: string;
+  featured: boolean;
+  badge?: string;
+};
+
+/**
+ * Три тарифа. По умолчанию — тарифы /service, ведущие в бота: бесплатный
+ * старт на любом тарифе начинается с проверки подписки, и форма регистрации
+ * выдать лимиты не может.
+ *
+ * `plans`/`ctaHref`/`trackEvent` параметризованы ради /universal: там тарифы
+ * называются и работают иначе (сценарий проверки, а не готовая подписка), а
+ * кнопка ведёт не в Telegram, а к форме на этой же странице. Пропсы — только
+ * строки: этот компонент рендерится и с серверных страниц тоже, а функции
+ * через границу сервер/клиент не передаются.
+ */
+export function Pricing({
+  plans = PLANS,
+  /** Если задан, все карточки ведут по этому адресу вместо тарифных ссылок в Telegram. */
+  ctaHref,
+  trackEvent = "pricing_plan_click",
+}: {
+  plans?: readonly Plan[];
+  ctaHref?: string;
+  trackEvent?: DiagnosticEvent;
+}) {
   return (
     <>
       <div className="mt-14 grid gap-px bg-[var(--rule-soft)] lg:grid-cols-3">
-        {PLANS.map((p, i) => {
+        {plans.map((p, i) => {
           const numeric = /^[\d\s ]+$/.test(p.price);
 
           return (
@@ -95,20 +132,19 @@ export function Pricing() {
                 </ul>
 
                 {/*
-                  Командный тариф ведёт в поддержку, а не в бота активации: там
-                  обсуждают лимиты и условия, а не получают бесплатный пакет.
-                  Отправлять такой запрос в сценарий проверки подписки значит
-                  оборвать разговор на первом же шаге.
+                  Внешний адрес открывается в новой вкладке, внутренний якорь —
+                  в этой же: якорь на форму этой страницы, открытый новой
+                  вкладкой, оставляет пользователя там, откуда он не может
+                  заполнить форму.
                 */}
                 <Button
                   variant={p.featured ? "primary" : "secondary"}
                   block
-                  href={p.id === "team" ? TELEGRAM.channel : botLink(`pricing_${p.id}`)}
-                  target="_blank"
-                  rel="noopener"
+                  href={ctaHref ?? (p.id === "team" ? TELEGRAM.channel : botLink(`pricing_${p.id}`))}
+                  {...(!ctaHref ? { target: "_blank", rel: "noopener" } : {})}
                   onClick={() => {
-                    track("pricing_plan_click", { plan: p.id });
-                    if (p.id !== "team") {
+                    track(trackEvent, { plan: p.id });
+                    if (!ctaHref && p.id !== "team") {
                       track("tg_cta_click", { place: `pricing_${p.id}` });
                       track("tg_bot_open", { place: `pricing_${p.id}` });
                     }

@@ -207,6 +207,30 @@ export function Heading({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Акцентная подсветка ключевой фразы внутри абзаца.
+ *
+ * Заливка стоит на месте, а не выезжает при скролле: анимация через
+ * `scaleX(0) → scaleX(1)` на абсолютно спозиционированном элементе однажды
+ * уже приводила к зависшему обрезку — при нулевой ширине в начальном кадре
+ * `IntersectionObserver` в части браузеров ни разу не засчитывал элемент
+ * попавшим в кадр, и `whileInView` не срабатывал вовсе. Постоянная подсветка
+ * не ломается в принципе — и это ближе к спокойному тону разбора, чем ещё одна
+ * анимация на входе. Цвет берётся из `--accent` через `color-mix`, поэтому
+ * подсветка не заводит собственный токен и остаётся акцентом на 3-4 фразы во
+ * всём разборе, а не подчёркиванием через абзац.
+ */
+export function Mark({ children }: { children: ReactNode }) {
+  return (
+    <span
+      className="rounded-[2px] px-[0.2em] py-[0.05em] font-medium text-[var(--ink)]"
+      style={{ backgroundColor: "color-mix(in oklab, var(--accent) 16%, transparent)" }}
+    >
+      {children}
+    </span>
+  );
+}
+
 /** Абзац. `lead` — первый абзац главы: он держит мысль, ради которой она написана. */
 export function Text({ children, lead = false }: { children: ReactNode; lead?: boolean }) {
   return (
@@ -214,6 +238,65 @@ export function Text({ children, lead = false }: { children: ReactNode; lead?: b
       <p className={lead ? `text-[var(--ink)] ${LEAD}` : `text-[var(--ink-soft)] ${BODY}`}>
         {children}
       </p>
+    </Fade>
+  );
+}
+
+/**
+ * Число, вынесенное из уже сказанного текста, крупным акцентным начертанием.
+ * Не статистика и не новая цифра — редакционный приём «до перечисления»:
+ * abзац только что назвал число пунктов словом («шесть опор»), `BigStat`
+ * повторяет его же цифрой, чтобы перечисление читалось не как двадцать
+ * пятое подряд Points, а как отдельный момент разбора.
+ */
+export function BigStat({ value, label }: { value: string; label: string }) {
+  return (
+    <Fade className={`${GAP_BLOCK} flex items-baseline gap-5`}>
+      <span className="num text-[56px] leading-none font-bold text-[var(--accent)] sm:text-[72px]">
+        {value}
+      </span>
+      <span className="max-w-[22ch] text-[15px] leading-snug text-[var(--ink-faint)] sm:text-[16px]">
+        {label}
+      </span>
+    </Fade>
+  );
+}
+
+/**
+ * Голая крупная цитата — третий регистр реплики между `Aside` (реплика с
+ * линейкой слева) и `Statement` (мысль в подложке). Без рамки и без фона:
+ * просто крупный набор посреди колонки, чтобы уже сказанная фраза на секунду
+ * стала единственным, что видно на экране. Держится редко — на главу с 30+
+ * абзацами максимум один-два раза, иначе теряет вес паузы.
+ */
+export function Quote({ children }: { children: ReactNode }) {
+  return (
+    <Fade className={GAP_BLOCK}>
+      <p className="max-w-[26ch] text-[26px] leading-[1.12] font-extrabold tracking-[-0.03em] text-[var(--ink)] sm:text-[32px] 2xl:text-[36px]">
+        {children}
+      </p>
+    </Fade>
+  );
+}
+
+/**
+ * Орнаментальная пауза внутри главы — легче `Interlude` (тот уходит в
+ * полноширинный графит и держит цитату), здесь только межстрочный вдох на
+ * оси колонки. Нужна для очень длинных глав (A2-блоки на 30-50 абзацев),
+ * где до следующего Statement/Aside ещё далеко: три точки останавливают
+ * взгляд без нового смысла.
+ */
+export function Break() {
+  return (
+    <Fade className="my-14 flex justify-center gap-3 sm:my-16">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          aria-hidden="true"
+          className="block h-[3px] w-[3px] rounded-full bg-[var(--ink-faint)]"
+          style={{ opacity: 0.5 + i * 0 }}
+        />
+      ))}
     </Fade>
   );
 }
@@ -357,8 +440,31 @@ export function Interlude({ lines, note }: { lines: string[]; note?: string }) {
 }
 
 /**
+ * Соединитель между ступенями цепочки. Дорисовывается сверху вниз при
+ * попадании в кадр, а не стоит готовой линией: маршрут читается как
+ * прочерченный на глазах у читателя, тем же приёмом, что уже открывает
+ * главу (`ChapterRule`) — сверху вниз вместо слева направо.
+ */
+function LadderConnector() {
+  const reduce = useReducedMotion();
+
+  return (
+    <motion.span
+      aria-hidden="true"
+      className="ml-[8px] block h-6 w-px origin-top bg-[var(--rule)]"
+      initial={reduce ? false : { scaleY: 0 }}
+      whileInView={{ scaleY: 1 }}
+      viewport={{ once: true, margin: APPEAR.reading.margin }}
+      transition={{ duration: 0.4, ease: EASE_OUT }}
+    />
+  );
+}
+
+/**
  * Вертикальная цепочка. `markAt` выделяет ступень, ради которой схема
  * нарисована: цепочка без отмеченной ступени — просто ещё один список.
+ * Отмеченная точка держит слабое акцентное свечение — это и есть контрольная
+ * точка маршрута, а не просто более тёмный кружок в том же списке.
  *
  * Подпись — часть схемы, а не отдельный компонент над ней. Пока она стояла
  * отдельно, расстояние между подписью и цепочкой задавалось двумя отступами
@@ -388,9 +494,7 @@ export function Ladder({
         return (
           <FadeItem key={s} delay={Math.min(i, 6) * 0.06} className="w-full">
             {/* Соединитель встаёт по оси маркера: маркер шириной 7 сдвинут на 5. */}
-            {i > 0 && (
-              <span aria-hidden="true" className="ml-[8px] block h-6 w-px bg-[var(--rule)]" />
-            )}
+            {i > 0 && <LadderConnector />}
             <span
               className={`inline-flex items-center gap-4 text-[17px] sm:text-[18px] ${
                 on ? "font-semibold text-[var(--accent)]" : "text-[var(--ink-soft)]"
@@ -399,7 +503,12 @@ export function Ladder({
               <span
                 aria-hidden="true"
                 className="ml-[5px] block h-[7px] w-[7px] shrink-0 rounded-full"
-                style={{ backgroundColor: on ? "var(--accent)" : "var(--ink-faint)" }}
+                style={{
+                  backgroundColor: on ? "var(--accent)" : "var(--ink-faint)",
+                  boxShadow: on
+                    ? "0 0 0 4px color-mix(in oklab, var(--accent) 20%, transparent)"
+                    : "none",
+                }}
               />
               {s}
             </span>
@@ -427,7 +536,7 @@ export function Contrast({
 }) {
   return (
     <Breakout>
-      <div className="grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+      <div className="relative grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
         <Fade className="cell">
           <div className="h-full p-6 sm:p-8">
             <p className="label text-[var(--ink-faint)]">{left.title}</p>
@@ -465,6 +574,20 @@ export function Contrast({
             )}
           </div>
         </Fade>
+
+        {/*
+          Стрелка на стыке колонок — тот же узел, что уже держит переход
+          «отзывы → свои данные» в `EvidenceShift`. Сравнение читается как
+          переход слева направо, а не как две независимые карточки рядом.
+          Только на развороте sm:grid-cols-2: в колонку стек не переносится,
+          там переход и так линеен по вертикали.
+        */}
+        <span
+          aria-hidden="true"
+          className="num pointer-events-none absolute top-1/2 left-1/2 hidden h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--rule)] bg-[var(--reading-bg)] text-[13px] text-[var(--ink-faint)] sm:flex"
+        >
+          →
+        </span>
       </div>
 
       {note && (
@@ -472,6 +595,53 @@ export function Contrast({
           <p className={`mt-4 text-[var(--ink-faint)] ${SMALL}`}>{note}</p>
         </Fade>
       )}
+    </Breakout>
+  );
+}
+
+/**
+ * Развилка из двух путей принятия решения. Подсвечен только один — не как
+ * «правильный выбор», а как более быстрый: оба пути ведут к результату, но
+ * разными темпами. Изначально жил в схемах гипотезы №1 как `TwoPaths` с
+ * зашитым текстом; вынесен сюда пропсами, когда тот же приём понадобился
+ * гипотезе №2 — тот случай, когда переиспользование видно только на второй
+ * гипотезе, а не заранее.
+ */
+export function Fork({
+  paths,
+}: {
+  paths: { label: string; title: string; description: string; active?: boolean }[];
+}) {
+  return (
+    <Breakout>
+      <figure className="grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+        {paths.map((p, i) => (
+          <Fade key={p.title} delay={i * 0.2} className="cell">
+            <div
+              className={`h-full p-6 sm:p-8 ${
+                p.active ? "border-l-2 border-[var(--accent)]" : "opacity-60"
+              }`}
+            >
+              <p
+                className="label"
+                style={{ color: p.active ? "var(--accent)" : "var(--ink-faint)" }}
+              >
+                {p.label}
+              </p>
+              <p
+                className={`mt-5 text-[19px] font-semibold tracking-[-0.02em] sm:text-[21px] ${
+                  p.active ? "text-[var(--ink)]" : "text-[var(--ink-soft)]"
+                }`}
+              >
+                {p.title}
+              </p>
+              <p className="mt-3 text-[15px] leading-relaxed text-[var(--ink-soft)] sm:text-[16px]">
+                {p.description}
+              </p>
+            </div>
+          </Fade>
+        ))}
+      </figure>
     </Breakout>
   );
 }
@@ -487,6 +657,95 @@ export function Cards({ caption, items }: { caption: string; items: string[] }) 
             <p className="h-full p-6 text-[17px] leading-snug text-[var(--ink)] sm:p-8 sm:text-[18px]">
               {t}
             </p>
+          </Fade>
+        ))}
+      </div>
+    </Breakout>
+  );
+}
+
+/**
+ * Два нейтральных элемента подают набор факторов в общий центр. Ни левый, ни
+ * правый не подписан победителем — только центр получает акцент. Тот же
+ * рисунок трижды складывался вручную в схемах гипотез (специалист/инструмент
+ * в центре решения, два цикла, два маршрута), поэтому здесь он один на всех.
+ */
+export function Convergence({
+  leftLabel,
+  rightLabel,
+  factors,
+  centerCaption,
+  centerLabel,
+  ariaLabel,
+}: {
+  leftLabel: string;
+  rightLabel: string;
+  factors: string[];
+  centerCaption: string;
+  centerLabel: string;
+  ariaLabel: string;
+}) {
+  return (
+    <figure className="mt-12">
+      <div role="img" aria-label={ariaLabel} className="grid grid-cols-2 gap-3 sm:gap-5">
+        <Fade className="border border-[var(--rule-soft)] bg-[var(--inset)] p-4 text-center sm:p-6">
+          <p className="text-[14px] leading-snug text-[var(--ink-soft)] sm:text-[15px]">{leftLabel}</p>
+        </Fade>
+        <Fade delay={0.08} className="border border-[var(--rule-soft)] bg-[var(--inset)] p-4 text-center sm:p-6">
+          <p className="text-[14px] leading-snug text-[var(--ink-soft)] sm:text-[15px]">{rightLabel}</p>
+        </Fade>
+      </div>
+
+      <div className="mt-3 flex flex-wrap justify-center gap-x-6 gap-y-1 text-[12px] text-[var(--ink-faint)]">
+        {factors.map((f) => (
+          <span key={f}>{f}</span>
+        ))}
+      </div>
+
+      <div className="mt-3 flex justify-center">
+        <span aria-hidden="true" className="block h-6 w-px bg-[var(--rule)]" />
+      </div>
+
+      <Fade delay={0.2}>
+        <div className="border-l-2 border-[var(--accent)] bg-[var(--inset)] p-6 text-center sm:p-8">
+          <p className="label text-[var(--accent)]">{centerCaption}</p>
+          <p className="mt-3 text-[19px] font-semibold tracking-[-0.02em] text-[var(--ink)] sm:text-[21px]">
+            {centerLabel}
+          </p>
+        </div>
+      </Fade>
+    </figure>
+  );
+}
+
+/**
+ * Пара нейтральных карточек «до/после» — обе визуально равнозначны, ни одна
+ * не подсвечена акцентом. В отличие от `Contrast` (там правая колонка всегда
+ * сильнее — это сравнение убеждений), здесь до появления фактических данных
+ * ни один вариант не может быть выигрышным, и часть ТЗ прямо это требует.
+ */
+export function NeutralPair({
+  left,
+  right,
+}: {
+  left: { title: string; items: string[] };
+  right: { title: string; items: string[] };
+}) {
+  return (
+    <Breakout>
+      <div className="grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+        {[left, right].map((col, i) => (
+          <Fade key={col.title} delay={i * 0.1} className="cell">
+            <div className="h-full p-6 sm:p-8">
+              <p className="label text-[var(--ink-faint)]">{col.title}</p>
+              <ul className="mt-6 flex flex-col gap-3">
+                {col.items.map((t) => (
+                  <li key={t} className="text-[15px] leading-snug text-[var(--ink-soft)] sm:text-[16px]">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </Fade>
         ))}
       </div>

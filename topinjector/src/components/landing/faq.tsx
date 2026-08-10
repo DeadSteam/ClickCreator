@@ -84,10 +84,11 @@ const ITEMS = [
   },
 ];
 
-export function Faq() {
+/** По умолчанию — вопросы /service. `items` параметризован ради /universal: там свой список из п.19 ТЗ основного лендинга. */
+export function Faq({ items = ITEMS }: { items?: { q: string; a: string }[] }) {
   return (
     <div className="mt-14 border-t border-[var(--rule-soft)]">
-      {ITEMS.map((item, i) => (
+      {items.map((item, i) => (
         <Appear key={item.q} delay={Math.min(i, 5) * 0.03}>
           <details
             className="group border-b border-[var(--rule-soft)]"
