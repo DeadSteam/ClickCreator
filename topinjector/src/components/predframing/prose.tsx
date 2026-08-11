@@ -192,7 +192,8 @@ export function Chapter({
     >
       <Fade>
         <header className="flex items-center gap-4 sm:gap-6">
-          <span className="num text-[26px] leading-none text-[var(--accent)] sm:text-[32px]">
+          {/* `chapter-num` — метка для 56C.11 (`.conv-system .chapter-num`), инертна без `.conv-system` на странице. */}
+          <span className="num chapter-num text-[26px] leading-none text-[var(--accent)] sm:text-[32px]">
             {ordinal(index)}
           </span>
           <ChapterRule />
@@ -381,7 +382,13 @@ export function Points({ items, caption }: { items: string[]; caption?: string }
 export function Statement({ children }: { children: ReactNode }) {
   return (
     <Fade className={GAP_BLOCK}>
-      <div className="border-l-2 border-[var(--accent)] bg-[var(--inset)] p-6 sm:p-8">
+      {/*
+        `key-insight` — чистая метка для CSS раздела 56C.13 нового
+        мастер-промпта (`.conv-system .key-insight` в globals.css). Ничего не
+        стилизует сама по себе на остальных девяти гипотезах — там класс
+        `.conv-system` на странице отсутствует, и правило просто не совпадает.
+      */}
+      <div className="key-insight border-l-2 border-[var(--accent)] bg-[var(--inset)] p-6 sm:p-8">
         <p className={`font-semibold tracking-[-0.02em] text-[var(--ink)] ${VOICE}`}>
           {children}
         </p>

@@ -594,57 +594,153 @@
   }
 
   /*
-    ХОЛОДНАЯ ТЕМА ПСИХОЛОГИЧЕСКИХ СПЕЦ-ЛЕНДИНГОВ.
+    ЕДИНАЯ CONVERSION DESIGN SYSTEM TOPINJECTOR (раздел 56C нового
+    мастер-промпта, v3).
 
-    ТЗ дизайнеру гипотезы №1 задаёт для этой конкретной страницы отдельную
-    палитру («чёрный/графитовый/белый/холодный синий», янтарный только для
-    неопределённости, зелёный только для подтверждённых данных) — она не
-    совпадает с фирменным тёплым акцентом (--accent, оттенок 44/62), которым
-    набран весь остальной сайт. Перекрашивать сам --accent и --btn-* глобально
-    нельзя: это сломало бы шапку, /service, /universal и восемь остальных
-    гипотез. Поэтому холодный акцент живёт только внутри этого класса,
-    навешенного на корень /loss и /information, и переопределяет --accent
-    отдельно в каждой зоне (зоны переобъявляют его сами, обычного наследования
-    от предка недостаточно).
+    Заменяет прежний `.theme-cold`: тот давал /loss и /information
+    собственную холодную палитру, а п.56C.36 прямо запрещает именно это —
+    «не делать для гипотезы новую дизайн-систему, все десять используют одну
+    палитру». Синий здесь не бренд гипотезы, а research/data-акцент,
+    одинаковый для всех десяти страниц; применять его нужно ко всем ими, а не
+    только к «холодным» гипотезам.
 
-    Кнопка остаётся зелёной (--btn-*) и в этой теме — решение владельца
-    продукта: зелёный CTA уже узнаваем по всему сайту, менять его цвет ради
-    одной страницы важнее не единообразия палитры, а конверсии. По той же
-    причине --positive (чекбоксы-подтверждения) не трогается — он и так
-    зелёный, что уже совпадает с правилом «зелёный только для подтверждённого».
+    Палитра светлая (56C.5: фон #F4F6F7-#F7F8F9, чернила #111418) — это не
+    вариант тёмной темы сайта, а отдельная, единая для всех психологических
+    лендингов система. Тёмный вариант ниже не описан в ТЗ явно; он нужен
+    только чтобы переключатель темы в шапке (общий для всего сайта) не ломал
+    страницу, если посетитель уже переключился на тёмную тему до захода сюда.
+
+    Зоны (`zone-doubt/signal/proof/settled`) в старой системе кодировали дугу
+    «от сомнения к доверию» разной светлотой фона. В 56C такой дуги нет —
+    вместо неё ровная нейтральная поверхность с редкими вставками карточек
+    чуть другого тона (--bg-node), поэтому все четыре зоны получают одни и те
+    же чернила и акцент.
+
+    Кнопка (--btn-*) и чекмарки (--positive) не входят в переопределение:
+    решение владельца продукта — CTA остаётся тем же зелёным, что и на
+    остальном сайте, независимо от того, что 56C.5 отводит зелёному ту же
+    роль «conversion only» лишь с других базовых hex.
   */
-  .theme-cold.zone-doubt,
-  .theme-cold .zone-doubt {
-    --accent: oklch(0.498 0.168 235);
-  }
-  .theme-cold.zone-signal,
-  .theme-cold .zone-signal {
-    --accent: oklch(0.474 0.162 235);
-  }
-  .theme-cold.zone-proof,
-  .theme-cold .zone-proof {
-    --accent: oklch(0.446 0.156 235);
-  }
-  .theme-cold.zone-settled,
-  .theme-cold .zone-settled {
-    --accent: oklch(0.750 0.145 235);
-  }
-  .theme-cold {
-    --accent-on-ink: oklch(0.750 0.145 235);
+  .conv-system {
+    --page-bg: #f4f6f7;
+    --reading-bg: #f7f8f9;
+    --settled-bg: #eceff1;
+    --settled-ink: #111418;
+    --on-ink: #f4f6f7;
+    --raised-bg: #eceff1;
   }
 
-  [data-theme="dark"] .theme-cold.zone-doubt,
-  [data-theme="dark"] .theme-cold .zone-doubt,
-  [data-theme="dark"] .theme-cold.zone-signal,
-  [data-theme="dark"] .theme-cold .zone-signal,
-  [data-theme="dark"] .theme-cold.zone-proof,
-  [data-theme="dark"] .theme-cold .zone-proof,
-  [data-theme="dark"] .theme-cold.zone-settled,
-  [data-theme="dark"] .theme-cold .zone-settled {
-    --accent: oklch(0.750 0.145 235);
+  .conv-system.zone-doubt,
+  .conv-system .zone-doubt,
+  .conv-system.zone-signal,
+  .conv-system .zone-signal,
+  .conv-system.zone-proof,
+  .conv-system .zone-proof,
+  .conv-system.zone-settled,
+  .conv-system .zone-settled {
+    --bg-node: #eceff1;
+    --ink: #111418;
+    --ink-soft: #5e666f;
+    --ink-faint: #7d8590;
+    --rule: #d9dee3;
+    --rule-soft: #e6eaed;
+    --inset: #eceff1;
+    --accent: #0f97d6;
+    --accent-on-ink: #4cc3f0;
   }
-  [data-theme="dark"] .theme-cold {
-    --accent-on-ink: oklch(0.446 0.156 235);
+
+  /*
+    Тёмный вариант здесь намеренно не переопределяется. П.56C.5 задаёт одну
+    фиксированную светлую палитру без тёмной ветки («Все 10 используют одну
+    palette», 56C.30/56C.36), а сайт по умолчанию открывается в
+    `[data-theme="dark"]`. Первая версия этого блока давала тёмному состоянию
+    отдельные тёмные значения — из-за более специфичного селектора
+    (`[data-theme="dark"] .conv-system ...`, специфичность выше обычного
+    `.conv-system .zone-*`) он перебивал светлую палитру именно тогда, когда
+    её и нужно было увидеть. Без этого блока светлые правила выше остаются
+    единственным источником для `--ink`/`--page-bg`/`--accent` и т. д. внутри
+    `.conv-system` независимо от переключателя темы — переключатель на этой
+    странице становится некликабельным по цвету, но макет соответствует ТЗ.
+  */
+
+  /*
+    Типографика 56C.4/56C.11/56C.13. Размеры заданы `!important`: исходные
+    приходят с компонентов Tailwind-утилитами вида `text-[30px]` — они лежат в
+    слое `utilities`, который у Tailwind всегда идёт после `components`, и
+    обычная перебивка без `!important` слоя не пробила бы. `.label`,
+    `.chapter-num` и `.key-insight` — исключение: их размер задан внутри
+    самого класса в `@layer base`/здесь же в `components`, поэтому обычного
+    порядка слоёв достаточно и `!important` им не нужен.
+
+    Всё это только внутри `.conv-system` — переопределения не задевают
+    остальные девять гипотез и остальной сайт.
+  */
+  .conv-system h1 {
+    font-size: 34px !important;
+    line-height: 1.08 !important;
+  }
+  .conv-system h2 {
+    font-size: 32px !important;
+    line-height: 1.1 !important;
+  }
+  .conv-system .label {
+    font-size: 12px;
+  }
+  @media (min-width: 640px) {
+    .conv-system h1 {
+      font-size: 44px !important;
+    }
+    .conv-system h2 {
+      font-size: 40px !important;
+    }
+  }
+  @media (min-width: 1024px) {
+    .conv-system h1 {
+      font-size: 56px !important;
+      line-height: 1.04 !important;
+    }
+    .conv-system h2 {
+      font-size: 46px !important;
+    }
+  }
+  @media (min-width: 1536px) {
+    .conv-system h1 {
+      font-size: 68px !important;
+    }
+    .conv-system h2 {
+      font-size: 52px !important;
+    }
+  }
+
+  /* Номера глав/секций (56C.11): 40-52px мобильный, 48-64px десктоп, research blue. */
+  .conv-system .chapter-num {
+    font-size: 40px !important;
+  }
+  @media (min-width: 640px) {
+    .conv-system .chapter-num {
+      font-size: 52px !important;
+    }
+  }
+
+  /*
+    Key Insight (56C.13): левая линия 3-4px (было 2px), крупнее кегль,
+    больше внутренний отступ слева.
+  */
+  .conv-system .key-insight {
+    border-left-width: 4px;
+    padding-left: 20px;
+  }
+  .conv-system .key-insight p {
+    font-size: 22px !important;
+    line-height: 1.32 !important;
+  }
+  @media (min-width: 640px) {
+    .conv-system .key-insight {
+      padding-left: 32px;
+    }
+    .conv-system .key-insight p {
+      font-size: 28px !important;
+    }
   }
 
   /*

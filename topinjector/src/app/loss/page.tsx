@@ -81,7 +81,7 @@ const LOSS_FAQ_FOR_SCHEMA = LOSS_FAQ.slice(0, 6);
 
 export default function LossPage() {
   return (
-    <div className="brand-flat theme-cold">
+    <div className="brand-flat conv-system">
       <Schema
         faq={LOSS_FAQ_FOR_SCHEMA}
         service={{
