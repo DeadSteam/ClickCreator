@@ -47,6 +47,7 @@ export function ManualInputPlaceholder({
   need,
   source,
   readyWhen,
+  mobile,
   minHeight,
   className = "",
 }: {
@@ -55,6 +56,14 @@ export function ManualInputPlaceholder({
   need: ReactNode;
   source?: string;
   readyWhen?: string;
+  /**
+   * Мобильное представление будущего материала — п.56B.9: правила раздела
+   * 53A действуют и на mobile, но реальный скриншот там нельзя просто
+   * уменьшить, поэтому у карточки-заглушки скриншота есть отдельное поле для
+   * того, как именно он покажется на телефоне (full screen / crop / carousel
+   * / lightbox), а не только «что вставить».
+   */
+  mobile?: string;
   /** Для варианта «под размер будущего скриншота» — п.53A.10. */
   minHeight?: string;
   className?: string;
@@ -79,12 +88,18 @@ export function ManualInputPlaceholder({
 
       <div className="mt-2.5 max-w-[54ch] text-[14px] leading-relaxed text-[var(--ink-soft)]">{need}</div>
 
-      {(source || readyWhen) && (
+      {(source || readyWhen || mobile) && (
         <dl className="mt-4 flex flex-col gap-1.5 border-t pt-4" style={{ borderColor: PENDING_BORDER }}>
           {source && (
             <div className="flex gap-2 text-[12px] leading-relaxed text-[var(--ink-faint)]">
               <dt className="shrink-0 font-medium">Источник:</dt>
               <dd>{source}</dd>
+            </div>
+          )}
+          {mobile && (
+            <div className="flex gap-2 text-[12px] leading-relaxed text-[var(--ink-faint)]">
+              <dt className="shrink-0 font-medium">Mobile presentation:</dt>
+              <dd>{mobile}</dd>
             </div>
           )}
           {readyWhen && (

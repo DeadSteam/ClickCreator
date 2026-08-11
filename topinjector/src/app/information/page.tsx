@@ -79,7 +79,7 @@ const INFORMATION_FAQ_FOR_SCHEMA = INFORMATION_FAQ.slice(0, 6);
 
 export default function InformationPage() {
   return (
-    <div className="brand-flat">
+    <div className="brand-flat theme-cold">
       <Schema
         faq={INFORMATION_FAQ_FOR_SCHEMA}
         service={{
@@ -114,7 +114,7 @@ export default function InformationPage() {
             cta="Получить бесплатные лимиты Topinjector →"
             primaryAction={
               <TrialCta event="hero_cta_click" place="hero">
-                Получить бесплатные лимиты
+                Получить бесплатные лимиты Topinjector
               </TrialCta>
             }
             secondaryLabel="Посмотреть, где возникает информационное преимущество ↓"
@@ -124,6 +124,7 @@ export default function InformationPage() {
               TRIAL.cardRequired ? "Карта требуется" : "Карта не требуется",
             ]}
             visual={<RouteSplit />}
+            earlyVisual
           />
 
           <div className="mx-auto max-w-[88rem] px-5 pb-16 sm:px-8">
@@ -307,8 +308,8 @@ export default function InformationPage() {
               </div>
 
               <div className="mt-12">
-                <TrialCta event="product_bridge_cta_click" place="product_bridge" above="Проверить Topinjector на своей задаче">
-                  Получить бесплатные лимиты
+                <TrialCta event="product_bridge_cta_click" place="product_bridge">
+                  Получить бесплатные лимиты и проверить Topinjector
                 </TrialCta>
                 <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
                   Лимиты выдаются через Telegram-бота после проверки подписки на
@@ -403,7 +404,8 @@ export default function InformationPage() {
               materialType="Скриншот"
               need="Реальные экраны кабинета: создание проекта, управление запуском, история изменений. Показанный экран выше — иллюстративная схема, а не скриншот."
               source="Продакшн-сборка Topinjector (personal cabinet)"
-              readyWhen="Минимум 4–6 реальных экранов, каждый с рабочими данными"
+              mobile="Crop на ключевую часть экрана + tap → lightbox для полного вида. Не сжимать desktop-скриншот целиком до ширины телефона — данные станут нечитаемыми."
+              readyWhen="Минимум 4–6 реальных экранов, каждый с рабочими данными, у каждого проверена читаемость на 390px"
               minHeight="8rem"
               className="mt-8"
             />
@@ -614,7 +616,7 @@ export default function InformationPage() {
           <Appear delay={0.1}>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-end">
               <TrialCta event="final_cta_click" place="final">
-                Получить бесплатные лимиты
+                Получить бесплатные лимиты Topinjector
               </TrialCta>
               <a href="#calculator" className="btn btn-secondary btn-lg">
                 Рассчитать стоимость рабочего объёма

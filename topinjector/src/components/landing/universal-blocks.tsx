@@ -22,27 +22,54 @@ type CompareRow = { criterion: string; current: string; tested: string };
  */
 export function CompareTable({ rows }: { rows: readonly CompareRow[] }) {
   return (
-    <Appear className="mt-14 overflow-x-auto">
-      <table className="w-full min-w-[36rem] border-collapse">
-        <thead>
-          <tr className="border-b border-[var(--rule)] text-left">
-            <th className="label pb-4 pr-4 font-normal text-[var(--ink-faint)]">критерий</th>
-            <th className="label pb-4 pr-4 font-normal text-[var(--ink-faint)]">текущий процесс</th>
-            <th className="label pb-4 font-normal text-[var(--accent)]">проверяемый процесс</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.criterion} className="border-b border-[var(--rule-soft)]">
-              <th scope="row" className="py-4 pr-4 text-left text-[15px] font-medium text-[var(--ink)]">
-                {r.criterion}
-              </th>
-              <td className="py-4 pr-4 text-[15px] text-[var(--ink-soft)]">{r.current}</td>
-              <td className="py-4 text-[15px] font-medium text-[var(--ink)]">{r.tested}</td>
+    <Appear className="mt-14">
+      {/*
+        Мобильная версия — карточки, не сжатая таблица (п.56B.14/56B.16
+        мастер-промпта): три колонки на 390px либо становятся нечитаемо
+        мелкими, либо превращаются в горизонтальный скролл без сигнала, что
+        он вообще есть. Карточка передаёт то же сравнение как вертикальную
+        последовательность «критерий → текущий процесс → проверяемый процесс».
+      */}
+      <div className="grid gap-px bg-[var(--rule-soft)] sm:hidden">
+        {rows.map((r) => (
+          <div key={r.criterion} className="cell p-5">
+            <p className="text-[15px] font-medium text-[var(--ink)]">{r.criterion}</p>
+            <dl className="mt-3 flex flex-col gap-2">
+              <div className="flex items-baseline justify-between gap-4">
+                <dt className="label shrink-0 text-[var(--ink-faint)]">текущий процесс</dt>
+                <dd className="text-right text-[14px] text-[var(--ink-soft)]">{r.current}</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-4">
+                <dt className="label shrink-0 text-[var(--accent)]">проверяемый процесс</dt>
+                <dd className="text-right text-[14px] font-medium text-[var(--ink)]">{r.tested}</dd>
+              </div>
+            </dl>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto sm:block">
+        <table className="w-full min-w-[36rem] border-collapse">
+          <thead>
+            <tr className="border-b border-[var(--rule)] text-left">
+              <th className="label pb-4 pr-4 font-normal text-[var(--ink-faint)]">критерий</th>
+              <th className="label pb-4 pr-4 font-normal text-[var(--ink-faint)]">текущий процесс</th>
+              <th className="label pb-4 font-normal text-[var(--accent)]">проверяемый процесс</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.criterion} className="border-b border-[var(--rule-soft)]">
+                <th scope="row" className="py-4 pr-4 text-left text-[15px] font-medium text-[var(--ink)]">
+                  {r.criterion}
+                </th>
+                <td className="py-4 pr-4 text-[15px] text-[var(--ink-soft)]">{r.current}</td>
+                <td className="py-4 text-[15px] font-medium text-[var(--ink)]">{r.tested}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </Appear>
   );
 }

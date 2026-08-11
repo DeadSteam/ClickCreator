@@ -49,6 +49,7 @@ export function PredframingHero({
   readingMinutes = READING_MINUTES,
   primaryAction,
   secondaryLabel,
+  earlyVisual,
 }: {
   hypothesis: HypothesisId;
   kicker: string;
@@ -70,6 +71,16 @@ export function PredframingHero({
   primaryAction?: ReactNode;
   /** Текст вторичной ссылки-якоря. По умолчанию — время чтения. */
   secondaryLabel?: string;
+  /**
+   * Своя настройка ТЗ дизайнеру гипотезы (не общее правило всех десяти):
+   * гипотеза №2 явно требует «схему показывать сразу после CTA» на мобильном,
+   * а не в конце после остатка подзаголовка. Рисуется дважды — компактно в
+   * потоке на мобильном/планшете (`lg:hidden`) и как боковая колонка на
+   * десктопе (`hidden lg:block`), а не переносится, потому что на десктопе она
+   * обязана остаться визуальной колонкой рядом с текстом, а не строкой внутри
+   * него.
+   */
+  earlyVisual?: boolean;
 }) {
   return (
     /*
@@ -98,75 +109,156 @@ export function PredframingHero({
         </Fade>
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-16">
-          <div>
+          {/*
+            `flex flex-col` + `order-*`: п.56B.2 нового мастер-промпта требует,
+            чтобы на телефоне CTA не уезжал за несколько абзацев подзаголовка —
+            «H1 → короткий supporting message → CTA → остальная аргументация».
+            На десктопе порядок остаётся прежним (весь подзаголовок одним блоком
+            перед CTA) — просто через другие номера `order` у тех же узлов, без
+            переписывания разметки под каждый брейкпоинт.
+
+            Работает только когда есть `primaryAction`: у девяти гипотез без
+            него CTA — обычный якорь «читать дальше», отправлять к которому
+            читателя раньше времени незачем, и их вёрстка остаётся прежней.
+          */}
+          <div className={primaryAction ? "flex flex-col" : undefined}>
             {/*
               Кегль подобран под длину заголовка из ТЗ: он требует не более 3–4
               строк на десктопе и 5–6 на телефоне, а строка в русском наборе
               короче английской.
             */}
-            <Fade>
+            <Fade className={primaryAction ? "order-1" : undefined}>
               <h1 className="text-[30px] leading-[1.05] font-extrabold tracking-[-0.035em] sm:text-[38px] lg:text-[42px] 2xl:text-[48px]">
                 {title}
               </h1>
             </Fade>
 
-            <div className="mt-8 flex max-w-[54ch] flex-col gap-4">
-              {subtitle.map((p, i) => (
-                <Fade key={i} delay={0.1 + i * 0.08}>
-                  <p className="text-[17px] leading-[1.6] text-[var(--ink-soft)] sm:text-[18px]">
-                    {p}
-                  </p>
-                </Fade>
-              ))}
-            </div>
-
-            <Fade delay={0.32}>
-              <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
-                {primaryAction ?? (
-                  <Button
-                    href={`#${RAZBOR_ANCHOR}`}
-                    variant="secondary"
-                    size="lg"
-                    arrow
-                    onClick={() => pfClick("pf_hero_cta_click", hypothesis, "hero")}
-                  >
-                    {cta}
-                  </Button>
+            {primaryAction ? (
+              <>
+                {subtitle.length > 0 && (
+                  <Fade delay={0.1} className="order-2 mt-8 max-w-[54ch]">
+                    <p className="text-[17px] leading-[1.6] text-[var(--ink-soft)] sm:text-[18px]">
+                      {subtitle[0]}
+                    </p>
+                  </Fade>
                 )}
 
-                <a
-                  href={`#${RAZBOR_ANCHOR}`}
-                  onClick={() => pfClick("pf_secondary_click", hypothesis, "hero")}
-                  className="text-[15px] text-[var(--ink-soft)] underline decoration-[var(--rule)] underline-offset-4
-                    [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
-                >
-                  {secondaryLabel ?? `Читать исследование (${readingMinutes})`}
-                </a>
-              </div>
-            </Fade>
+                <Fade delay={0.32} className="order-3 sm:order-4">
+                  <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
+                    {primaryAction}
+                    <a
+                      href={`#${RAZBOR_ANCHOR}`}
+                      onClick={() => pfClick("pf_secondary_click", hypothesis, "hero")}
+                      className="text-[15px] text-[var(--ink-soft)] underline decoration-[var(--rule)] underline-offset-4
+                        [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
+                    >
+                      {secondaryLabel ?? `Читать исследование (${readingMinutes})`}
+                    </a>
+                  </div>
+                </Fade>
 
-            {/*
-              Микротекст набран строкой выходных данных, а не столбиком галочек:
-              это снятие возражений, а не список преимуществ, и вес ему не нужен.
-            */}
-            <Fade delay={0.42}>
-              <ul className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--rule-soft)] pt-5">
-                {micro.map((m, i) => (
-                  <li
-                    key={m}
-                    className="flex items-center gap-3 text-[14px] text-[var(--ink-faint)] sm:text-[15px]"
-                  >
-                    {i > 0 && (
-                      <span aria-hidden="true" className="block h-[3px] w-[3px] rounded-full bg-[var(--rule)]" />
-                    )}
-                    {m}
-                  </li>
-                ))}
-              </ul>
-            </Fade>
+                {/*
+                  Условие Telegram — сразу под кнопкой (явное требование ТЗ
+                  гипотезы №1, п. Mobile UX Hero: «размещать непосредственно под
+                  кнопкой, а не прятать ниже»). Раньше здесь стоял остаток
+                  подзаголовка, и микротекст с условием лимитов уезжал в самый
+                  конец колонки.
+                */}
+                <Fade delay={0.42} className="order-4 sm:order-5">
+                  <ul className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--rule-soft)] pt-5">
+                    {micro.map((m, i) => (
+                      <li
+                        key={m}
+                        className="flex items-center gap-3 text-[14px] text-[var(--ink-faint)] sm:text-[15px]"
+                      >
+                        {i > 0 && (
+                          <span aria-hidden="true" className="block h-[3px] w-[3px] rounded-full bg-[var(--rule)]" />
+                        )}
+                        {m}
+                      </li>
+                    ))}
+                  </ul>
+                </Fade>
+
+                {/* Только когда гипотеза сама просит показать схему сразу после CTA (см. `earlyVisual`). */}
+                {earlyVisual && (
+                  <div className="order-5 mt-8 lg:hidden">{visual}</div>
+                )}
+
+                {subtitle.length > 1 && (
+                  <div className="order-6 mt-4 flex max-w-[54ch] flex-col gap-4 sm:order-3 sm:mt-4">
+                    {subtitle.slice(1).map((p, i) => (
+                      <Fade key={i} delay={0.18 + i * 0.08}>
+                        <p className="text-[17px] leading-[1.6] text-[var(--ink-soft)] sm:text-[18px]">
+                          {p}
+                        </p>
+                      </Fade>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="mt-8 flex max-w-[54ch] flex-col gap-4">
+                  {subtitle.map((p, i) => (
+                    <Fade key={i} delay={0.1 + i * 0.08}>
+                      <p className="text-[17px] leading-[1.6] text-[var(--ink-soft)] sm:text-[18px]">
+                        {p}
+                      </p>
+                    </Fade>
+                  ))}
+                </div>
+
+                <Fade delay={0.32}>
+                  <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
+                    <Button
+                      href={`#${RAZBOR_ANCHOR}`}
+                      variant="secondary"
+                      size="lg"
+                      arrow
+                      onClick={() => pfClick("pf_hero_cta_click", hypothesis, "hero")}
+                    >
+                      {cta}
+                    </Button>
+
+                    <a
+                      href={`#${RAZBOR_ANCHOR}`}
+                      onClick={() => pfClick("pf_secondary_click", hypothesis, "hero")}
+                      className="text-[15px] text-[var(--ink-soft)] underline decoration-[var(--rule)] underline-offset-4
+                        [transition:color_var(--t-hover)_var(--ease-micro)] hover:text-[var(--ink)]"
+                    >
+                      {secondaryLabel ?? `Читать исследование (${readingMinutes})`}
+                    </a>
+                  </div>
+                </Fade>
+
+                {/*
+                  Микротекст набран строкой выходных данных, а не столбиком
+                  галочек: это снятие возражений, а не список преимуществ, и
+                  вес ему не нужен.
+                */}
+                <Fade delay={0.42}>
+                  <ul className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--rule-soft)] pt-5">
+                    {micro.map((m, i) => (
+                      <li
+                        key={m}
+                        className="flex items-center gap-3 text-[14px] text-[var(--ink-faint)] sm:text-[15px]"
+                      >
+                        {i > 0 && (
+                          <span aria-hidden="true" className="block h-[3px] w-[3px] rounded-full bg-[var(--rule)]" />
+                        )}
+                        {m}
+                      </li>
+                    ))}
+                  </ul>
+                </Fade>
+              </>
+            )}
           </div>
 
-          <Fade delay={0.24}>{visual}</Fade>
+          <Fade delay={0.24} className={earlyVisual ? "hidden lg:block" : undefined}>
+            {visual}
+          </Fade>
         </div>
       </div>
     </section>

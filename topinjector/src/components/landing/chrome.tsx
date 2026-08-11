@@ -143,21 +143,57 @@ export function LandingNav() {
 }
 
 /**
- * Закреплённая нижняя кнопка мобильной версии. Появляется после первого экрана:
- * пока основной CTA виден сам, дублировать его снизу незачем — панель только
- * отнимала бы высоту у контента. Ведёт в бота, как и все кнопки теста.
+ * Закреплённая нижняя кнопка мобильной версии (п.56B.11 мастер-промпта).
+ *
+ * Появляется не по факту скролла, а по факту контакта: только после того, как
+ * пользователь хотя бы раз увидел настоящий CTA на странице (`TrialCta`,
+ * помеченный `data-cta-marker`) — и прячется всякий раз, когда такой CTA снова
+ * в кадре, чтобы не показывать две конкурирующие кнопки одновременно.
+ *
+ * На страницах без размеченных CTA (сервисные `/limits`, `/docs` и т.п.)
+ * наблюдать нечего — панель ведёт себя по старому правилу «после 80% первого
+ * экрана», чтобы не потерять кнопку там, где размётки ещё нет.
  */
 export function MobileCta() {
-  const [show, setShow] = useState(false);
+  const [everSeenCta, setEverSeenCta] = useState(false);
+  const [ctaInView, setCtaInView] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > window.innerHeight * 0.8);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    const targets = Array.from(document.querySelectorAll<HTMLElement>("[data-cta-marker]"));
+
+    if (targets.length === 0) {
+      const onScroll = () => setEverSeenCta(window.scrollY > window.innerHeight * 0.8);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+      return () => window.removeEventListener("scroll", onScroll);
+    }
+
+    /*
+      IntersectionObserver отдаёт в колбэк только изменившиеся записи, поэтому
+      «виден ли сейчас хоть один CTA» держим сами — множеством пересекающих
+      целей, а не последним событием.
+    */
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            visible.add(e.target);
+            setEverSeenCta(true);
+          } else {
+            visible.delete(e.target);
+          }
+        }
+        setCtaInView(visible.size > 0);
+      },
+      { threshold: 0.2 },
+    );
+
+    for (const t of targets) io.observe(t);
+    return () => io.disconnect();
   }, []);
 
-  if (!show) return null;
+  if (!everSeenCta || ctaInView) return null;
 
   return (
     /*
@@ -177,7 +213,7 @@ export function MobileCta() {
           track("tg_bot_open", { place: "mobile_bar" });
         }}
       >
-        Получить лимиты в Telegram
+        Получить бесплатные лимиты
       </Button>
     </div>
   );
