@@ -81,8 +81,15 @@ export function PredframingHero({
     <section id={HERO_ID} className="border-b border-[var(--rule)] bg-[var(--inset)]">
       <div className="mx-auto max-w-[88rem] px-5 pt-8 pb-16 sm:pt-10 sm:pb-20">
         <Fade>
+          {/*
+            `shrink-0` держит kicker без сжатия только от `sm` и шире — там он
+            всегда короче одной строки. На телефоне это же правило заставляло
+            длинный kicker игнорировать перенос и вылезать за экран: флекс-элемент
+            с `flex-shrink: 0` не сжимается ниже собственного max-content — даже
+            без `white-space: nowrap`. `min-w-0` разрешает перенос обратно.
+          */}
           <div className="flex items-center gap-5">
-            <p className="label shrink-0 text-[var(--ink-faint)]">{kicker}</p>
+            <p className="label min-w-0 text-[var(--ink-faint)] sm:shrink-0">{kicker}</p>
             <span aria-hidden="true" className="h-px min-w-4 flex-1 bg-[var(--rule)]" />
             <p className="label hidden shrink-0 text-[var(--ink-faint)] sm:block">
               {readingMinutes} чтения

@@ -1,31 +1,20 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { track } from "@/diagnostic/analytics";
-import { PLANS } from "@/landing/config";
-import { groupDigits } from "@/format";
+import { ManualInputPlaceholder } from "./manual-input";
 
 /*
-  Калькулятор блока 12 (ТЗ 1.2). Реальной формулы «цена за единицу» в продукте
-  нет — есть три опубликованных тарифа с фиксированными лимитами проектов и
-  запросов (те же `PLANS`, что и на /service, /universal). П.31 мастер-промпта
-  прямо запрещает придумывать формулу вместо продукта: поэтому калькулятор не
-  считает произвольную цену, а подбирает подходящий опубликованный тариф по
-  введённому объёму — это расчёт на реальных данных, а не декоративный
-  лид-магнит.
+  Калькулятор блока 12 (ТЗ 1.2 + п.53A.11 нового мастер-промпта).
+
+  Интерфейс калькулятора проектировать можно и нужно — поля, ползунки, шаг
+  расчёта. Но п.53A.11 прямо запрещает заполнять результат вымышленным числом,
+  даже основанным на трёх реально опубликованных тарифах: у продукта нет
+  подтверждённой формулы «цена за произвольный объём», только три фиксированных
+  пакета. Поэтому результат — не число, а технический плейсхолдер: сумма
+  появится, когда появится сама формула, а не подбором ближайшего тарифа.
 */
-
-const CAPS = [
-  { id: PLANS[0].id, projects: 3, queries: 50 },
-  { id: PLANS[1].id, projects: 10, queries: 300 },
-] as const;
-
-function planFor(projects: number, queries: number) {
-  const fit = CAPS.find((c) => projects <= c.projects && queries <= c.queries);
-  const plan = PLANS.find((p) => p.id === (fit?.id ?? "team"))!;
-  return plan;
-}
 
 export function PlanCalculator() {
   const [projects, setProjects] = useState(1);
@@ -37,9 +26,6 @@ export function PlanCalculator() {
     used.current = true;
     track("calculator_use", { hypothesis: "loss_advantage" });
   };
-
-  const plan = useMemo(() => planFor(projects, queries), [projects, queries]);
-  const numeric = /^[\d\s ]+$/.test(plan.price);
 
   return (
     <div className="mt-14 grid gap-px bg-[var(--rule-soft)] lg:grid-cols-[1.1fr_0.9fr]">
@@ -89,38 +75,24 @@ export function PlanCalculator() {
         </div>
 
         <p className="mt-6 max-w-[40ch] text-[12px] leading-relaxed text-[var(--ink-faint)]">
-          Расчёт подбирает ближайший из опубликованных тарифов по введённому
-          объёму. Формула цены за один запрос вне тарифов пока не опубликована.
+          Объём для расчёта: {projects}{" "}
+          {projects === 1 ? "проект" : "проектов"}, {queries} запросов.
         </p>
       </div>
 
-      <div className="flex flex-col justify-between bg-[var(--inset)] p-7 sm:p-8">
-        <div>
-          <p className="label text-[var(--ink-faint)]">подходящий тариф</p>
-          <p className="mt-4 text-[19px] font-semibold tracking-[-0.02em] text-[var(--ink)]">
-            {plan.name}
-          </p>
-
-          <p className="num mt-5 flex items-baseline gap-2 text-[36px] leading-none font-semibold sm:text-[44px]">
-            {numeric ? (
-              <>
-                {groupDigits(plan.price)}
-                <span className="text-[16px] text-[var(--ink-faint)]">₽ в месяц</span>
-              </>
-            ) : (
-              <span className="text-[24px]">{plan.price}</span>
-            )}
-          </p>
-
-          <ul className="mt-6 flex flex-col gap-2 border-t border-[var(--rule-soft)] pt-5">
-            {plan.features.map((f) => (
-              <li key={f} className="text-[14px] leading-snug text-[var(--ink-soft)]">
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <ManualInputPlaceholder
+        materialType="Формула калькулятора"
+        need={
+          <>
+            Реальная тарифная формула Topinjector для произвольного объёма
+            (сейчас опубликовано только три фиксированных пакета — см.
+            тарифы ниже).
+          </>
+        }
+        source="Тарифная политика Topinjector"
+        readyWhen="Формула подтверждена и подключена к полям слева"
+        className="justify-center"
+      />
     </div>
   );
 }

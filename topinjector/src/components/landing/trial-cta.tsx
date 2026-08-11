@@ -99,9 +99,18 @@ export function TrialCta({
       {/* Линейка держится на 0.32: ниже она пропадала на заливке. */}
       <span aria-hidden="true" className="w-px shrink-0 bg-[var(--btn-ink)] opacity-[0.32]" />
 
-      <span className="flex flex-1 items-center justify-center gap-3 px-6 whitespace-nowrap">
-        {children}
-        <span aria-hidden="true" className="btn-arrow num text-[0.85em] leading-none">
+      {/*
+        Без `whitespace-nowrap`: раньше он держал подпись в одну строку любой
+        ценой, а флекс-элемент без `min-w-0` отказывался сжиматься ниже
+        содержимого — на узком экране с длинной подписью («Получить
+        бесплатные лимиты Topinjector» вместо «Telegram») кнопка росла шире
+        вьюпорта вместо переноса строки. Перенос здесь безопаснее горизонтальной
+        прокрутки: короткая подпись «Telegram» по-прежнему не переносится, ей
+        просто некуда.
+      */}
+      <span className="flex min-w-0 flex-1 items-center justify-center gap-3 px-6 py-1 text-center">
+        <span className="min-w-0">{children}</span>
+        <span aria-hidden="true" className="btn-arrow num shrink-0 text-[0.85em] leading-none">
           →
         </span>
       </span>

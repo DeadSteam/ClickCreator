@@ -6,9 +6,7 @@ import { LandingNav, MobileCta, SIGNUP_URL } from "@/components/landing/chrome";
 import { LandingFooter } from "@/components/landing/footer";
 import { Appear, Cards, Chain, Head, Section, Steps } from "@/components/landing/sections";
 import { Faq } from "@/components/landing/faq";
-import { Pricing } from "@/components/landing/pricing";
 import { CompareTable } from "@/components/landing/universal-blocks";
-import { FeaturedCase, CaseGrid } from "@/components/landing/universal-cases";
 import { TelegramSteps } from "@/components/landing/telegram";
 import { TrialCta } from "@/components/landing/trial-cta";
 import { AppPreview } from "@/components/landing/app-preview";
@@ -17,6 +15,12 @@ import { PredframingAnalytics } from "@/components/predframing/chrome";
 import { PredframingHero, RAZBOR_ANCHOR } from "@/components/predframing/hero";
 import { RouteSplit, ConsumptionVsProduction, CriteriaFive } from "@/components/predframing/schemas-information";
 import { PlanCalculator } from "@/components/predframing/plan-calculator";
+import {
+  CasePlaceholder,
+  ManualInputInline,
+  ManualInputPlaceholder,
+  TariffPlaceholder,
+} from "@/components/predframing/manual-input";
 import {
   Aside,
   Chapter,
@@ -36,7 +40,6 @@ import {
   INFORMATION_TARIFF_LOGIC,
 } from "@/predframing/information-sale";
 import { DISCLAIMER, PENDING, TELEGRAM, TRIAL } from "@/landing/config";
-import { FEATURED_CASE, CASE_GRID } from "@/landing/universal";
 
 /*
   Гипотеза №2 «Информационное преимущество» — полный психологический
@@ -111,7 +114,7 @@ export default function InformationPage() {
             cta="Получить бесплатные лимиты Topinjector →"
             primaryAction={
               <TrialCta event="hero_cta_click" place="hero">
-                Получить бесплатные лимиты Topinjector
+                Получить бесплатные лимиты
               </TrialCta>
             }
             secondaryLabel="Посмотреть, где возникает информационное преимущество ↓"
@@ -294,11 +297,18 @@ export default function InformationPage() {
                     </div>
                   ))}
                 </div>
+                {/* п.53A.10A: даже на самом сильном визуальном моменте страницы схема не выдаётся за скриншот молча. */}
+                <div className="mt-6 px-2 sm:px-6 xl:px-16 2xl:px-24">
+                  <ManualInputInline>
+                    Иллюстративная схема интерфейса, не скриншот. Заменить на
+                    реальный экран Topinjector перед публикацией.
+                  </ManualInputInline>
+                </div>
               </div>
 
               <div className="mt-12">
-                <TrialCta event="product_bridge_cta_click" place="product_bridge">
-                  Получить бесплатные лимиты и проверить Topinjector
+                <TrialCta event="product_bridge_cta_click" place="product_bridge" above="Проверить Topinjector на своей задаче">
+                  Получить бесплатные лимиты
                 </TrialCta>
                 <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
                   Лимиты выдаются через Telegram-бота после проверки подписки на
@@ -389,11 +399,14 @@ export default function InformationPage() {
           </div>
 
           <Appear delay={0.16}>
-            <p className="mt-8 max-w-[62ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
-              Больше экранов кабинета (создание проекта, управление запуском,
-              история изменений) добавляются по мере готовности реальных
-              скриншотов интерфейса.
-            </p>
+            <ManualInputPlaceholder
+              materialType="Скриншот"
+              need="Реальные экраны кабинета: создание проекта, управление запуском, история изменений. Показанный экран выше — иллюстративная схема, а не скриншот."
+              source="Продакшн-сборка Topinjector (personal cabinet)"
+              readyWhen="Минимум 4–6 реальных экранов, каждый с рабочими данными"
+              minHeight="8rem"
+              className="mt-8"
+            />
           </Appear>
         </Section>
 
@@ -435,6 +448,15 @@ export default function InformationPage() {
             lead={INFORMATION_SAFETY.intro}
           />
           <Cards items={INFORMATION_SAFETY.rows.map((r) => ({ t: r.t, d: r.d }))} cols={2} />
+          <Appear delay={0.1}>
+            <ManualInputPlaceholder
+              materialType="Безопасность"
+              need={`Как остановить сценарий: ${INFORMATION_SAFETY.pending.need}`}
+              source={INFORMATION_SAFETY.pending.source}
+              readyWhen={INFORMATION_SAFETY.pending.readyWhen}
+              className="mt-6"
+            />
+          </Appear>
           <Appear delay={0.16}>
             <p className="mt-10 max-w-[58ch] border-l-2 border-[var(--accent)] py-1 pl-5 text-[17px] leading-snug font-semibold tracking-[-0.02em]">
               Профессиональное преимущество создаётся не скоростью любой
@@ -450,18 +472,18 @@ export default function InformationPage() {
             title="На каких задачах Topinjector уже проверяли другие SEO-специалисты"
             lead="Кейсы полезны не потому, что позволяют скопировать чужой вывод. Они помогают понять: заслуживает ли гипотеза вашей собственной проверки."
           />
-          <FeaturedCase data={FEATURED_CASE} />
-          <Appear delay={0.1}>
-            <h3 className="mt-20 text-[22px] font-extrabold tracking-[-0.03em] sm:text-[28px]">
-              Результаты на разных проектах и запросах
-            </h3>
+          {/*
+            п.56A.10: подтверждённых кейсов ещё нет. Показывать демо-данные,
+            похожие на реальный кейс, запрещено — вместо этого три явно
+            промаркированные заглушки.
+          */}
+          <Appear delay={0.08}>
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <CasePlaceholder index={1} />
+              <CasePlaceholder index={2} />
+              <CasePlaceholder index={3} />
+            </div>
           </Appear>
-          <CaseGrid items={CASE_GRID} />
-          {PENDING && (
-            <Appear delay={0.16}>
-              <p className="mt-6 max-w-[64ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">{DISCLAIMER}</p>
-            </Appear>
-          )}
           <Appear delay={0.18}>
             <p className="mt-10 max-w-[58ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
               Чужой кейс отвечает на вопрос «есть ли основания проверить».
@@ -523,12 +545,14 @@ export default function InformationPage() {
             </p>
           </Appear>
 
-          <Pricing />
-          {PENDING && (
-            <Appear delay={0.2}>
-              <p className="mt-6 max-w-[64ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">{DISCLAIMER}</p>
-            </Appear>
-          )}
+          {/* п.53A.4: три тарифа существуют, но не подтверждены для этой страницы — не показываем их как готовую цену. */}
+          <Appear delay={0.2}>
+            <div className="mt-14 grid gap-6 lg:grid-cols-3">
+              <TariffPlaceholder slot="Старт" />
+              <TariffPlaceholder slot="Профессиональный" />
+              <TariffPlaceholder slot="Команда" />
+            </div>
+          </Appear>
         </Section>
 
         {/* Блок 14. Для кого подходит. */}
@@ -590,7 +614,7 @@ export default function InformationPage() {
           <Appear delay={0.1}>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-end">
               <TrialCta event="final_cta_click" place="final">
-                Получить бесплатные лимиты Topinjector
+                Получить бесплатные лимиты
               </TrialCta>
               <a href="#calculator" className="btn btn-secondary btn-lg">
                 Рассчитать стоимость рабочего объёма
