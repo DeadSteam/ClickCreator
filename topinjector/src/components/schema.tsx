@@ -6,9 +6,18 @@
 export function Schema({
   faq,
   service,
+  offers = { price: "4", description: "Цена за одну ключевую фразу в день, тариф Экономный" },
 }: {
   faq: { q: string; a: string }[];
   service: { name: string; description: string; url: string };
+  /**
+   * Цена привязана к тарифу с подписью в день/фразу (`@/landing/config`) — то,
+   * чем живут /service и десять гипотез. Страницы с другой, ещё не
+   * подтверждённой тарифной моделью (например /stack — оплата за клик, цена
+   * ⚠ не зафиксирована) обязаны передать `offers={null}`: структурированные
+   * данные не должны публиковать цену, которой сама страница не называет.
+   */
+  offers?: { price: string; description: string } | null;
 }) {
   const graph = {
     "@context": "https://schema.org",
@@ -34,12 +43,14 @@ export function Schema({
         description: service.description,
         provider: { "@id": "https://topinjector.ru/#org" },
         areaServed: { "@type": "Country", name: "Россия" },
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "RUB",
-          price: "4",
-          description: "Цена за одну ключевую фразу в день, тариф Экономный",
-        },
+        ...(offers && {
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "RUB",
+            price: offers.price,
+            description: offers.description,
+          },
+        }),
       },
       {
         "@type": "FAQPage",

@@ -127,7 +127,26 @@ export type DiagnosticEvent =
   | "first_limit_used"
   | "free_limits_exhausted"
   | "payment_start"
-  | "first_payment";
+  | "first_payment"
+  /*
+    /stack — «второй ПФ-инструмент» (ТЗ на лендинг ЦА ПФ-щики, разд. 24/27).
+    Страница с динамическим Hero по параметру ?angle= требует сквозной
+    атрибуции до оплаты: имена события здесь заданы ТЗ дословно и не
+    переиспользуют близкие по смыслу события выше (`parallel_test_view` и
+    `parallel_use_view` — разные страницы, разные ТЗ, путать нельзя). Каждое
+    событие несёт `angle`/`creative`/`landing_variant`/`session_id`/`cta_id`
+    из `@/stack/attribution` — без них десять входов неразличимы.
+  */
+  | "controlled_test_view"
+  | "parallel_use_view"
+  | "telegram_open"
+  | "subscription_confirmed"
+  | "free_clicks_issued"
+  | "free_clicks_cta_click"
+  | "product_open"
+  | "first_launch"
+  | "first_click_used"
+  | "first_result";
 
 export function track(event: DiagnosticEvent, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
