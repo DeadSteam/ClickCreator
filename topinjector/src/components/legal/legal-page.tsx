@@ -27,6 +27,7 @@ export function LegalPage({
   pending = true,
   kicker = "документ",
   toc = true,
+  legalEntity = true,
 }: {
   title: string;
   updated: string;
@@ -40,6 +41,12 @@ export function LegalPage({
    * ширины, ничего не давая взамен.
    */
   toc?: boolean;
+  /**
+   * Строка с ООО и ИНН в подвале. Уместна только на самих юридических
+   * документах — на справочнике вроде /docs она читается как реквизиты
+   * несуществующей сделки: страницу ни с кем не заключают.
+   */
+  legalEntity?: boolean;
 }) {
   return (
     <div className="zone-proof min-h-dvh px-5 py-8 sm:px-8">
@@ -105,7 +112,7 @@ export function LegalPage({
           */}
           <div className="flex flex-col gap-14 [counter-reset:clause]">{children}</div>
 
-          <Neighbours />
+          <Neighbours legalEntity={legalEntity} />
         </main>
 
         {toc && (
@@ -131,7 +138,7 @@ const DOCS = [
   почти всегда идёт в другой документ — за условиями возврата, за политикой
   данных — и подпись под названием отвечает на вопрос «мне туда?» до перехода.
 */
-function Neighbours() {
+function Neighbours({ legalEntity }: { legalEntity: boolean }) {
   return (
     <nav className="mt-20 border-t border-[var(--rule)] pt-10">
       <p className="label text-[var(--ink-faint)]">другие документы</p>
@@ -150,7 +157,9 @@ function Neighbours() {
       </div>
 
       <p className="num mt-10 text-[11px] text-[var(--ink-faint)]">
-        TOPINJECTOR 2026 · ООО «___», ИНН ___ · hi@topinjector.ru
+        {legalEntity
+          ? "TOPINJECTOR 2026 · ООО «___», ИНН ___ · hi@topinjector.ru"
+          : "TOPINJECTOR 2026 · hi@topinjector.ru"}
       </p>
     </nav>
   );
@@ -197,15 +206,22 @@ export function Clause({
   return (
     <section id={anchor} className="scroll-mt-8 [counter-increment:clause]">
       {/*
-        Номер стоит в псевдоэлементе: он декоративный, и в оглавление,
-        поиск по странице или буфер обмена ему попадать незачем.
+        Номер стоит в псевдоэлементе бейджа: он декоративный, и в оглавление,
+        поиск по странице или буфер обмена ему попадать незачем. Кружок, а не
+        строчная цифра, — раздел договора адресуется этим номером (ссылка,
+        служба поддержки), и у адреса есть смысл выглядеть как метка, а не
+        как случайная цифра перед заголовком.
       */}
       <h2
         data-title={title}
-        className="flex items-baseline gap-4 text-[21px] font-semibold tracking-[-0.02em] sm:text-[25px]
-          before:num before:shrink-0 before:text-[13px] before:font-normal before:text-[var(--ink-faint)]
-          before:content-[counter(clause)]"
+        className="flex items-start gap-4 text-[21px] font-semibold tracking-[-0.02em] sm:text-[25px]"
       >
+        <span
+          aria-hidden="true"
+          className="num mt-[2px] flex h-7 w-7 shrink-0 items-center justify-center rounded-full
+            border border-[var(--rule)] text-[12px] font-normal text-[var(--ink-faint)]
+            before:content-[counter(clause)]"
+        />
         {title}
       </h2>
 

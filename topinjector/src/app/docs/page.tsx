@@ -83,6 +83,7 @@ export default function DocsPage() {
       kicker="справочник"
       toc={false}
       pending={false}
+      legalEntity={false}
       intro="Инструкции по работе с сервисом. Раздел наполняется вместе с продуктом: ниже — структура и то, что уже доступно."
     >
       <Clause title="Что уже доступно">

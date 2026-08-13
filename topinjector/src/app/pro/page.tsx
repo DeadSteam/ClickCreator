@@ -233,7 +233,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="tools" className="zone-proof scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        <section id="tools" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[20ch] text-[32px] sm:text-[46px]">
@@ -266,7 +266,7 @@ export default function ProLanding() {
           они, а не обещания, дают профессиональному перепродавцу основание
           доверять офферу.
         */}
-        <section id="limits" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
+        <section id="limits" className="zone-proof scroll-mt-8 px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <Kicker>границы и ответственность</Kicker>
@@ -322,7 +322,7 @@ export default function ProLanding() {
 
         <section
           id="faq"
-          className="zone-settled settle-in scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-32 sm:pb-24"
+          className="zone-settled settle-in scroll-mt-8 px-5 pt-24 pb-16 sm:px-8 sm:pt-32 sm:pb-20"
         >
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
@@ -354,7 +354,7 @@ export default function ProLanding() {
           </div>
         </section>
 
-        <section id="start" className="zone-settled scroll-mt-8 px-5 pb-28 sm:px-8 sm:pb-32">
+        <section id="start" className="zone-settled scroll-mt-8 px-5 pb-28 sm:px-8 sm:pb-36">
           <div className="mx-auto max-w-[76rem] border-t border-[var(--rule)] pt-16">
             <Reveal>
               <h2 className="max-w-[16ch] text-[34px] sm:text-[52px]">

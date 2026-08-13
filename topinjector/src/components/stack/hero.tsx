@@ -41,7 +41,10 @@ function StackHeroVisual({ accent }: { accent?: string[] }) {
               ПФ-инструмент №1
             </p>
           </div>
-          <div className="cell border-l-2 border-[var(--accent)] p-4 text-center sm:p-5">
+          <div
+            className="cell border-l-2 border-[var(--accent)] p-4 text-center sm:p-5"
+            style={{ backgroundColor: "color-mix(in oklab, var(--accent) 8%, transparent)" }}
+          >
             <p className="text-[13px] leading-snug font-medium text-[var(--ink)] sm:text-[14px]">
               ПФ-инструмент №2
             </p>
@@ -94,23 +97,23 @@ export function StackHero({ variant }: { variant: HeroVariant }) {
         <div className="mx-auto max-w-[88rem] px-5 pt-10 pb-16 sm:px-8 sm:pt-14 sm:pb-20">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-16">
             <div className="flex flex-col">
-              <Appear speed="calm">
+              <Appear speed="quick">
                 <p className="label text-[var(--ink-faint)]">{variant.eyebrow}</p>
               </Appear>
 
-              <Appear speed="calm" delay={0.06}>
+              <Appear speed="quick" delay={0.04}>
                 <h1 className="mt-6 text-[32px] leading-[1.06] font-extrabold tracking-[-0.035em] sm:text-[42px] lg:text-[48px] 2xl:text-[54px]">
                   {variant.h1}
                 </h1>
               </Appear>
 
-              <Appear speed="calm" delay={0.14}>
+              <Appear speed="quick" delay={0.08}>
                 <p className="mt-7 max-w-[54ch] text-[17px] leading-[1.6] text-[var(--ink-soft)] sm:text-[18px]">
                   {variant.subtitle}
                 </p>
               </Appear>
 
-              <Appear speed="calm" delay={0.2}>
+              <Appear speed="quick" delay={0.12}>
                 <div className="mt-8 border-l-2 border-[var(--accent)] py-1 pl-5">
                   <p className="text-[17px] leading-snug font-semibold tracking-[-0.02em] text-[var(--ink)] sm:text-[19px]">
                     {HERO_OFFER}
@@ -121,7 +124,7 @@ export function StackHero({ variant }: { variant: HeroVariant }) {
                 </div>
               </Appear>
 
-              <Appear speed="calm" delay={0.28}>
+              <Appear speed="quick" delay={0.16}>
                 <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
                   <StackCta ctaId="hero" event="hero_cta_click">
                     {variant.cta}
@@ -136,14 +139,14 @@ export function StackHero({ variant }: { variant: HeroVariant }) {
                 </div>
               </Appear>
 
-              <Appear speed="calm" delay={0.36}>
+              <Appear speed="quick" delay={0.2}>
                 <p className="mt-8 max-w-[54ch] border-t border-[var(--rule-soft)] pt-5 text-[13px] leading-relaxed text-[var(--ink-faint)]">
                   {HERO_MICRO}
                 </p>
               </Appear>
             </div>
 
-            <Appear speed="calm" delay={0.18}>
+            <Appear speed="quick" delay={0.1}>
               <StackHeroVisual accent={variant.accent} />
             </Appear>
           </div>

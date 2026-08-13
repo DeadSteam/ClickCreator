@@ -288,7 +288,7 @@ export default function BusinessLanding() {
           Прежние названия тактов («Подача», «Впрыск», «Прогрев») звучали как
           техническая магия; словарь п.14 требует обратного.
         */}
-        <section id="how" className="zone-signal scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        <section id="how" className="zone-signal scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[18ch] text-[32px] sm:text-[46px]">
@@ -367,7 +367,7 @@ export default function BusinessLanding() {
         </section>
 
         {/* Результаты читаются как банк показаний. */}
-        <section id="cases" className="zone-proof scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        <section id="cases" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <div className="flex flex-wrap items-baseline justify-between gap-4">
@@ -434,7 +434,7 @@ export default function BusinessLanding() {
           Названное доказательство. Анонимные восторженные цитаты — определяющий
           разрыв доверия в этой категории, и п.25 их прямо запрещает.
         */}
-        <section id="voices" className="zone-proof scroll-mt-8 px-5 pt-16 sm:px-8 sm:pt-20">
+        <section id="voices" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[14ch] text-[32px] sm:text-[46px]">
@@ -448,7 +448,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="pricing" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-40">
+        <section id="pricing" className="zone-proof scroll-mt-8 px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="max-w-[18ch] text-[32px] sm:text-[46px]">
@@ -527,7 +527,7 @@ export default function BusinessLanding() {
         */}
         <section
           id="start"
-          className="zone-settled settle-in scroll-mt-8 px-5 pt-24 pb-20 sm:px-8 sm:pt-44 sm:pb-28"
+          className="zone-settled settle-in scroll-mt-8 px-5 pt-24 pb-16 sm:px-8 sm:pt-32 sm:pb-20"
         >
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
@@ -568,7 +568,7 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="faq" className="zone-settled scroll-mt-8 px-5 pt-16 pb-24 sm:px-8 sm:pt-20 sm:pb-32">
+        <section id="faq" className="zone-settled scroll-mt-8 px-5 pt-24 pb-28 sm:px-8 sm:pt-32 sm:pb-36">
           <div className="mx-auto max-w-[76rem]">
             <Reveal>
               <h2 className="text-[28px] sm:text-[36px]">Честные ответы</h2>
