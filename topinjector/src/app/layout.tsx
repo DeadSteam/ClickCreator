@@ -1,19 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Onest, Martian_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import "./instrument.css";
+import "./stack.css";
 import { THEME_SCRIPT, ThemeSync } from "@/components/ui/theme-toggle";
 
-/* Two families, two jobs: Onest speaks, Martian Mono measures. */
-const onest = Onest({
-  variable: "--font-onest",
-  subsets: ["cyrillic", "latin"],
-  display: "swap",
-});
+/*
+  ОДНА ГАРНИТУРА НА ВЕСЬ САЙТ — ШВЕЙЦАРСКИЙ ГРОТЕСК.
 
-const martian = Martian_Mono({
-  variable: "--font-martian",
+  Задан Helvetica. Настоящую Helvetica отдать с сервера нельзя: она
+  лицензионная и веб-версии в свободной раздаче не существует. Поэтому стек
+  в globals.css начинается с системной Helvetica Neue — на macOS и iOS
+  пользователь видит именно её, — а сюда подключён Inter как подложка для
+  всех остальных платформ.
+
+  Inter выбран не «похожим на глаз»: это неогротеск той же школы, с закрытыми
+  апертурами и горизонтальными терминалами, и, в отличие от большинства
+  бесплатных гротесков, у него полная кириллица. Arial в хвосте стека —
+  последний рубеж, метрически совместимый с Helvetica.
+
+  Второй гарнитуры больше нет. Martian Mono держал подписи и цифры, и именно
+  он давал разряженные моноширинные лейблы — самый узнаваемый почерк
+  шаблонного лендинга. Табличные цифры теперь берутся у Inter через
+  `font-variant-numeric: tabular-nums`, а это ровно то, ради чего моноширинный
+  здесь и стоял.
+*/
+const inter = Inter({
+  variable: "--font-grotesk",
   subsets: ["cyrillic", "latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -49,7 +64,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ru" className={`${onest.variable} ${martian.variable}`} suppressHydrationWarning>
+    <html lang="ru" className={inter.variable} suppressHydrationWarning>
       <head>
         {/*
           Тема выставляется до первой отрисовки. Через React это невозможно:

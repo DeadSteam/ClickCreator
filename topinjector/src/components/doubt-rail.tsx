@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useScroll, useMotionValueEvent, useReducedMotion } from "motion/react";
+import { plural } from "@/format";
 
 /*
   Хребет страницы. Прокрутка и есть сокращение окна сомнения: вы входите на
@@ -26,14 +27,19 @@ export function DoubtRail({
   from = FROM,
   to = TO,
   caption = "окно сомнения",
-  unit = "дней",
+  /*
+    Три формы, а не одна строка. Рейка отсчитывает окно вниз от девяноста и
+    по дороге показывает 81, 62, 34, 21 — при постоянной подписи «дней» две
+    трети этих чисел стояли с неверной формой.
+  */
+  unit = ["день", "дня", "дней"] as [string, string, string],
 }: {
   ctaHref: string;
   ctaLabel: string;
   from?: number;
   to?: number;
   caption?: string;
-  unit?: string;
+  unit?: [string, string, string];
 }) {
   const { scrollYProgress } = useScroll();
   const [days, setDays] = useState(from);
@@ -97,11 +103,9 @@ export function DoubtRail({
           {caption}
         </span>
 
-        <p className="flex flex-col gap-1">
-          <span className="num text-[40px] leading-none font-semibold text-[var(--ink)]">
-            {days}
-          </span>
-          <span className="label text-[var(--ink-faint)]">{unit}</span>
+        <p className="metric-body metric-sm">
+          <span className="metric-n">{days}</span>
+          <span className="metric-u">{plural(days, ...unit)}</span>
         </p>
 
         <div className="relative mt-1 h-[38vh] w-px bg-[var(--rule)]">
@@ -121,7 +125,16 @@ export function DoubtRail({
           />
         </div>
 
-        <span className="num text-[11px] text-[var(--ink-faint)]">{to}</span>
+        {/*
+          Конец шкалы. Стоял голым числом «3» под линейкой — без подписи и без
+          единицы оно читалось обрывком вёрстки, а не отметкой. Теперь у него
+          та же пара «число + единица», что и у верхнего показания, поэтому
+          линейка читается диапазоном: от девяноста дней до трёх.
+        */}
+        <span className="metric-body [--metric-size:15px]">
+          <span className="metric-n text-[var(--ink-faint)]">{to}</span>
+          <span className="metric-u text-[var(--ink-faint)]">{plural(to, ...unit)}</span>
+        </span>
       </aside>
 
       {/* Мобильный: действие остаётся в досягаемости и несёт то же показание. */}

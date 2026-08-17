@@ -126,7 +126,7 @@ export const HERO_VARIANTS: Record<string, HeroVariant> = {
 } as const;
 
 /** Общий оффер Hero — не меняется по angle (разд. «Блок 1. Hero» ТЗ). */
-export const HERO_OFFER = "3000 кликов для controlled test бесплатно";
+export const HERO_OFFER = "3000 кликов для контрольного теста бесплатно";
 export const HERO_OFFER_NOTE =
   "Не нужно переносить проекты или менять рабочий стек. Сначала получите собственные данные.";
 export const HERO_MICRO =

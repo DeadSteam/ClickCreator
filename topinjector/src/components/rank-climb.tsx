@@ -74,28 +74,45 @@ export function RankClimb() {
         </span>
       </div>
 
-      <div className="flex items-end justify-between gap-4 py-6">
-        <div className="flex items-baseline gap-2.5">
-          <motion.span className="num text-[64px] leading-[0.8] font-semibold text-[var(--ink)] tabular-nums">
-            {shown}
-          </motion.span>
-          <span className="label text-[var(--ink-faint)]">позиция</span>
+      {/*
+        Обе величины набраны той же системой, что и показания на странице:
+        подпись сверху, число, единица на его базовой линии. Раньше слева
+        подпись стояла сбоку от числа, а справа — под ним, и два соседних
+        показания в одной панели читались по разным правилам.
+      */}
+      <div className="flex items-start justify-between gap-4 py-6">
+        <div className="metric">
+          <span className="metric-cap">позиция сегодня</span>
+          <p className="metric-body metric-lg">
+            <motion.span className="metric-n">{shown}</motion.span>
+          </p>
         </div>
         <motion.div
-          className="text-right"
+          className="metric text-right"
           initial={reduce ? false : { opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.3, delay: 1.35 }}
         >
-          <span className="num text-[20px] leading-none font-semibold text-[var(--accent)]">
-            +44
-          </span>
-          <p className="label mt-1.5 text-[var(--ink-faint)]">за 14 дней</p>
+          {/*
+            Единицы здесь нет намеренно. Подпись уже назвала величину ростом
+            позиций, и слово «позиции» рядом с числом повторяло бы её вторым
+            шрифтом — на кегле, где оно всё равно нечитаемо. Единица нужна там,
+            где без неё величина неоднозначна; здесь она избыточна.
+          */}
+          <span className="metric-cap">рост за 14 дней</span>
+          <p className="metric-body metric-sm justify-end">
+            <span className="metric-n text-[var(--accent)]">+44</span>
+          </p>
         </motion.div>
       </div>
 
       <div className="relative">
-        <svg
+<motion.div
+          initial={reduce ? false : { clipPath: "inset(0 100% 0 0)" }}
+          animate={inView ? { clipPath: "inset(0 0% 0 0)" } : {}}
+          transition={{ duration: 1.2, ease: EASE_OUT }}
+        >
+                <svg
           viewBox={`0 0 ${W} ${H}`}
           className="h-[124px] w-full sm:h-[140px]"
           preserveAspectRatio="none"
@@ -130,18 +147,32 @@ export function RankClimb() {
             transition={{ duration: 0.6, delay: 0.7 }}
           />
 
-          <motion.path
+          {/*
+            Линия рисуется без pathLength.
+
+            Прежняя отрисовка шла через `pathLength`, а он реализован штриховым
+            пунктиром: motion гонит `stroke-dasharray` от нуля к единице. У
+            этого SVG стоит `preserveAspectRatio="none"` — он растягивается по
+            ширине сильнее, чем по высоте, — и штрих растягивается вместе с
+            ним, но только вдоль. На крутых участках кривой длина штриха в
+            экранных пикселях переставала совпадать с длиной промежутка, и
+            линия шла с разрывами. Чем шире панель, тем заметнее: после
+            перевода первого экрана на широкую панель дырки стали видны сразу.
+
+            Развёртка перенесена на обёртку (clip-path ниже). Она режет уже
+            отрисованный слой и к масштабированию нечувствительна вовсе.
+          */}
+          <path
             d={LINE}
             fill="none"
             stroke="var(--accent)"
             strokeWidth="2"
             strokeLinejoin="round"
+            strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
-            initial={reduce ? false : { pathLength: 0 }}
-            animate={inView ? { pathLength: 1 } : {}}
-            transition={{ duration: 1.5, ease: EASE_OUT }}
           />
         </svg>
+        </motion.div>
 
         <div className="pointer-events-none absolute inset-y-0 left-0 flex flex-col justify-between py-1">
           {[1, 50].map((p) => (

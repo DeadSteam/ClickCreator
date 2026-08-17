@@ -84,10 +84,24 @@ const ITEMS = [
   },
 ];
 
-/** По умолчанию — вопросы /service. `items` параметризован ради /universal: там свой список из п.19 ТЗ основного лендинга. */
-export function Faq({ items = ITEMS }: { items?: { q: string; a: string }[] }) {
+/**
+ * По умолчанию — вопросы /service. `items` параметризован ради /universal:
+ * там свой список из п.19 ТЗ основного лендинга.
+ *
+ * `plain` включает нумерацию без ведущего нуля и более крупный кегль. Это
+ * режим /stack: «01», «02» — запись счётчика, а не номер вопроса, и на списке
+ * из шестнадцати пунктов двузначная разрядка ничего не даёт. Остальные
+ * маршруты остаются на прежнем виде, поэтому правка их не задевает.
+ */
+export function Faq({
+  items = ITEMS,
+  plain = false,
+}: {
+  items?: { q: string; a: string }[];
+  plain?: boolean;
+}) {
   return (
-    <div className="mt-14 border-t border-[var(--rule-soft)]">
+    <div className={`border-t border-[var(--rule-soft)] ${plain ? "" : "mt-14"}`}>
       {items.map((item, i) => (
         <Appear key={item.q} delay={Math.min(i, 5) * 0.03}>
           <details
@@ -98,18 +112,38 @@ export function Faq({ items = ITEMS }: { items?: { q: string; a: string }[] }) {
               }
             }}
           >
-            <summary className="flex cursor-pointer list-none items-baseline gap-5 py-6">
-              <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                {ordinal(i)}
+            <summary
+              className={`flex cursor-pointer list-none items-baseline gap-5 ${
+                plain ? "py-7" : "py-6"
+              }`}
+            >
+              <span
+                className={`num shrink-0 text-[var(--ink-faint)] ${
+                  plain ? "w-5 text-[14px]" : "text-[11px]"
+                }`}
+              >
+                {plain ? i + 1 : ordinal(i)}
               </span>
-              <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] sm:text-[19px]">
+              <span
+                className={`flex-1 leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] ${
+                  plain ? "text-[19px] sm:text-[22px]" : "text-[17px] sm:text-[19px]"
+                }`}
+              >
                 {item.q}
               </span>
-              <span className="num shrink-0 text-[16px] text-[var(--ink-faint)] [transition:transform_var(--t-hover)_var(--ease-micro)] group-open:rotate-45">
+              <span
+                className={`num shrink-0 text-[var(--ink-faint)] [transition:transform_var(--t-hover)_var(--ease-micro)] group-open:rotate-45 ${
+                  plain ? "text-[20px]" : "text-[16px]"
+                }`}
+              >
                 +
               </span>
             </summary>
-            <p className="max-w-[70ch] pb-7 pl-9 text-[15px] leading-relaxed text-[var(--ink-soft)]">
+            <p
+              className={`max-w-[70ch] leading-relaxed text-[var(--ink-soft)] ${
+                plain ? "pb-8 pl-10 text-[17px]" : "pb-7 pl-9 text-[15px]"
+              }`}
+            >
               {item.a}
             </p>
           </details>
