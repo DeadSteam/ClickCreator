@@ -1,0 +1,679 @@
+/*
+  ИНСТРУМЕНТ — визуальная система главной страницы.
+
+  Написана с нуля и живёт отдельным файлом намеренно. Прежняя система
+  (globals.css) осталась нетронутой: на ней стоят два десятка внутренних
+  страниц, и переписывать их заодно означало бы менять то, о чём не просили.
+  Главная страница объявляет корневой класс `.inst`, и всё, что ниже,
+  действует только внутри него.
+
+  ПОЧЕМУ ИМЕННО ТАК. Разбор девяти работ — Attio (Awwwards HM), Modal
+  (Awwwards HM), Increase, Vercel, Oxide, Klim, FT, Our World in Data,
+  Grilli Type — дал три вывода, которые здесь и реализованы.
+
+  Первый: карточек нет ни у кого. Ни одной. Секция — это полоса во всю
+  ширину, отделённая одной волосяной линией; внутренняя структура рисуется
+  решёткой. Скругления встречаются только внутри макетов интерфейса и не
+  превышают шести пикселей.
+
+  Второй: серых нет как класса. У FT весь серый ряд — это цвет бумаги,
+  умноженный на (1−n); у Oxide хрома падает по мере роста светлоты, и ряд
+  читается одним материалом. Нейтральный текст на нейтральном фоне —
+  самый узнаваемый признак шаблона.
+
+  Третий: равные доли — приговор. `repeat(3, 1fr)` рядом с первым экраном
+  опознаётся мгновенно. У всех разобранных работ раскладки асимметричны:
+  1fr/3fr, 7fr/5fr, 417fr/342fr/494fr.
+*/
+
+.inst {
+  /*
+    ЗЕМЛЯ. Не чистый чёрный: #000 на экране даёт провал, в котором пропадает
+    любая волосяная линия. Хрома 0.004 в синей части — ровно столько, чтобы
+    материал читался холодным, но не превращался в синий фон.
+  */
+  --ink-0: oklch(0.154 0.004 248);
+  --ink-1: oklch(0.189 0.005 244);
+  --ink-2: oklch(0.224 0.006 240);
+
+  /*
+    ЛИНИИ И ГРАНИЦЫ РАЗВЕДЕНЫ. Разделение взято у Linear: линия принадлежит
+    вёрстке, граница — элементу, с которым человек взаимодействует. Пока это
+    один токен, любая правка рамки кнопки сдвигает и разлиновку страницы.
+  */
+  --line: oklch(0.256 0.007 240);
+  --line-strong: oklch(0.318 0.008 242);
+  --edge: oklch(0.372 0.009 242);
+
+  /*
+    ЧЕРНИЛА. Хрома падает с ростом светлоты — 0.014 у приглушённых, 0.004 у
+    основных. Приём Oxide: так ряд ощущается одним веществом разной плотности,
+    а не набором отдельно подобранных серых.
+  */
+  --paper: oklch(0.968 0.004 240);
+  --paper-2: oklch(0.762 0.014 244);
+  --paper-3: oklch(0.578 0.016 245);
+  --paper-4: oklch(0.436 0.014 246);
+
+  /*
+    ОДИН АКЦЕНТ НА ДАННЫЕ, ОДИН НА ДЕЙСТВИЕ. Это не отступление от правила
+    «ровно один акцент», а брендовое разделение ролей, записанное в бренд-слое:
+    янтарь показывает показания, зелёный выдаёт доступ. На почти-чёрной земле
+    янтарь наконец работает — на прежней светлой он спорил с фоном.
+  */
+  --amber: oklch(0.762 0.176 58);
+  --amber-dim: oklch(0.628 0.158 50);
+  --amber-ghost: oklch(0.762 0.176 58 / 0.12);
+  --signal: oklch(0.782 0.196 148);
+  --signal-dim: oklch(0.648 0.168 148);
+  --on-signal: oklch(0.154 0.004 248);
+
+  /*
+    Старые имена переменных переопределены здесь же. Компоненты графика,
+    калькулятора и шкалы объёма читают именно их, поэтому перекрашиваются
+    вместе с системой и не требуют правки по одному.
+  */
+  --page-bg: var(--ink-0);
+  --ink: var(--paper);
+  --ink-soft: var(--paper-2);
+  --ink-faint: var(--paper-3);
+  --rule: var(--line-strong);
+  --rule-soft: var(--line);
+  --inset: var(--ink-1);
+  --accent: var(--amber);
+  --positive: var(--signal);
+
+  /*
+    Токены прежней системы, которые читают шапка, подвал, кнопка и
+    переключатель темы. Без них эти компоненты остаются с цветами светлой
+    страницы: кнопка теряет заливку, переключатель показывает белый блок.
+    Объявить их здесь дешевле, чем переписывать четыре общих компонента,
+    которые работают ещё на двадцати страницах старой системы.
+  */
+  --btn-bg: var(--signal);
+  --btn-ink: var(--on-signal);
+  --btn-edge: var(--signal-dim);
+  --btn-sheen: oklch(0.842 0.176 150);
+  --btn-glow: oklch(0.648 0.168 148 / 0.38);
+  --btn-ring: var(--signal);
+  --raised-bg: var(--ink-2);
+  --settled-bg: var(--ink-1);
+  --settled-ink: var(--paper);
+  --on-ink: var(--ink-0);
+  --accent-on-ink: var(--amber);
+  --bg-node: var(--ink-0);
+  --reading-bg: var(--ink-1);
+
+  --sheet: 85rem;
+  --pad: var(--s-6);
+
+  background-color: var(--ink-0);
+  color: var(--paper);
+  font-family: var(--font-sans);
+}
+
+@media (min-width: 640px) {
+  .inst {
+    --pad: var(--s-10);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ЛИСТ. Полоса контента с нарисованными боковыми краями.
+   Приём общий у Attio, Increase и Vercel: колонка получает видимые
+   вертикальные линии, и страница читается разграфлённым листом, а не
+   текстом, висящим по центру экрана.
+   ───────────────────────────────────────────────────────────── */
+.inst-sheet {
+  width: 100%;
+  max-width: var(--sheet);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+  border-inline: 1px solid var(--line);
+}
+
+@media (max-width: 767px) {
+  .inst-sheet {
+    border-inline: 0;
+  }
+}
+
+/* Полоса. Границу секции держит линия, а не пустота. */
+.inst-band {
+  border-bottom: 1px solid var(--line);
+}
+
+.inst-pad {
+  padding-block: var(--s-20);
+}
+
+@media (min-width: 640px) {
+  .inst-pad {
+    padding-block: var(--s-24);
+  }
+}
+
+.inst-pad-tight {
+  padding-block: var(--s-12) var(--s-16);
+}
+
+@media (min-width: 640px) {
+  .inst-pad-tight {
+    padding-block: var(--s-16) var(--s-20);
+  }
+}
+
+/*
+  Выход блока к краям листа. Нужен всему, что несёт собственную линейку:
+  без него горизонтальные черты обрываются за отступ до вертикальной рамки,
+  углы не сходятся, и вместо листа получается набор отдельных штрихов.
+*/
+.inst-edge-to-edge {
+  margin-inline: calc(var(--pad) * -1);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   РЕШЁТКА: ЗАЗОР И ЕСТЬ ЛИНЕЙКА.
+   Родитель красится цветом линии, дети — цветом земли, между ними
+   просвет в пиксель. Рамок нет ни у кого, поэтому внутренние линии
+   не складываются в двойные, а число колонок можно менять свободно.
+   ───────────────────────────────────────────────────────────── */
+.inst-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border-block: 1px solid var(--line);
+}
+
+.inst-grid > * {
+  background: var(--ink-0);
+  padding: var(--s-6);
+}
+
+@media (min-width: 640px) {
+  .inst-grid > * {
+    padding: var(--s-8);
+  }
+}
+
+/*
+  Крест на пересечении направляющих — два псевдоэлемента, ни одного узла в
+  разметке. Отметка сообщает, что линии принадлежат одной системе координат,
+  а не проведены каждая сама по себе. Приём Vercel.
+*/
+.inst-cross {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  pointer-events: none;
+  z-index: 2;
+  color: var(--line-strong);
+}
+
+.inst-cross::before,
+.inst-cross::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+
+.inst-cross::before {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-0.5px);
+}
+
+.inst-cross::after {
+  top: 50%;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  transform: translateY(-0.5px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ТИПОГРАФИКА.
+   Трекинг затягивается с ростом кегля: −0.018em на 21px и −0.042em на 92px.
+   Постоянный трекинг по всей шкале — то, по чему ненастроенная типографика
+   опознаётся раньше всего. Вес дисплея 500, а не 700: на крупном кегле
+   гротеск в 700 теряет внутрибуквенные просветы и читается пятном. Настоящий
+   Bold остался только на цифрах.
+   ───────────────────────────────────────────────────────────── */
+.inst-d1 {
+  font-size: clamp(40px, 1rem + 4.6vw, 92px);
+  line-height: 0.92;
+  letter-spacing: -0.042em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.inst-d2 {
+  font-size: clamp(30px, 1rem + 2.6vw, 56px);
+  line-height: 0.98;
+  letter-spacing: -0.034em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.inst-d3 {
+  font-size: clamp(21px, 0.9rem + 1.1vw, 30px);
+  line-height: 1.12;
+  letter-spacing: -0.018em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.inst-lead {
+  font-size: clamp(16px, 0.9rem + 0.4vw, 19px);
+  line-height: 1.58;
+  letter-spacing: -0.006em;
+  color: var(--paper-2);
+}
+
+.inst-body {
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--paper-2);
+}
+
+/*
+  Подпись — связующая ткань страницы. У Attio, Oxide, Increase и Vercel это
+  один и тот же приём: 11px, прописные, трекинг в районе 0.06em.
+  Потолок трекинга по всем разобранным работам — 0.08em; прежние 0.16em были
+  вдвое выше любого встреченного значения.
+*/
+.inst-label {
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  margin-right: -0.07em;
+  text-transform: uppercase;
+  color: var(--paper-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.inst-label-amber {
+  color: var(--amber);
+}
+
+/* Порядковый номер как висячая марганалия, а не как часть строки. */
+.inst-idx {
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--paper-4);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ВЕЛИЧИНА. Подпись сверху, число, единица на его базовой линии.
+   Единица набрана фиксированным кеглем, пока число фluid — приём Klim:
+   пропорция «единица меньше числа» сохраняется на любом экране, а сама
+   единица никогда не уходит за порог читаемости.
+   ───────────────────────────────────────────────────────────── */
+.inst-metric {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.inst-metric-body {
+  display: flex;
+  align-items: baseline;
+  font-size: var(--metric, 56px);
+  line-height: 0.86;
+}
+
+.inst-metric-n {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--paper);
+  font-variant-numeric: lining-nums tabular-nums slashed-zero;
+  font-feature-settings: "tnum", "lnum", "zero", "case";
+}
+
+.inst-metric-u {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding-left: 6px;
+  color: var(--paper-3);
+  white-space: nowrap;
+  align-self: flex-start;
+  padding-top: 0.18em;
+}
+
+.inst-metric-s {
+  --metric: 34px;
+}
+.inst-metric-l {
+  --metric: clamp(56px, 5.4vw, 84px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ДЕЙСТВИЕ.
+   Ховер — только цвет фона и границы. Ни подъёма, ни масштаба: трансформация
+   на элементе с рамкой ведёт радиус и пересэмплирует текст. У Vercel на
+   главной 113 фоновых ховеров против двух масштабирующих.
+   Появление мгновенное, угасание за 150мс — асимметрия взята у Linear,
+   симметричный ховер ощущается запаздывающим.
+   ───────────────────────────────────────────────────────────── */
+.inst-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  height: 52px;
+  padding-inline: var(--s-8);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 150ms cubic-bezier(0, 0, 0, 1),
+    border-color 150ms cubic-bezier(0, 0, 0, 1), color 150ms cubic-bezier(0, 0, 0, 1);
+}
+
+.inst-btn:hover {
+  transition-duration: 0ms;
+}
+
+.inst-btn-primary {
+  background: var(--signal);
+  color: var(--on-signal);
+  border: 1px solid var(--signal);
+}
+
+.inst-btn-primary:hover {
+  background: var(--signal-dim);
+  border-color: var(--signal-dim);
+}
+
+.inst-btn-ghost {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid var(--edge);
+}
+
+.inst-btn-ghost:hover {
+  background: var(--ink-1);
+  border-color: var(--paper-3);
+}
+
+.inst-btn:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* Строка, которая подсвечивается целиком. Ни рамки, ни тени — только фон. */
+.inst-row {
+  transition: background-color 150ms cubic-bezier(0, 0, 0, 1);
+}
+
+.inst-row:hover {
+  background: var(--ink-1);
+  transition-duration: 0ms;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ФОН. Никаких мешей и блобов: ни в одной из девяти разобранных работ их
+   нет. Премиальность даёт очень слабая геометрия, выведенная за пределы
+   рамки — здесь это широкий эллипс с началом за краем экрана.
+   Гаснет в тот же цвет с нулевой альфой, а не в `transparent`: последний
+   равен rgba(0,0,0,0), поэтому браузер уводит середину растушёвки в чёрный
+   и на её месте появляется грязная полоса.
+   ───────────────────────────────────────────────────────────── */
+.inst-ground {
+  background-color: var(--ink-0);
+  background-image: radial-gradient(
+      120% 68% at 82% -10%,
+      oklch(0.762 0.176 58 / 0.10) 0%,
+      oklch(0.548 0.108 52 / 0.045) 38%,
+      oklch(0.154 0.004 248 / 0) 72%
+    ),
+    radial-gradient(
+      90% 52% at 8% 4%,
+      oklch(0.505 0.118 248 / 0.075) 0%,
+      oklch(0.154 0.004 248 / 0) 66%
+    );
+  background-repeat: no-repeat, no-repeat;
+  background-size: 100% 1100px, 100% 900px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inst *,
+  .inst *::before,
+  .inst *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+  Рейка «окно сомнения» на десктопе снята.
+
+  Она висит в левом поле экрана, а лист новой системы занимает 1360 пикселей:
+  на распространённом 1440 остаётся по сорок пикселей с каждой стороны, и
+  рейка садилась поверх заголовка первого экрана. Держать структурный прибор
+  в поле, которого больше нет, — значит спорить с собственной сеткой.
+
+  Мобильная полоса компонента остаётся: там она не поле, а нижняя панель с
+  действием, и с листом не пересекается.
+*/
+.inst > aside[aria-hidden="true"] {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   КОМПОЗИЦИОННЫЕ ПРИМИТИВЫ.
+
+   Главная беда прежней вёрстки была не в оформлении, а в том, что все
+   секции имели одну анатомию: заголовок слева, подводка справа, сетка
+   снизу. Восемь одинаковых разворотов подряд читаются шаблоном, каким бы
+   ни был их цвет.
+
+   Ниже — набор разных способов подать блок. Каждый следующий раздел
+   страницы берёт свой, и повторяться они не должны.
+   ───────────────────────────────────────────────────────────── */
+
+/* Разворот во всю ширину окна, вне листа. Ломает ритм стопки. */
+.inst-full {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* Отметка на полях: подпись, прижатая к верхней линии полосы. */
+.inst-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  margin-left: calc(var(--pad) * -1);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Гигантское число как графика, а не как текст. */
+.inst-figure {
+  font-size: clamp(96px, 19vw, 280px);
+  line-height: 0.78;
+  letter-spacing: -0.055em;
+  font-weight: 700;
+  font-variant-numeric: lining-nums tabular-nums slashed-zero;
+  font-feature-settings: "tnum", "lnum", "zero";
+}
+
+/* Строка превращения: было → стало, на одной линии. */
+.inst-swap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-2);
+}
+
+@media (min-width: 900px) {
+  .inst-swap {
+    grid-template-columns: 5fr auto 7fr;
+    gap: var(--s-8);
+    align-items: center;
+  }
+}
+
+.inst-swap-from {
+  color: var(--paper-4);
+  text-decoration: line-through;
+  text-decoration-color: var(--paper-4);
+  text-decoration-thickness: 1px;
+}
+
+.inst-swap-arrow {
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ступень механики: номер живёт на линии, а не в тексте. */
+.inst-step-n {
+  font-size: clamp(48px, 7vw, 104px);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  font-weight: 700;
+  color: var(--line-strong);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Столбец тарифа: высота полосы кодирует скорость физически. */
+.inst-speed {
+  display: block;
+  background: var(--amber);
+  height: var(--h, 8px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ЦИФРЫ ПО ВСЕЙ СТРАНИЦЕ.
+
+   Приём Linear, применённый не к отдельному компоненту, а к корню: все
+   цифры страницы получают табличную ширину, минускульных форм не берут
+   вовсе и печатаются с перечёркнутым нулём.
+
+   Зачем каждое из трёх. Табличная ширина — потому что в столбцах тарифов и
+   кейсов числа стоят друг под другом, а пропорциональная единица уже 40 (a)
+   уводит разряды; на счётчике позиции она же даёт дрожание при смене
+   двузначного на однозначное. Маюскульные (lining) — потому что минускульные
+   цифры уходят под базовую линию и в тексте читаются частью слова, а не
+   величиной. Перечёркнутый ноль — потому что «0 доступов» и «0» как буква О
+   в кириллице различаются только им.
+
+   `"case" on` поднимает скобки, тире и знак процента к высоте прописных:
+   иначе «(+44%)» рядом с полужирным числом сидит заметно низко.
+
+   Вместе это то, что отличает число-данное от числа-в-тексте. На странице,
+   которая продаёт измеримость, это не косметика.
+*/
+.inst {
+  font-variant-numeric: lining-nums tabular-nums slashed-zero;
+  font-feature-settings: "tnum", "lnum", "zero", "case";
+}
+
+/*
+  Исключение: сплошной текст. В абзаце перечёркнутый ноль и табличная ширина
+  мешают — они разрежают строку и тянут взгляд к цифре, которая там всего
+  лишь часть фразы. Прибор размечает показания, а не прозу.
+*/
+.inst p:not([class*="metric"]):not([class*="figure"]),
+.inst summary {
+  font-variant-numeric: normal;
+  font-feature-settings: "case";
+}
+
+/* ─────────────────────────────────────────────────────────────
+   МЯГКАЯ ПЛОСКОСТЬ ВМЕСТО РАМКИ.
+
+   Разбор референсов я прочитал слишком буквально: «карточек нет, рамок
+   нет» — и убрал заодно заливку, цвет и знаки, оставив голые волосяные
+   линии. Но отказ от рамки не означает отказа от плоскости. Блок должен
+   отделяться от фона — вопрос только в том, чем именно.
+
+   Здесь он отделяется заливкой на ступень светлее земли и границей на
+   пределе различимости. Граница нужна не чтобы очертить, а чтобы поймать
+   свет по верхнему краю — как у физической панели, лежащей на поверхности.
+   ───────────────────────────────────────────────────────────── */
+.soft {
+  /*
+    Заливка и граница берутся из токенов страницы, а не задаются absolute:
+    примитив используется и на тёмной главной, и на светлом /stack. Жёсткие
+    oklch сделали бы карточку чёрной на светлой бумаге.
+  */
+  background: var(--inset);
+  border: 1px solid var(--rule-soft);
+  border-radius: 14px;
+  transition: background-color 150ms cubic-bezier(0, 0, 0, 1);
+}
+
+.soft:hover {
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
+  transition-duration: 0ms;
+}
+
+/*
+  Значок-фишка. Опознавательный знак блока, а не украшение: цвет закреплён
+  за смыслом, и по нему блок находится взглядом раньше, чем прочитан
+  заголовок. Заливка держится на 14% — знак должен читаться цветным, но не
+  спорить с содержимым.
+*/
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  flex: none;
+  background: color-mix(in oklab, var(--chip) 16%, transparent);
+  color: var(--chip);
+}
+
+.chip-violet { --chip: oklch(0.72 0.16 296); }
+.chip-green  { --chip: oklch(0.78 0.17 152); }
+.chip-amber  { --chip: oklch(0.80 0.15 76); }
+.chip-rose   { --chip: oklch(0.72 0.17 18); }
+.chip-blue   { --chip: oklch(0.72 0.14 240); }
+
+/*
+  Служебный голос. Счётчики, состояния, подписи к пустоте — всё, что
+  говорит система о себе, а не о деле. Моноширинный отделяет его от
+  человеческой речи вернее, чем кегль или цвет по отдельности.
+*/
+.sys {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--ink-faint);
+}
+
+/*
+  Фраза-состояние. Главный приём эталона: сводка подана предложением, а
+  числа подсвечены внутри него. Плитка показателей заставляет читателя
+  собирать смысл самому; фраза уже собрана, и остаётся только заметить в ней
+  выделенные величины.
+*/
+.say {
+  font-size: clamp(24px, 2.4vw, 38px);
+  line-height: 1.28;
+  letter-spacing: -0.022em;
+  font-weight: 400;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+.say b {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.say .hi-violet { color: oklch(0.76 0.15 296); font-weight: 400; }
+.say .hi-green  { color: oklch(0.80 0.16 152); font-weight: 400; }
+.say .hi-amber  { color: oklch(0.82 0.14 76); font-weight: 400; }

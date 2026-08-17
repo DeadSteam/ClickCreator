@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 
 import { ManualInputPlaceholder } from "@/components/predframing/manual-input";
+import { plural } from "@/format";
 import { stackTrack } from "@/stack/attribution";
 
 /*
@@ -28,10 +29,10 @@ export function StackCalculator() {
       <div className="bg-[var(--inset)] p-7 sm:p-8">
         <div>
           <div className="flex items-baseline justify-between gap-4">
-            <label htmlFor="stack-calc-queries" className="text-[14px] text-[var(--ink-soft)]">
+            <label htmlFor="stack-calc-queries" className="text-[16px] text-[var(--ink-soft)]">
               Запросов в тесте
             </label>
-            <span className="num text-[19px] font-semibold">{queries}</span>
+            <span className="num text-[24px] font-bold tracking-[-0.02em]">{queries}</span>
           </div>
           <input
             id="stack-calc-queries"
@@ -50,10 +51,10 @@ export function StackCalculator() {
 
         <div className="mt-6 border-t border-[var(--rule-soft)] pt-6">
           <div className="flex items-baseline justify-between gap-4">
-            <label htmlFor="stack-calc-clicks" className="text-[14px] text-[var(--ink-soft)]">
+            <label htmlFor="stack-calc-clicks" className="text-[16px] text-[var(--ink-soft)]">
               Планируемый объём кликов
             </label>
-            <span className="num text-[19px] font-semibold">{clicks.toLocaleString("ru-RU")}</span>
+            <span className="num text-[24px] font-bold tracking-[-0.02em]">{clicks.toLocaleString("ru-RU")}</span>
           </div>
           <input
             id="stack-calc-clicks"
@@ -70,9 +71,28 @@ export function StackCalculator() {
           />
         </div>
 
-        <p className="mt-6 max-w-[40ch] text-[12px] leading-relaxed text-[var(--ink-faint)]">
-          Объём для расчёта: {queries} {queries === 1 ? "запрос" : "запросов"},{" "}
-          {clicks.toLocaleString("ru-RU")} кликов.
+        {/*
+          Число и его величина не разлучаются переносом.
+
+          Строка набиралась как сплошной текст, и при двузначном числе
+          запросов слово «кликов» уезжало на следующую строку — оставляя
+          число в конце предыдущей без величины. Каждая пара обёрнута в
+          неразрывный блок: перенос теперь возможен только между парами.
+
+          Заодно склонение: «1 запрос», «2 запроса», «5 запросов». Прежняя
+          развилка на два случая давала «2 запросов» на каждом втором
+          положении ползунка.
+        */}
+        <p className="mt-7 max-w-[44ch] text-[15px] leading-relaxed text-[var(--ink-faint)]">
+          Объём для расчёта:{" "}
+          <span className="whitespace-nowrap">
+            {queries} {plural(queries, "запрос", "запроса", "запросов")}
+          </span>
+          ,{" "}
+          <span className="whitespace-nowrap">
+            {clicks.toLocaleString("ru-RU")} {plural(clicks, "клик", "клика", "кликов")}
+          </span>
+          .
         </p>
       </div>
 

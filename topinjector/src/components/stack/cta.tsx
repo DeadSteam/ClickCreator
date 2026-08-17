@@ -75,24 +75,26 @@ export function StackCta({
         stackTrack(event, ctaId, extra);
         stackTrack("telegram_open", ctaId, extra);
       }}
-      className={`btn btn-primary btn-${size} btn-arrow ${className}`}
+      /*
+        Без стрелки: она стояла на всех семи кнопках страницы одинаково,
+        независимо от того, куда ведёт нажатие, — то есть была декорацией в
+        единственном месте, где декорации быть не должно.
+      */
+      className={`btn btn-primary btn-${size} ${above ? "btn-stack" : ""} ${className}`}
     >
+      {/*
+        Условие оффера набрано ВНУТРИ кнопки, а не строкой над ней.
+
+        Раньше «Сначала протестировать бесплатно» стояло отдельным заголовком
+        с янтарной чертой, и рядом с кнопкой получались два разных объекта:
+        подпись со своим левым краем и кнопка со своим. Читатель видел два
+        призыва вместо одного. Условие — часть предложения, поэтому оно и
+        стоит на самой клавише, первой строкой и потише.
+      */}
+      {above && <span className="btn-sub">{above}</span>}
       <span>{children}</span>
-      <span aria-hidden="true" className="btn-arrow num text-[0.85em] leading-none">
-        →
-      </span>
     </a>
   );
 
-  if (!above) return link;
-
-  return (
-    <div className="flex flex-col items-start gap-2.5">
-      <span className="flex items-center gap-2.5 text-[15px] leading-snug font-semibold tracking-[-0.01em] text-[var(--ink)]">
-        <span aria-hidden="true" className="h-px w-5 bg-[var(--accent)]" />
-        {above}
-      </span>
-      {link}
-    </div>
-  );
+  return link;
 }

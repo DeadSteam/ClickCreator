@@ -22,3 +22,28 @@ export const ordinal = (index: number) => String(index + 1).padStart(2, "0");
  * трекингом в дыру, и «1 900» читается как два числа.
  */
 export const groupDigits = (value: string) => value.replace(/\s/g, " ");
+
+/**
+ * Форма существительного при числе.
+ *
+ * Единица рядом с числом не может быть константой: рейка отсчитывает окно
+ * сомнения вниз и по дороге показывает 81, 62, 34 — а подпись при всех трёх
+ * стояла «дней». Правильно «день», «дня», «дней», и выбор зависит от двух
+ * последних разрядов, а не от последнего.
+ *
+ * Исключение на 11-14 существует именно поэтому: 11 оканчивается на единицу,
+ * но берёт форму «дней», а не «день».
+ *
+ * @example plural(1,  "день", "дня", "дней") // день
+ * @example plural(3,  "день", "дня", "дней") // дня
+ * @example plural(11, "день", "дня", "дней") // дней
+ */
+export const plural = (n: number, one: string, few: string, many: string) => {
+  const abs = Math.abs(n);
+  const lastTwo = abs % 100;
+  if (lastTwo >= 11 && lastTwo <= 14) return many;
+  const last = abs % 10;
+  if (last === 1) return one;
+  if (last >= 2 && last <= 4) return few;
+  return many;
+};
