@@ -6,13 +6,14 @@ import { Appear } from "@/motion/appear";
 import { Schema } from "@/components/schema";
 import { LandingNav, MobileCta, SIGNUP_URL } from "@/components/landing/chrome";
 import { LandingFooter } from "@/components/landing/footer";
-import { Faq } from "@/components/landing/faq";
 import { CompareTable } from "@/components/landing/universal-blocks";
 import { AppPreview } from "@/components/landing/app-preview";
 import { ReadingProgress } from "@/components/predframing/rail";
 import { StackCta } from "@/components/stack/cta";
+import { HeroMotif } from "@/components/stack/hero-motif";
 import { StackCalculator } from "@/components/stack/calculator";
 import { StackAnalytics } from "@/stack/analytics";
+import { StackFaq } from "@/components/stack/faq";
 import { resolveHeroVariant, HERO_MICRO, HERO_OFFER_NOTE } from "@/stack/hero-variants";
 import {
   STACK_CASES,
@@ -310,9 +311,37 @@ export default async function StackPage({
                 </div>
 
                 <p className="caveat mt-6">{HERO_OFFER_NOTE}</p>
+
+                {/*
+                  Графический мотив angle (разд. 19 ТЗ «VISUAL MESSAGE
+                  MATCH»): для 7 из 10 гипотез ТЗ описывает форму мотива, не
+                  только текст (flat line, развилка, цепочка узлов и т. д.),
+                  поэтому она нарисована — см. hero-motif.tsx. У остальных
+                  гипотез своего мотива нет, тогда рисуется базовая метафора
+                  блока (разд. HERO VISUAL ТЗ), одна для всех таких angle.
+                */}
+                <div className="mt-6 flex flex-col items-center gap-2 border-t border-[var(--hair-2)] pt-6">
+                  <HeroMotif angle={v.angle} />
+                  {v.accent && v.accent.length > 0 && (
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5">
+                      {v.accent.map((line) => (
+                        <span key={line} className="num text-[13px] leading-snug text-[var(--amb)]">
+                          {line}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </Appear>
           </div>
+
+          {/* Отдельная выделенная мысль конкретного angle (напр. prove_it) — есть не у всех вариантов. */}
+          {v.highlight && (
+            <Appear delay={0.2}>
+              <p className="claim mt-12">{v.highlight}</p>
+            </Appear>
+          )}
         </section>
 
         {/* ─────────────────── 2. НОВЫЙ КРИТЕРИЙ ─────────────────── */}
@@ -988,7 +1017,7 @@ export default async function StackPage({
             <div className="stk-stick">
               <Head eyebrow="вопросы" title="Перед первым тестом" col />
             </div>
-            <Faq items={STACK_FAQ.map((f) => ({ q: f.q, a: f.a }))} plain />
+            <StackFaq items={STACK_FAQ.map((f) => ({ q: f.q, a: f.a }))} />
           </div>
         </Sec>
 

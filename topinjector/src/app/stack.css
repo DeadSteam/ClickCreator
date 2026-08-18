@@ -407,7 +407,7 @@ body:has(.stk) {
 
 /* Утопленное поле внутри поверхности — для кода, показаний, служебных строк. */
 .well {
-  background: oklch(0 0 0 / 0.22);
+  background: var(--g-sink);
   border: 1px solid var(--hair);
   border-radius: 10px;
 }
@@ -845,4 +845,46 @@ body:has(.stk) {
   .stk details::details-content {
     transition: none;
   }
+}
+
+/* ─────────────────────────── СВЕТЛЫЙ РЕЖИМ ─────────────────────────── */
+/*
+  Тот же приём, что в instrument.css: переопределяем только базовые токены,
+  производные (--page-bg, --btn-bg, ...) читают их через var() и подтянутся
+  сами.
+*/
+[data-theme="light"] .stk {
+  color-scheme: light;
+
+  --g-0: oklch(0.965 0.006 262);
+  --g-sink: oklch(0.920 0.009 263);
+  --g-1: oklch(0.992 0.003 260);
+  --g-2: oklch(1 0 0);
+
+  --hair: oklch(0.15 0.01 260 / 0.10);
+  --hair-2: oklch(0.15 0.01 260 / 0.16);
+  --gloss: oklch(1 0 0 / 0);
+
+  --t-0: oklch(0.205 0.012 258);
+  --t-1: oklch(0.400 0.014 258);
+  --t-2: oklch(0.540 0.015 258);
+
+  --grn: oklch(0.480 0.145 148);
+  --grn-2: oklch(0.400 0.130 148);
+  --grn-ghost: oklch(0.480 0.145 148 / 0.12);
+  --on-grn: oklch(0.985 0.004 155);
+
+  --amb: oklch(0.500 0.140 55);
+  --amb-ghost: oklch(0.500 0.140 55 / 0.14);
+
+  --btn-sheen: oklch(0.620 0.165 150);
+  --btn-glow: oklch(0.480 0.145 148 / 0.32);
+}
+
+[data-theme="light"] body:has(.stk) {
+  background-color: oklch(0.965 0.006 262);
+}
+
+[data-theme="light"] .todo {
+  background: oklch(0 0 0 / 0.05);
 }

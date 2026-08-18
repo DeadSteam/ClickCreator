@@ -677,3 +677,53 @@
 .say .hi-violet { color: oklch(0.76 0.15 296); font-weight: 400; }
 .say .hi-green  { color: oklch(0.80 0.16 152); font-weight: 400; }
 .say .hi-amber  { color: oklch(0.82 0.14 76); font-weight: 400; }
+
+/* ─────────────────────────── СВЕТЛЫЙ РЕЖИМ ─────────────────────────── */
+/*
+  .inst задаёт палитру безусловно (тёмная земля по умолчанию). Компоненты
+  читают только "старые" имена (--page-bg, --ink, --btn-bg, ...), а те
+  объявлены как var(--базовый-токен) — поэтому здесь достаточно
+  переопределить сами базовые токены: производные подтянутся по цепочке
+  var() автоматически, без повторного объявления по одному.
+*/
+[data-theme="light"] .inst {
+  color-scheme: light;
+
+  --ink-0: oklch(0.975 0.004 240);
+  --ink-1: oklch(0.945 0.005 244);
+  --ink-2: oklch(0.910 0.007 240);
+
+  --line: oklch(0.865 0.008 240);
+  --line-strong: oklch(0.780 0.010 242);
+  --edge: oklch(0.660 0.012 242);
+
+  --paper: oklch(0.225 0.008 244);
+  --paper-2: oklch(0.420 0.016 246);
+  --paper-3: oklch(0.560 0.017 245);
+  --paper-4: oklch(0.660 0.014 244);
+
+  --amber: oklch(0.560 0.155 50);
+  --amber-dim: oklch(0.470 0.140 48);
+  --amber-ghost: oklch(0.560 0.155 50 / 0.12);
+
+  --signal: oklch(0.520 0.145 148);
+  --signal-dim: oklch(0.440 0.130 148);
+  --on-signal: oklch(0.985 0.004 240);
+
+  --btn-sheen: oklch(0.640 0.165 150);
+  --btn-glow: oklch(0.520 0.145 148 / 0.30);
+}
+
+[data-theme="light"] .inst-ground {
+  background-image: radial-gradient(
+      120% 68% at 82% -10%,
+      oklch(0.762 0.176 58 / 0.07) 0%,
+      oklch(0.628 0.158 50 / 0.035) 38%,
+      oklch(0.975 0.004 240 / 0) 72%
+    ),
+    radial-gradient(
+      90% 52% at 8% 4%,
+      oklch(0.505 0.118 248 / 0.05) 0%,
+      oklch(0.975 0.004 240 / 0) 66%
+    );
+}

@@ -28,6 +28,8 @@ const STORAGE_KEY = "tpi_stack_attribution_v1";
 
 export type Attribution = {
   sessionId: string;
+  /** `?audience=` первого захода (разд. 24/25.14 ТЗ, напр. `competitor_communities`). `null`, если параметра не было. */
+  audience: string | null;
   /** Сырое значение `angle` из URL первого захода. "default", если параметра не было. */
   angle: string;
   creative: string | null;
@@ -86,6 +88,7 @@ export function ensureAttribution(landingVariant: string): Attribution {
   const p = new URLSearchParams(window.location.search);
   const attribution: Attribution = {
     sessionId: genSessionId(),
+    audience: p.get("audience"),
     angle: p.get("angle") ?? "default",
     creative: p.get("creative"),
     landingVariant,
@@ -117,6 +120,7 @@ export function attributionParams(ctaId?: string): Record<string, string> {
     angle: a.angle,
     landing_variant: a.landingVariant,
   };
+  if (a.audience) out.audience = a.audience;
   if (a.creative) out.creative = a.creative;
   if (a.utmSource) out.utm_source = a.utmSource;
   if (a.utmMedium) out.utm_medium = a.utmMedium;

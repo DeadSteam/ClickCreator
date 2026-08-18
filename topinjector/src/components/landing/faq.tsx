@@ -96,9 +96,12 @@ const ITEMS = [
 export function Faq({
   items = ITEMS,
   plain = false,
+  onOpen,
 }: {
   items?: { q: string; a: string }[];
   plain?: boolean;
+  /** Переопределяет способ записи `faq_open` — нужен /stack, где событие обязано нести сквозную атрибуцию (разд. 27 ТЗ), а не только текст вопроса. */
+  onOpen?: (question: string) => void;
 }) {
   return (
     <div className={`border-t border-[var(--rule-soft)] ${plain ? "" : "mt-14"}`}>
@@ -108,7 +111,8 @@ export function Faq({
             className="group border-b border-[var(--rule-soft)]"
             onToggle={(e) => {
               if ((e.currentTarget as HTMLDetailsElement).open) {
-                track("faq_open", { question: item.q });
+                if (onOpen) onOpen(item.q);
+                else track("faq_open", { question: item.q });
               }
             }}
           >
