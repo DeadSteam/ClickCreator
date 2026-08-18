@@ -284,6 +284,29 @@ export default async function StackPage({
                   <span className="tag tag-mute">схема</span>
                 </div>
 
+                {/*
+                  Графический мотив angle — главный визуал панели, ровно то,
+                  что обещает тег «схема» рядом с заголовком (разд. 19 ТЗ
+                  «VISUAL MESSAGE MATCH»). Для 7 из 10 гипотез ТЗ описывает
+                  форму мотива, не только текст (flat line, развилка, цепочка
+                  узлов и т. д.) — она нарисована, см. hero-motif.tsx. У
+                  остальных гипотез своего мотива нет, тогда рисуется базовая
+                  метафора блока (разд. HERO VISUAL ТЗ), одна для всех таких
+                  angle.
+                */}
+                <div className="well mt-6 flex flex-col items-center gap-3 px-5 py-7">
+                  <HeroMotif angle={v.angle} />
+                  {v.accent && v.accent.length > 0 && (
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5">
+                      {v.accent.map((line) => (
+                        <span key={line} className="num text-[13px] leading-snug text-[var(--amb)]">
+                          {line}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <ul className="mt-7 flex flex-col gap-3">
                   {[
                     { t: "Текущий ПФ-инструмент", s: "остаётся в рабочих задачах", tag: "работает", grn: true },
@@ -311,27 +334,6 @@ export default async function StackPage({
                 </div>
 
                 <p className="caveat mt-6">{HERO_OFFER_NOTE}</p>
-
-                {/*
-                  Графический мотив angle (разд. 19 ТЗ «VISUAL MESSAGE
-                  MATCH»): для 7 из 10 гипотез ТЗ описывает форму мотива, не
-                  только текст (flat line, развилка, цепочка узлов и т. д.),
-                  поэтому она нарисована — см. hero-motif.tsx. У остальных
-                  гипотез своего мотива нет, тогда рисуется базовая метафора
-                  блока (разд. HERO VISUAL ТЗ), одна для всех таких angle.
-                */}
-                <div className="mt-6 flex flex-col items-center gap-2 border-t border-[var(--hair-2)] pt-6">
-                  <HeroMotif angle={v.angle} />
-                  {v.accent && v.accent.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5">
-                      {v.accent.map((line) => (
-                        <span key={line} className="num text-[13px] leading-snug text-[var(--amb)]">
-                          {line}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
               </div>
             </Appear>
           </div>

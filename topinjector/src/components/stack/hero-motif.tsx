@@ -27,7 +27,7 @@ export function HeroMotif({ angle, className = "" }: HeroMotifProps) {
   const accent = {
     ...STROKE,
     viewBox: "0 0 120 40",
-    className: `h-9 w-auto text-[var(--amb)] ${className}`,
+    className: `h-16 w-auto text-[var(--amb)] ${className}`,
     "aria-hidden": true,
   };
 
@@ -117,7 +117,7 @@ export function HeroMotif({ angle, className = "" }: HeroMotifProps) {
       const base = {
         ...STROKE,
         viewBox: "0 0 140 32",
-        className: `h-7 w-auto text-[var(--t-2)] ${className}`,
+        className: `h-12 w-auto text-[var(--t-2)] ${className}`,
         "aria-hidden": true,
       };
       return (
