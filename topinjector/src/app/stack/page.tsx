@@ -10,11 +10,11 @@ import { CompareTable } from "@/components/landing/universal-blocks";
 import { AppPreview } from "@/components/landing/app-preview";
 import { ReadingProgress } from "@/components/predframing/rail";
 import { StackCta } from "@/components/stack/cta";
-import { HeroMotif } from "@/components/stack/hero-motif";
+import { HeroPanel } from "@/components/stack/hero-panel";
 import { StackCalculator } from "@/components/stack/calculator";
 import { StackAnalytics } from "@/stack/analytics";
 import { StackFaq } from "@/components/stack/faq";
-import { resolveHeroVariant, HERO_MICRO, HERO_OFFER_NOTE } from "@/stack/hero-variants";
+import { resolveHeroVariant, HERO_MICRO } from "@/stack/hero-variants";
 import {
   STACK_CASES,
   STACK_CASES_CONCLUSION,
@@ -265,76 +265,12 @@ export default async function StackPage({
             {/*
               ПАНЕЛЬ ВМЕСТО ИЛЛЮСТРАЦИИ.
 
-              Утверждение заголовка показано состоянием стека: первое
-              помечено рабочим, второе — на проверке, рядом стоит бесплатный
-              объём как число с названной величиной.
-
-              Метки состояния стоят в отдельной колонке фиксированной ширины
-              и растянуты на неё целиком. Раньше каждая метка сжималась по
-              своему тексту, «работает» выходила уже, чем «на проверке», и
-              правый край строк ходил туда-сюда — три соседние строки одной
-              таблицы читались как три разных элемента.
+              Для каждого angle — свой визуальный блок (разд. 9/19 ТЗ,
+              VISUAL MESSAGE MATCH). Общий оффер 3000/0 ₽ один для всех;
+              остальная страница после Hero не меняется.
             */}
             <Appear delay={0.14}>
-              <div className="surf p-7 sm:p-8">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-[17px] font-medium text-[var(--t-0)]">
-                    SEO-стек специалиста
-                  </span>
-                  <span className="tag tag-mute">схема</span>
-                </div>
-
-                {/*
-                  Графический мотив angle — главный визуал панели, ровно то,
-                  что обещает тег «схема» рядом с заголовком (разд. 19 ТЗ
-                  «VISUAL MESSAGE MATCH»). Для 7 из 10 гипотез ТЗ описывает
-                  форму мотива, не только текст (flat line, развилка, цепочка
-                  узлов и т. д.) — она нарисована, см. hero-motif.tsx. У
-                  остальных гипотез своего мотива нет, тогда рисуется базовая
-                  метафора блока (разд. HERO VISUAL ТЗ), одна для всех таких
-                  angle.
-                */}
-                <div className="well mt-6 flex flex-col items-center gap-3 px-5 py-7">
-                  <HeroMotif angle={v.angle} />
-                  {v.accent && v.accent.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5">
-                      {v.accent.map((line) => (
-                        <span key={line} className="num text-[13px] leading-snug text-[var(--amb)]">
-                          {line}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <ul className="mt-7 flex flex-col gap-3">
-                  {[
-                    { t: "Текущий ПФ-инструмент", s: "остаётся в рабочих задачах", tag: "работает", grn: true },
-                    { t: "Аналитика, ссылки, мониторинг", s: "не меняются", tag: "работает", grn: true },
-                    { t: "TopInjector", s: "ограниченный контрольный тест", tag: "на проверке", grn: false },
-                  ].map((row) => (
-                    <li
-                      key={row.t}
-                      className="well grid grid-cols-[1fr_7.5rem] items-center gap-4 px-5 py-4"
-                    >
-                      <span className="min-w-0">
-                        <span className="block truncate text-[17px] font-medium text-[var(--t-0)]">
-                          {row.t}
-                        </span>
-                        <span className="stk-sm mt-1 block truncate text-[15px]">{row.s}</span>
-                      </span>
-                      <span className={`tag w-full ${row.grn ? "tag-grn" : ""}`}>{row.tag}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-8 grid grid-cols-2 gap-6 border-t border-[var(--hair)] pt-7">
-                  <Rd cap="на первый тест" n="3000" u="кликов" size={42} />
-                  <Rd cap="стоимость теста" n="0" u="₽" size={42} tone="var(--grn)" right />
-                </div>
-
-                <p className="caveat mt-6">{HERO_OFFER_NOTE}</p>
-              </div>
+              <HeroPanel variant={v} />
             </Appear>
           </div>
 
