@@ -149,10 +149,12 @@ export function ScenarioMetricsStory() {
           <p className="hp-metric-label">позиция</p>
           <p className="hp-metric-value">12 → 12</p>
         </div>
-        <div className="hp-metrics-story-cell hp-metrics-story-cell-accent">
-          <p className="hp-metric-label">что проверить</p>
-          <p className="hp-metric-value hp-metric-value-amb">инструмент</p>
-        </div>
+      </div>
+
+      {/* Вывод, а не третье наблюдение — отсюда и другая форма строки. */}
+      <div className="hp-metrics-story-verdict">
+        <p className="hp-metric-label">что проверить</p>
+        <p className="hp-metric-value hp-metric-value-amb">инструмент</p>
       </div>
       <p className="hp-metrics-story-note">
         Клики идут, позиция стоит — возможно, дело не в стратегии, а в переменной «какой ПФ-сценарий вы используете».
