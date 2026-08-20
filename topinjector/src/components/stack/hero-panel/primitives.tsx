@@ -14,7 +14,7 @@ export function HeroFrame({
   children: ReactNode;
 }) {
   return (
-    <div className="surf hp p-7 sm:p-8">
+    <div className="surf hp p-6">
       <header className="hp-head">
         <div className="hp-head-in">
           <p className="hp-kicker">{kicker}</p>

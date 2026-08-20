@@ -1,0 +1,75 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Все angle · /stack</title>
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --w: 1440; --scale: 0.42; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 20px; font: 14px/1.4 -apple-system, "Segoe UI", Roboto, sans-serif;
+         background: #14171c; color: #e8eaed; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 20px; }
+  h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  .widths { display: flex; gap: 6px; }
+  button { font: inherit; padding: 6px 12px; border-radius: 7px; cursor: pointer;
+           background: #232830; color: #e8eaed; border: 1px solid #333a45; }
+  button[aria-pressed="true"] { background: #2f7d4a; border-color: #2f7d4a; color: #fff; }
+  .hint { color: #8b939f; }
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(calc(var(--w) * var(--scale) * 1px), 1fr)); }
+  figure { margin: 0; }
+  figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  figcaption a { color: #6fd08c; text-decoration: none; font-family: ui-monospace, monospace; font-size: 12.5px; }
+  figcaption a:hover { text-decoration: underline; }
+  .shell { position: relative; overflow: hidden; border: 1px solid #333a45; border-radius: 10px; background: #fff;
+           width: calc(var(--w) * var(--scale) * 1px); height: calc(900px * var(--scale)); }
+  iframe { position: absolute; top: 0; left: 0; width: calc(var(--w) * 1px); height: 900px; border: 0;
+           transform: scale(var(--scale)); transform-origin: 0 0; }
+</style>
+
+<header>
+  <h1>/stack — все angle</h1>
+  <div class="widths">
+    <button data-w="1440" aria-pressed="true">1440</button>
+    <button data-w="430">430</button>
+    <button data-w="390">390</button>
+    <button data-w="320">320</button>
+  </div>
+  <button id="tabs">Открыть все во вкладках</button>
+  <span class="hint">Кадр — первые 900 px. Клик по подписи открывает angle отдельно.</span>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<script>
+  const ANGLES = [
+    ["", "базовый (без параметра)"],
+    ["second_move", "second_move"],
+    ["one_tool_dependency", "one_tool_dependency"],
+    ["position_stuck", "position_stuck"],
+    ["query_or_tool", "query_or_tool"],
+    ["written_off_queries", "written_off_queries"],
+    ["prove_it", "prove_it"],
+    ["second_tool", "second_tool"],
+    ["controlled_test", "controlled_test"],
+    ["backup_tool", "backup_tool"],
+    ["professional_control", "professional_control"],
+  ];
+  const url = a => "/stack" + (a ? "?angle=" + a : "");
+  document.getElementById("grid").innerHTML = ANGLES.map(([a, label]) => `
+    <figure>
+      <figcaption><a href="${url(a)}" target="_blank" rel="noopener">${label}</a></figcaption>
+      <div class="shell"><iframe loading="lazy" src="${url(a)}" title="${label}"></iframe></div>
+    </figure>`).join("");
+
+  // Ширина кадра: масштаб подбирается так, чтобы плитка оставалась одного размера.
+  for (const b of document.querySelectorAll("[data-w]")) {
+    b.onclick = () => {
+      const w = +b.dataset.w;
+      document.documentElement.style.setProperty("--w", w);
+      document.documentElement.style.setProperty("--scale", (600 / w).toFixed(3));
+      for (const o of document.querySelectorAll("[data-w]")) o.setAttribute("aria-pressed", o === b);
+    };
+  }
+  document.getElementById("tabs").onclick = () =>
+    ANGLES.forEach(([a]) => window.open(url(a), "_blank"));
+</script>

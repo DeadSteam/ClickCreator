@@ -229,7 +229,7 @@ export default async function StackPage({
 
       <main id="main" tabIndex={-1}>
         {/* ─────────────────── 1. ПЕРВЫЙ ЭКРАН ─────────────────── */}
-        <section className="stk-w pt-16 pb-24 sm:pt-24 sm:pb-32">
+        <section className="stk-hero stk-w pt-10 pb-12 sm:pt-12 sm:pb-14">
           <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
             <div>
               <Appear>
@@ -239,13 +239,13 @@ export default async function StackPage({
                   узнаваемый почерк шаблонного лендинга, а назвать раздел
                   строчная метка умеет ничуть не хуже.
                 */}
-                <p className="stk-eyebrow mb-7">{v.eyebrow.toLowerCase()}</p>
+                <p className="stk-eyebrow mb-5">{v.eyebrow.toLowerCase()}</p>
                 <h1 className="stk-h1">{v.h1}</h1>
-                <p className="stk-lead mt-8">{v.subtitle}</p>
+                <p className="stk-lead mt-6">{v.subtitle}</p>
               </Appear>
 
               <Appear delay={0.08}>
-                <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+                <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                   <StackCta ctaId="hero" event="hero_cta_click">
                     {v.cta}
                   </StackCta>
@@ -258,7 +258,16 @@ export default async function StackPage({
                     Посмотреть, как проходит тест
                   </a>
                 </div>
-                <p className="stk-sm mt-7 max-w-[44ch] text-[17px] leading-relaxed">{HERO_MICRO}</p>
+                <p className="stk-sm mt-5 max-w-[44ch] text-[17px] leading-relaxed">{HERO_MICRO}</p>
+
+                {/*
+                  Выделенная мысль конкретного angle (есть у prove_it) стоит
+                  внутри левой колонки, а не отдельной полосой под обеими.
+                  Полосой она добавляла ~85 px к высоте первого экрана поверх
+                  самой высокой из колонок — из-за неё prove_it и не помещался
+                  в окно. В колонке она просто соседствует с остальной копией.
+                */}
+                {v.highlight && <p className="claim mt-6">{v.highlight}</p>}
               </Appear>
             </div>
 
@@ -274,12 +283,6 @@ export default async function StackPage({
             </Appear>
           </div>
 
-          {/* Отдельная выделенная мысль конкретного angle (напр. prove_it) — есть не у всех вариантов. */}
-          {v.highlight && (
-            <Appear delay={0.2}>
-              <p className="claim mt-12">{v.highlight}</p>
-            </Appear>
-          )}
         </section>
 
         {/* ─────────────────── 2. НОВЫЙ КРИТЕРИЙ ─────────────────── */}
@@ -611,7 +614,7 @@ export default async function StackPage({
                 дать возможность познакомиться с рабочим циклом и провести первый измеримый тест.
               </p>
 
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <StackCta ctaId="free_clicks">Получить 3000 тестовых кликов</StackCta>
                 <p className="stk-sm max-w-[34ch] text-[17px] leading-relaxed">
                   Через Telegram-бота, после проверки подписки на канал {TELEGRAM.channelName}.
