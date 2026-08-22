@@ -15,7 +15,6 @@ import { track } from "@/diagnostic/analytics";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { EASE_OUT } from "@/motion/tokens";
-import { ordinal } from "@/format";
 
 /*
   Цвет уровня риска. Строится из сегмента, а не из числа: сегмент — то, что
@@ -187,11 +186,16 @@ function ContactForm({ result }: { result: Result }) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="you@studio.ru или @nickname"
-          className="min-h-[48px] flex-1 rounded-[var(--radius-panel)] border
-            border-[var(--rule)] bg-transparent px-4 py-3 text-[16px]
-            text-[var(--ink)] placeholder:text-[var(--ink-faint)]
-            [transition:border-color_var(--t-hover)_var(--ease-micro)]
-            focus:border-[var(--ink)] focus:outline-none"
+          /*
+            Поле — утопленное `.well` системы, а не панель прежней с её
+            трёхпиксельным скруглением: рядом стоят поверхности в 14 px, и
+            почти прямой угол читался бы чужим элементом. Подсветку рамки по
+            фокусу сняли: `.well` объявлен вне слоёв и перебивает любой
+            `focus:border-*`, а видимость фокуса и без него держит общее
+            правило `:focus-visible` из globals.css.
+          */
+          className="well min-h-[48px] flex-1 px-4 py-3 text-[16px]
+            text-[var(--ink)] placeholder:text-[var(--ink-faint)]"
         />
         {/*
           Ожидание показывается спиннером поверх собственной подписи, а не
@@ -208,7 +212,7 @@ function ContactForm({ result }: { result: Result }) {
           type="checkbox"
           checked={agreed}
           onChange={(e) => setAgreed(e.target.checked)}
-          className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--accent)]"
+          className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--grn)]"
         />
         <span>
           Согласен на обработку персональных данных в соответствии с{" "}
@@ -240,19 +244,18 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
   const storyHref = `/istoriya?${handoffQuery(result)}`;
 
   /*
-    Результат стоит на светлом, как и вопросы, но зоной глубже: zone-proof даёт
-    более плотные чернила и линейки, и финал читается тяжелее анкеты, не
-    переключая человека на другой материал. Графит здесь был единственным тёмным
-    экраном во всей воронке — переход к нему после двенадцати светлых вопросов
-    ощущался сменой сайта, а не выводом.
+    Результат стоит на той же земле, что и вопросы. Зоны прежней системы здесь
+    больше нет: вся воронка живёт внутри `.stk`, который зоны обнуляет, а
+    отличать финал от анкеты зоне и не приходилось — это делают поверхности,
+    шкала и кегль заголовка.
   */
   return (
-    <div className="zone-proof min-h-dvh px-5 py-12 sm:px-8 sm:py-16">
-      <div className="mx-auto max-w-[52rem]">
+    <div className="min-h-dvh py-12 sm:py-16">
+      <div className="wrap wrap-read">
         {/* Блок 1. Итог. */}
         <section>
           <div className="flex items-start justify-between gap-4">
-            <span className="label text-[var(--ink-faint)]">ваш индекс окна сомнения</span>
+            <span className="eyebrow">ваш индекс окна сомнения</span>
             <ThemeToggle className="-mt-2" />
           </div>
 
@@ -285,37 +288,31 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
 
           <Gauge index={result.index} segment={result.segment} />
 
-          <h1 className="mt-10 max-w-[24ch] text-[28px] leading-[1.08] font-extrabold tracking-[-0.03em] sm:text-[42px]">
-            {seg.title}
-          </h1>
+          <h1 className="h-sec mt-10">{seg.title}</h1>
 
-          <p className="mt-5 max-w-[58ch] text-[17px] leading-relaxed text-[var(--ink-soft)]">
-            {seg.subtitle}
-          </p>
+          <p className="stk-lead mt-5">{seg.subtitle}</p>
         </section>
 
         {/* Блок 2. Персональный вывод по максимальному подиндексу. */}
         <section className="mt-16 border-t border-[var(--rule)] pt-10">
-          <h2 className="text-[24px] font-extrabold tracking-[-0.03em] sm:text-[30px]">
-            Что происходит в ваших проектах
-          </h2>
+          <h2 className="h-sec">Что происходит в ваших проектах</h2>
 
-          <p className="mt-5 max-w-[64ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
-            {verdict.body}
-          </p>
+          <p className="stk-p mt-5">{verdict.body}</p>
 
           {seg.body.map((p) => (
-            <p
-              key={p}
-              className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-[var(--ink-soft)]"
-            >
+            <p key={p} className="stk-p mt-4">
               {p}
             </p>
           ))}
 
-          <ul className="mt-10 grid gap-px border-t border-[var(--rule-soft)] bg-[var(--rule-soft)] sm:grid-cols-3">
+          {/*
+            Три подиндекса стоят поверхностями, а не ячейками волосяной сетки:
+            сетка на /stack держит ряды однородных строк, а здесь это три
+            отдельных показания, у каждого своя шкала под числом.
+          */}
+          <ul className="mt-10 grid gap-3 sm:grid-cols-3">
             {(Object.keys(RISK_VERDICTS) as (keyof typeof RISK_VERDICTS)[]).map((k) => (
-              <li key={k} className="bg-[var(--inset)] p-5">
+              <li key={k} className="surf p-5">
                 <p className="label text-[var(--ink-faint)]">{RISK_VERDICTS[k].label}</p>
                 <p className="num mt-3 text-[28px] leading-none font-semibold">
                   {result.sub[k]}
@@ -334,17 +331,15 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
             ))}
           </ul>
 
-          <div className="mt-10 border-l-2 border-[var(--accent)] pl-5">
-            <p className="label text-[var(--accent)]">главная рекомендация</p>
-            <p className="mt-3 max-w-[58ch] text-[17px] leading-snug font-semibold tracking-[-0.02em]">
-              {seg.advice}
-            </p>
+          <div className="claim mt-10">
+            <p className="eyebrow text-[var(--accent)]">главная рекомендация</p>
+            <p className="mt-3">{seg.advice}</p>
           </div>
         </section>
 
         {/* Блок 12. Цена текущего сценария. */}
         <section className="mt-16 border-t border-[var(--rule)] pt-10">
-          <h2 className="max-w-[24ch] text-[24px] font-extrabold tracking-[-0.03em] sm:text-[30px]">
+          <h2 className="h-sec">
             Цена окна сомнения — не только один недовольный клиент
           </h2>
 
@@ -354,13 +349,9 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
                 key={l.t}
                 className="grid gap-2 border-b border-[var(--rule-soft)] py-5 sm:grid-cols-[auto_1fr_2fr] sm:gap-8"
               >
-                <span className="num text-[11px] text-[var(--ink-faint)]">
-                  {ordinal(i)}
-                </span>
-                <h3 className="text-[17px] font-semibold tracking-[-0.02em]">{l.t}</h3>
-                <p className="max-w-[54ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
-                  {l.d}
-                </p>
+                <span className="idx">{i + 1}</span>
+                <h3 className="stk-h3">{l.t}</h3>
+                <p className="stk-p">{l.d}</p>
               </li>
             ))}
           </ul>
@@ -369,17 +360,12 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
         {/* Блок 13. Персональное желаемое будущее из вопроса 12. */}
         {outcomes.length > 0 && (
           <section className="mt-16 border-t border-[var(--rule)] pt-10">
-            <h2 className="text-[24px] font-extrabold tracking-[-0.03em] sm:text-[30px]">
-              Что изменится, если сократить окно сомнения
-            </h2>
+            <h2 className="h-sec">Что изменится, если сократить окно сомнения</h2>
 
             <ul className="mt-8 flex flex-col gap-4">
               {outcomes.map((o) => (
-                <li
-                  key={o}
-                  className="flex max-w-[62ch] gap-4 text-[16px] leading-relaxed text-[var(--ink-soft)]"
-                >
-                  <span aria-hidden="true" className="num shrink-0 text-[var(--accent)]">
+                <li key={o} className="stk-p flex gap-4">
+                  <span aria-hidden="true" className="num shrink-0 text-[var(--ink-faint)]">
                     →
                   </span>
                   {o}
@@ -391,15 +377,15 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
 
         {/* Блоки 14, 15 и 28. Один переход, одно действие. */}
         <section className="mt-16 border-t border-[var(--rule)] pt-10">
-          <span className="label text-[var(--ink-faint)]">следующий шаг</span>
+          <span className="eyebrow">следующий шаг</span>
 
-          <h2 className="mt-6 max-w-[26ch] text-[26px] leading-[1.1] font-extrabold tracking-[-0.03em] sm:text-[36px]">
+          <h2 className="h-sec mt-6">
             {result.segment === "low"
               ? "Даже при низком риске ранний результат можно превратить в системное преимущество"
               : "Ваш клиент не видит всей сложности вашей работы. Он видит момент, когда появился результат."}
           </h2>
 
-          <p className="mt-5 max-w-[62ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
+          <p className="stk-p mt-5">
             Ваш результат показывает не качество вашей SEO-стратегии, а разрыв
             между моментом, когда клиент начинает оценивать работу, и моментом,
             когда он получает убедительное доказательство её ценности.
@@ -410,21 +396,16 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
             отдельно от подводки: он и есть обещание перехода, а без него блок
             зовёт «дальше» и не говорит, куда именно.
           */}
-          <p className="mt-8 border-l-2 border-[var(--accent)] py-1 pl-5 text-[17px] leading-snug font-semibold tracking-[-0.02em] sm:text-[19px]">
+          <p className="claim mt-8">
             Почему даже сильные SEO теряют клиентов до появления результата — и
             как специалисты начали сокращать окно сомнения
           </p>
 
-          <p className="mt-6 max-w-[62ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
-            В следующем материале вы увидите:
-          </p>
+          <p className="stk-p mt-6">В следующем материале вы увидите:</p>
 
           <ul className="mt-4 flex flex-col gap-2">
             {STORY_POINTS.map((p) => (
-              <li
-                key={p}
-                className="flex max-w-[62ch] gap-3 text-[15px] leading-relaxed text-[var(--ink-soft)]"
-              >
+              <li key={p} className="stk-p flex gap-3">
                 <span aria-hidden="true" className="num shrink-0 text-[var(--ink-faint)]">
                   —
                 </span>
@@ -448,17 +429,13 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
             {result.segment === "low" ? "Узнать, как это делают другие SEO" : seg.cta}
           </Button>
 
-          <p className="mt-4 text-[13px] text-[var(--ink-faint)]">
-            Время чтения: 7–10 минут.
-          </p>
+          <p className="stk-sm mt-4">Время чтения: 7–10 минут.</p>
         </section>
 
         {/* Блок 16. Контакт запрашивается после результата и не блокирует переход. */}
         <section className="mt-16 border-t border-[var(--rule)] pt-10">
-          <h2 className="text-[20px] font-semibold tracking-[-0.02em] sm:text-[24px]">
-            Сохранить результат диагностики
-          </h2>
-          <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
+          <h2 className="stk-h3">Сохранить результат диагностики</h2>
+          <p className="stk-p mt-3">
             Получите копию результата, рекомендации и ссылку на следующий
             материал.
           </p>
@@ -472,7 +449,7 @@ export function ResultScreen({ result, onRestart }: { result: Result; onRestart:
             индекс оценивает риск, и выдавать его за прогноз поведения
             конкретного клиента нельзя.
           */}
-          <p className="max-w-[70ch] text-[12px] leading-relaxed text-[var(--ink-faint)]">
+          <p className="stk-sm max-w-[70ch]">
             Результат носит информационный характер и рассчитывается на основе
             ваших ответов. Он оценивает потенциальный разрыв между ожиданиями
             клиента и скоростью появления видимого результата, но не

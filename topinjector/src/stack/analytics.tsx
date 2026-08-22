@@ -3,16 +3,19 @@
 import { useEffect, useRef } from "react";
 
 import type { DiagnosticEvent } from "@/diagnostic/analytics";
-import { ensureAttribution, stackTrack } from "./attribution";
+import { ensureAttribution, linkRoistatVisit, stackTrack, touchParams } from "./attribution";
+import { watchRoistatVisit } from "./roistat";
 
 /*
-  Аналитика /stack — разд. 27 ТЗ («обязательные dimensions» + «events»).
+  Аналитика /stack — разд. 28 ТЗ («обязательные dimensions» + «events») и
+  глава «ИНТЕГРАЦИЯ ЛЕНДИНГА С MASTER-АНАЛИТИКОЙ», п.4/5.
 
   Один наблюдатель на страницу, как и в `predframing/analytics.ts`: блоков
   почти столько же (девять размеченных из шестнадцати — остальные не несут
   отдельного события по ТЗ), и отдельный таймер на каждый не сводится потом в
-  один отчёт. Отличие от predframing-версии — не гипотеза, а angle/creative/
-  landing_variant/session_id несёт каждое событие через `stackTrack`.
+  один отчёт. Отличие от predframing-версии — не гипотеза, а audience/angle/
+  creative/landing_variant/attribution_id несёт каждое событие через
+  `stackTrack`.
 */
 
 /*
@@ -37,7 +40,14 @@ const BLOCK_EVENTS: Record<string, DiagnosticEvent> = {
   pricing: "pricing_view",
 };
 
-export function StackAnalytics({ landingVariant }: { landingVariant: string }) {
+export function StackAnalytics({
+  landingVariant,
+  audience,
+}: {
+  landingVariant: string;
+  /** `?audience=` этой загрузки, как его прочитал сервер (разд. 24.11/24.13). */
+  audience: string | null;
+}) {
   const seen = useRef<Set<string>>(new Set());
   const depth = useRef(0);
   const startedAt = useRef(Date.now());
@@ -46,21 +56,35 @@ export function StackAnalytics({ landingVariant }: { landingVariant: string }) {
     ensureAttribution(landingVariant);
 
     /*
-      `landing_variant` идёт в `extra` и потому перебивает то, что
+      `landing_variant` и `audience` идут в `extra` и потому перебивают то, что
       `attributionParams` иначе взяла бы из сохранённой (замороженной на
-      first touch, разд. 24.10 ТЗ) записи атрибуции. Без этой перебивки
-      возвращающийся посетитель с новым `?angle=` в адресе увидел бы на
-      экране один Hero, а событие ушло бы с `landing_variant` от самого
-      первого визита — расхождение между тем, что показано, и тем, что
-      записано в аналитику.
+      first touch) записи атрибуции. Без этой перебивки возвращающийся
+      посетитель с новым `?angle=`/`?audience=` в адресе увидел бы на экране
+      один Hero, а событие ушло бы с параметрами от самого первого визита —
+      расхождение между тем, что показано, и тем, что записано в аналитику.
     */
-    const current = { landing_variant: landingVariant };
-    stackTrack("landing_view", undefined, current);
+    const current: Record<string, unknown> = { landing_variant: landingVariant };
+    if (audience) current.audience = audience;
 
+    /* Открытие сессии — единственное событие, которому нужен полный first/last-touch срез. */
+    stackTrack("landing_view", undefined, { ...current, ...touchParams() });
+
+    /*
+      `block`, а не `cta_id`. Разд. 25.13 ТЗ отводит `cta_id` под точки CTA и
+      перечисляет для него закрытый словарь (hero, product_bridge,
+      controlled_test, cases, calculator, final), а глава master-аналитики
+      добавляет «cta_id — где применимо». К просмотру блока он не применим:
+      подставляя туда id секции, страница отправляла в отчёт значения вроде
+      `new-criterion` и `parallel-use`, из-за которых разрез по CTA переставал
+      быть разрезом по CTA.
+    */
     if (!seen.current.has("hero")) {
       seen.current.add("hero");
-      stackTrack("hero_view", "hero", current);
+      stackTrack("hero_view", undefined, { ...current, block: "hero" });
     }
+
+    /* Roistat: связка roistat_visit_id ↔ attribution_id, если счётчик установлен. */
+    const unwatchRoistat = watchRoistatVisit(linkRoistatVisit);
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -70,7 +94,7 @@ export function StackAnalytics({ landingVariant }: { landingVariant: string }) {
           if (!id || seen.current.has(id)) continue;
           seen.current.add(id);
           const event = BLOCK_EVENTS[id];
-          if (event) stackTrack(event, id, current);
+          if (event) stackTrack(event, undefined, { ...current, block: id });
         }
       },
       { threshold: 0.25 },
@@ -98,10 +122,11 @@ export function StackAnalytics({ landingVariant }: { landingVariant: string }) {
 
     return () => {
       io.disconnect();
+      unwatchRoistat();
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onHide);
     };
-  }, [landingVariant]);
+  }, [landingVariant, audience]);
 
   return null;
 }

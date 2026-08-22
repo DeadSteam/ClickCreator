@@ -21,7 +21,8 @@ export function StackCalculator() {
   const onUse = () => {
     if (used.current) return;
     used.current = true;
-    stackTrack("calculator_use", "calculator");
+    /* `block`, а не `cta_id`: взаимодействие с калькулятором — не клик по CTA (разд. 25.13 ТЗ). */
+    stackTrack("calculator_use", undefined, { block: "calculator" });
   };
 
   return (

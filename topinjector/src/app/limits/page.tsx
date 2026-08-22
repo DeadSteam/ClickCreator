@@ -112,12 +112,10 @@ export default function LimitsPage() {
               key={a.fear}
               className="border-t border-[var(--rule-soft)] py-5 first:border-t-0 first:pt-0"
             >
-              <dt className="text-[17px] leading-snug font-semibold tracking-[-0.02em]">
+              <dt className="stk-h3">
                 «{a.fear[0].toUpperCase() + a.fear.slice(1)}»
               </dt>
-              <dd className="mt-2.5 max-w-[68ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
-                {a.answer}
-              </dd>
+              <dd className="stk-p mt-2.5">{a.answer}</dd>
             </div>
           ))}
         </dl>

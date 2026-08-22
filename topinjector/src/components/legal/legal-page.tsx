@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -10,9 +10,10 @@ import { DocNav } from "./doc-nav";
   другом «Условия» и «Политика» читаются как собранные из разных источников —
   ровно то впечатление, которого документы должны избегать.
 
-  Страницы стоят на самой плотной зоне, а не на графите: графит держится за
-  светлую тему и не переключался вместе с ней — человек выбирал светлую тему и
-  всё равно получал тёмное соглашение.
+  Страницы стоят на земле системы `.stk` — той же, что несут остальные
+  маршруты. Прежняя зона `zone-proof` держалась за светлую тему и не
+  переключалась вместе с ней: человек выбирал светлую тему и всё равно получал
+  тёмное соглашение.
 
   Документ — не статья. Его не читают подряд, в него приходят с вопросом, и
   каркас построен под это: оглавление рядом с текстом, нумерованные разделы с
@@ -49,10 +50,10 @@ export function LegalPage({
   legalEntity?: boolean;
 }) {
   return (
-    <div className="zone-proof min-h-dvh px-5 py-8 sm:px-8">
-      <header className="mx-auto flex max-w-[76rem] items-center justify-between gap-4">
+    <div className="stk min-h-dvh py-8">
+      <header className="wrap flex items-center justify-between gap-4">
         <Link href="/service" aria-label="TopInjector, на страницу сервиса">
-          <Logo />
+          <Logo idPrefix="legal-nav" />
         </Link>
         <ThemeToggle />
       </header>
@@ -62,18 +63,12 @@ export function LegalPage({
         поднятое до заголовка, читалось бы как навигация сайта, а не как
         содержание этого документа.
       */}
-      <div className="mx-auto max-w-[76rem] pt-14 sm:pt-20">
+      <div className="wrap pt-14 sm:pt-20">
         <p className="label text-[var(--ink-faint)]">{kicker}</p>
 
-        <h1 className="mt-5 max-w-[20ch] text-[32px] leading-[1.06] font-extrabold tracking-[-0.035em] sm:text-[48px]">
-          {title}
-        </h1>
+        <h1 className="stk-h1 mt-5">{title}</h1>
 
-        {intro && (
-          <p className="mt-7 max-w-[62ch] text-[17px] leading-relaxed text-[var(--ink-soft)] sm:text-[19px]">
-            {intro}
-          </p>
-        )}
+        {intro && <p className="stk-lead mt-7">{intro}</p>}
 
         <p className="label mt-8 border-t border-[var(--rule-soft)] pt-5 text-[var(--ink-faint)]">
           редакция от {updated}
@@ -87,7 +82,7 @@ export function LegalPage({
         тяжелее, чем он есть.
       */}
       <div
-        className={`mx-auto grid max-w-[76rem] gap-x-16 pt-12 pb-24 ${
+        className={`wrap grid gap-x-16 pt-12 pb-24 ${
           toc ? "lg:grid-cols-[minmax(0,44rem)_1fr]" : ""
         }`}
       >
@@ -97,8 +92,12 @@ export function LegalPage({
               Пометка обязательна, пока документ не прошёл юридическую проверку.
               Публиковать оферту или политику обработки данных «как есть»
               нельзя, и видимая плашка не даёт забыть об этом при выкладке.
+
+              Голос у неё общий, `.stk-p`, а не мелкая служебная строка:
+              понижать кегль у предупреждения значит прятать его. Отличает
+              плашку поверхность с акцентным ребром, а не размер шрифта.
             */
-            <p className="mb-12 border-l-2 border-[var(--accent)] bg-[var(--inset)] py-4 pr-5 pl-5 text-[14px] leading-relaxed text-[var(--ink-soft)]">
+            <p className="stk-p surf surf-a mb-12 px-6 py-5">
               Документ подготовлен как рабочий каркас и требует юридической
               проверки до публикации. Разделы, отмеченные квадратными скобками,
               заполняются фактическими данными.
@@ -143,15 +142,18 @@ function Neighbours({ legalEntity }: { legalEntity: boolean }) {
     <nav className="mt-20 border-t border-[var(--rule)] pt-10">
       <p className="label text-[var(--ink-faint)]">другие документы</p>
 
-      <div className="mt-6 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+      {/*
+        Решётка обведена как одна поверхность: пять ячеек встык прямым углом
+        стояли бы рядом с плашкой и разделами, скруглёнными на 14 px, и
+        читались бы куском чужой системы. Заливку даёт сама `.cell`, оболочке
+        её давать нельзя — она закрасила бы просветы `gap: 1px`, из которых
+        собраны разделители.
+      */}
+      <div className="surf-split mt-6 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
         {DOCS.map((d) => (
           <Link key={d.href} href={d.href} className="cell block p-5">
-            <span className="block text-[15px] font-semibold tracking-[-0.01em]">
-              {d.label}
-            </span>
-            <span className="mt-1.5 block text-[13px] leading-snug text-[var(--ink-soft)]">
-              {d.note}
-            </span>
+            <span className="stk-h3 block">{d.label}</span>
+            <span className="stk-sm mt-1.5 block">{d.note}</span>
           </Link>
         ))}
       </div>
@@ -212,10 +214,7 @@ export function Clause({
         служба поддержки), и у адреса есть смысл выглядеть как метка, а не
         как случайная цифра перед заголовком.
       */}
-      <h2
-        data-title={title}
-        className="flex items-start gap-4 text-[21px] font-semibold tracking-[-0.02em] sm:text-[25px]"
-      >
+      <h2 data-title={title} className="stk-h2 flex items-start gap-4">
         <span
           aria-hidden="true"
           className="num mt-[2px] flex h-7 w-7 shrink-0 items-center justify-center rounded-full
@@ -233,21 +232,14 @@ export function Clause({
 }
 
 export function Para({ children }: { children: ReactNode }) {
-  return (
-    <p className="max-w-[68ch] text-[16px] leading-[1.65] text-[var(--ink-soft)]">
-      {children}
-    </p>
-  );
+  return <p className="stk-p">{children}</p>;
 }
 
 export function Items({ items }: { items: string[] }) {
   return (
     <ul className="flex flex-col gap-2.5">
       {items.map((t) => (
-        <li
-          key={t}
-          className="flex max-w-[68ch] gap-3.5 text-[16px] leading-[1.6] text-[var(--ink-soft)]"
-        >
+        <li key={t} className="stk-p flex gap-3.5">
           <span aria-hidden="true" className="num shrink-0 text-[var(--ink-faint)]">
             —
           </span>
@@ -270,10 +262,23 @@ export function Defs({ items }: { items: { t: string; d: string }[] }) {
           key={x.t}
           className="grid gap-1 border-t border-[var(--rule-soft)] py-3.5 first:border-t-0 first:pt-0 sm:grid-cols-[13rem_1fr] sm:gap-6"
         >
-          <dt className="text-[15px] font-semibold tracking-[-0.01em]">{x.t}</dt>
-          <dd className="max-w-[56ch] text-[15px] leading-[1.6] text-[var(--ink-soft)]">
-            {x.d}
-          </dd>
+          {/*
+            Термин и определение — одна ступень кегля, разводит их только вес и
+            плотность чернил. Разный размер в паре «понятие — значение» читается
+            как заголовок с текстом, а это не иерархия: обе половины — одна
+            строка справочника.
+
+            Цвет термина задан стилем, а не утилитой: `.stk-sm` объявлен вне
+            слоёв и ставит `--t-2` сам, поэтому `text-[…]` рядом с ним молча
+            не срабатывает.
+          */}
+          <dt
+            className="stk-sm font-semibold tracking-[-0.01em]"
+            style={{ color: "var(--t-0)" }}
+          >
+            {x.t}
+          </dt>
+          <dd className="stk-sm max-w-[56ch]">{x.d}</dd>
         </div>
       ))}
     </dl>
@@ -288,9 +293,15 @@ export function Note({ children, tone = "accent" }: { children: ReactNode; tone?
   const color = tone === "danger" ? "var(--color-risk-critical)" : "var(--accent)";
 
   return (
+    /*
+      Та же акцентная поверхность, что несёт «до/после» в статье, только тон
+      ребра берётся из пропа: предупреждение о сроках возврата обязано
+      отличаться от простого уточнения. Рамка слева из разметки здесь не
+      годится — она срезала бы угол поверхности в 14 px.
+    */
     <p
-      className="max-w-[64ch] border-l-2 bg-[var(--inset)] py-3.5 pr-5 pl-5 text-[15px] leading-[1.6] font-medium text-[var(--ink)]"
-      style={{ borderColor: color }}
+      className="surf surf-a stk-p px-6 py-5 font-medium"
+      style={{ "--surf-a-tone": color } as CSSProperties}
     >
       {children}
     </p>

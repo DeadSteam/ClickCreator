@@ -9,6 +9,9 @@ import { Schema } from "@/components/schema";
 import { RankClimb } from "@/components/rank-climb";
 import { Calculator } from "@/components/calculator";
 import { DoubtRail } from "@/components/doubt-rail";
+import { Eyebrow, Head } from "@/components/instrument/head";
+import { NumberedRows } from "@/components/instrument/numbered-rows";
+import { Faq } from "@/components/instrument/faq";
 import { CLAIM, MECHANISM } from "@/brand/brand";
 import { ordinal } from "@/format";
 
@@ -147,50 +150,6 @@ const FAQ = [
   },
 ];
 
-/** Подпись раздела. Стоит над заголовком и всегда с чертой — отметка на полях. */
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inst-label flex items-center gap-3">
-      <span aria-hidden="true" className="h-px w-8 bg-[var(--amber)]" />
-      {children}
-    </span>
-  );
-}
-
-/**
- * Шапка раздела: заголовок ведёт семь колонок, пояснение занимает пять.
- *
- * Раньше заголовок и подводка шли стопкой, и между ними и содержимым
- * оставалось по 64 пикселя пустоты — блок распадался на три несвязанных
- * куска. Рядом они читаются одним высказыванием.
- */
-function Head({
-  eyebrow,
-  title,
-  lede,
-  aside,
-}: {
-  eyebrow?: string;
-  title: React.ReactNode;
-  lede?: React.ReactNode;
-  aside?: React.ReactNode;
-}) {
-  return (
-    <Reveal>
-      <div className="grid grid-cols-12 items-end gap-x-6 gap-y-6">
-        <div className="col-span-12 lg:col-span-7">
-          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-          <h2 className={`inst-d2 ${eyebrow ? "mt-5" : ""}`}>{title}</h2>
-        </div>
-        {lede ? (
-          <p className="inst-body col-span-12 max-w-[46ch] lg:col-span-5">{lede}</p>
-        ) : null}
-        {aside}
-      </div>
-    </Reveal>
-  );
-}
-
 export default function BusinessLanding() {
   return (
     <div className="inst inst-ground">
@@ -228,8 +187,8 @@ export default function BusinessLanding() {
           референсах — половина первого экрана и главный визуальный объект
           страницы. Ниже она набрана именно так.
         */}
-        <section className="inst-band relative isolate overflow-hidden">
-          <div className="inst-sheet inst-pad-tight relative">
+        <section className="sec-edge relative isolate overflow-hidden">
+          <div className="wrap wrap-ruled sec-pad-tight relative">
             <div className="grid grid-cols-12 items-center gap-x-8 gap-y-12">
               <div className="col-span-12 lg:col-span-6">
                 <Reveal>
@@ -336,8 +295,8 @@ export default function BusinessLanding() {
           уточняют условия. Композиция обязана это показывать, иначе читатель
           распределяет внимание поровну между важным и второстепенным.
         */}
-        <section className="inst-band">
-          <div className="inst-sheet inst-pad">
+        <section className="sec-edge">
+          <div className="wrap wrap-ruled sec-pad">
             <div className="grid grid-cols-12 gap-x-6 gap-y-12">
               <Reveal className="col-span-12 lg:col-span-7">
                 <span className="inst-label">{METRICS[3].cap}</span>
@@ -381,8 +340,8 @@ export default function BusinessLanding() {
           стрелка между ними. Отношение показано формой, а не подписью
           «сейчас» и «с сервисом» над колонками.
         */}
-        <section className="inst-band">
-          <div className="inst-sheet inst-pad">
+        <section className="sec-edge">
+          <div className="wrap wrap-ruled sec-pad">
             <Reveal>
               <h2 className="inst-d2 max-w-[20ch]">Сайт есть, а заявок из поиска нет</h2>
               <p className="inst-body mt-6 max-w-[62ch]">
@@ -392,7 +351,7 @@ export default function BusinessLanding() {
               </p>
             </Reveal>
 
-            <div className="inst-edge-to-edge mt-14 border-t border-[var(--line)]">
+            <div className="wrap-bleed mt-14 border-t border-[var(--line)]">
               {NOW.map((was, i) => (
                 <Reveal key={was} delay={i * 0.05}>
                   <div className="inst-row inst-swap border-b border-[var(--line)] px-6 py-6 sm:px-10">
@@ -419,8 +378,8 @@ export default function BusinessLanding() {
           он размером с заголовок и цветом линии: работает разделителем и
           отметкой порядка одновременно, а текст идёт рядом с ним, а не под.
         */}
-        <section id="how" className="inst-band scroll-mt-8">
-          <div className="inst-sheet inst-pad">
+        <section id="how" className="sec-edge scroll-mt-8">
+          <div className="wrap wrap-ruled sec-pad">
             <Reveal>
               <div className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-4">
                 <h2 className="inst-d2 max-w-[16ch]">{MECHANISM.name}</h2>
@@ -431,22 +390,12 @@ export default function BusinessLanding() {
               </div>
             </Reveal>
 
-            <div className="inst-edge-to-edge mt-16 border-t border-[var(--line)]">
-              {MECHANISM.steps.map((p, i) => (
-                <Reveal key={p.t} delay={i * 0.06}>
-                  <div className="inst-row grid grid-cols-12 items-start gap-x-8 gap-y-4 border-b border-[var(--line)] px-6 py-10 sm:px-10">
-                    <span className="inst-step-n col-span-12 lg:col-span-2">{ordinal(i)}</span>
-                    <h3 className="inst-d3 col-span-12 lg:col-span-4">{p.t}</h3>
-                    <p className="inst-body col-span-12 max-w-[58ch] lg:col-span-6">{p.d}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
+            <NumberedRows items={MECHANISM.steps} className="mt-16" />
           </div>
         </section>
 
-        <section id="calc" className="inst-band scroll-mt-8">
-          <div className="inst-sheet inst-pad">
+        <section id="calc" className="sec-edge scroll-mt-8">
+          <div className="wrap wrap-ruled sec-pad">
             <Head
               eyebrow="прозрачная цена"
               title="Посчитайте бюджет под свой сайт"
@@ -462,8 +411,8 @@ export default function BusinessLanding() {
           бьёт абстрактные проценты, поэтому блок получает самую широкую рамку
           на странице и ломает ритм стопки, которому подчинено всё остальное.
         */}
-        <section className="inst-band">
-          <div className="inst-sheet inst-pad">
+        <section className="sec-edge">
+          <div className="wrap wrap-ruled sec-pad">
             <Head
               eyebrow="один проект, шесть недель"
               title="667 запросов, до и после"
@@ -480,8 +429,8 @@ export default function BusinessLanding() {
           справа, полоса роста посередине. Не карточки — таблица, потому что
           сравнивать здесь важнее, чем разглядывать по отдельности.
         */}
-        <section id="cases" className="inst-band scroll-mt-8">
-          <div className="inst-sheet inst-pad">
+        <section id="cases" className="sec-edge scroll-mt-8">
+          <div className="wrap wrap-ruled sec-pad">
             <Head
               title="Что получилось у других"
               aside={
@@ -491,7 +440,7 @@ export default function BusinessLanding() {
               }
             />
 
-            <div className="inst-edge-to-edge mt-14 border-t border-[var(--line)]">
+            <div className="wrap-bleed mt-14 border-t border-[var(--line)]">
               <div className="hidden grid-cols-12 gap-x-6 border-b border-[var(--line)] px-6 py-4 sm:px-10 lg:grid">
                 <span className="inst-label col-span-5">ниша и регион</span>
                 <span className="inst-label col-span-4">доля запросов в ТОП-10</span>
@@ -546,8 +495,8 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="voices" className="inst-band scroll-mt-8">
-          <div className="inst-sheet inst-pad">
+        <section id="voices" className="sec-edge scroll-mt-8">
+          <div className="wrap wrap-ruled sec-pad">
             <Head title="Говорят те, кто платит" />
             <div className="mt-14">
               <Voices />
@@ -560,11 +509,11 @@ export default function BusinessLanding() {
           неизвестно что, а единица измерения объяснялась сноской ПОД таблицей,
           то есть после того, как читатель прошёл все три строки.
         */}
-        <section id="pricing" className="inst-band scroll-mt-8">
-          <div className="inst-sheet inst-pad">
+        <section id="pricing" className="sec-edge scroll-mt-8">
+          <div className="wrap wrap-ruled sec-pad">
             <Head title="Тарифы отличаются только скоростью" />
 
-            <div className="inst-edge-to-edge mt-14 border-t border-[var(--line)]">
+            <div className="wrap-bleed mt-14 border-t border-[var(--line)]">
               <div className="hidden grid-cols-12 gap-x-6 border-b border-[var(--line)] px-6 py-4 sm:px-10 lg:grid">
                 <span className="inst-label col-span-2">₽ за фразу в день</span>
                 <span className="inst-label col-span-3">тариф</span>
@@ -613,7 +562,7 @@ export default function BusinessLanding() {
 
             {/* Два рычага, найденных аудитом работающими у других и отсутствующими здесь. */}
             <Reveal delay={0.2}>
-              <div className="inst-grid inst-edge-to-edge mt-16 grid-cols-1 lg:grid-cols-[4fr_3fr]">
+              <div className="inst-grid wrap-bleed mt-16 grid-cols-1 lg:grid-cols-[4fr_3fr]">
                 <div>
                   <span className="inst-label">переход от конкурента</span>
                   <p className="mt-5 max-w-[34ch] text-[17px] leading-snug font-medium tracking-[-0.02em]">
@@ -644,8 +593,8 @@ export default function BusinessLanding() {
           условиями применения, а не отдельно: п.24 разрешает эту формулировку
           только в такой паре.
         */}
-        <section id="start" className="settle-in inst-band scroll-mt-8">
-          <div className="inst-sheet inst-pad">
+        <section id="start" className="settle-in sec-edge scroll-mt-8">
+          <div className="wrap wrap-ruled sec-pad">
             <div className="grid grid-cols-12 gap-x-6 gap-y-10">
               <div className="col-span-12 lg:col-span-7">
                 <Reveal>
@@ -692,35 +641,11 @@ export default function BusinessLanding() {
           </div>
         </section>
 
-        <section id="faq" className="inst-band scroll-mt-8">
-          <div className="inst-sheet inst-pad">
+        <section id="faq" className="sec-edge scroll-mt-8">
+          <div className="wrap wrap-ruled sec-pad">
             <Head title="Честные ответы" />
 
-            <div className="inst-edge-to-edge mt-14 border-t border-[var(--line)]">
-              {FAQ.map((item, i) => (
-                <Reveal key={item.q} delay={i * 0.04}>
-                  <details className="group inst-row border-b border-[var(--line)]">
-                    <summary className="grid cursor-pointer list-none grid-cols-12 items-baseline gap-x-6 px-6 py-6 sm:px-10">
-                      <span className="inst-idx col-span-1 hidden lg:block">{ordinal(i)}</span>
-                      <span className="col-span-11 text-[17px] leading-snug font-medium tracking-[-0.02em] transition-colors group-hover:text-[var(--amber)] sm:text-[19px] lg:col-span-10">
-                        {item.q}
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className="col-span-1 justify-self-end text-[18px] text-[var(--paper-3)] transition-transform group-open:rotate-45"
-                      >
-                        +
-                      </span>
-                    </summary>
-                    <div className="grid grid-cols-12 gap-x-6 px-6 pb-7 sm:px-10">
-                      <p className="inst-body col-span-12 max-w-[68ch] lg:col-span-10 lg:col-start-2">
-                        {item.a}
-                      </p>
-                    </div>
-                  </details>
-                </Reveal>
-              ))}
-            </div>
+            <Faq items={FAQ} className="mt-14" />
           </div>
         </section>
       </main>

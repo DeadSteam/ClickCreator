@@ -145,124 +145,140 @@ export function Diagnostic({ kicker }: { kicker: string }) {
     setStep(START);
   };
 
-  if (!restored) return null;
+  /*
+    Земля системы объявлена до восстановления прохождения, а не вместе с
+    первым экраном. Восстановление читает localStorage и потому живёт в
+    эффекте: до него компонент возвращал `null`, и первый кадр страницы
+    доставался фону старой системы на body — тёмная воронка открывалась
+    вспышкой светлой бумаги.
+  */
+  if (!restored) return <div className="stk min-h-dvh" aria-hidden="true" />;
 
-  if (step === RESULT && result) {
-    return <ResultScreen result={result} onRestart={restart} />;
-  }
-
+  /*
+    Обёртка одна на всю воронку: экраны сменяют друг друга через
+    AnimatePresence, и объяви её каждый экран сам — на кадре перехода земля
+    исчезала бы вместе с уходящим экраном.
+  */
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={step}
-        initial={reduce ? false : { opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={reduce ? { opacity: 1 } : { opacity: 0, y: -8 }}
-        transition={{ duration: 0.28, ease: EASE_OUT }}
-      >
-        {step === START && <StartScreen kicker={kicker} onStart={() => setStep(BRIEF)} />}
+    <div className="stk">
+      {step === RESULT && result ? (
+        <ResultScreen result={result} onRestart={restart} />
+      ) : (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? { opacity: 1 } : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: EASE_OUT }}
+          >
+            {step === START && (
+              <StartScreen kicker={kicker} onStart={() => setStep(BRIEF)} />
+            )}
 
-        {step === BRIEF && (
-          <BriefScreen
-            onStart={() => {
-              track("diagnostic_start");
-              startedAt.current = Date.now();
-              setStep(0);
-            }}
-          />
-        )}
+            {step === BRIEF && (
+              <BriefScreen
+                onStart={() => {
+                  track("diagnostic_start");
+                  startedAt.current = Date.now();
+                  setStep(0);
+                }}
+              />
+            )}
 
-        {step >= 0 && step < COMPUTING && (
-          <QuestionScreen
-            key={QUESTIONS[step].id}
-            question={QUESTIONS[step]}
-            step={step}
-            total={QUESTIONS.length}
-            initial={answers[QUESTIONS[step].id] ?? []}
-            onAnswer={answer}
-            onBack={() => setStep(step - 1)}
-            canBack={step > 0}
-          />
-        )}
+            {step >= 0 && step < COMPUTING && (
+              <QuestionScreen
+                key={QUESTIONS[step].id}
+                question={QUESTIONS[step]}
+                step={step}
+                total={QUESTIONS.length}
+                initial={answers[QUESTIONS[step].id] ?? []}
+                onAnswer={answer}
+                onBack={() => setStep(step - 1)}
+                canBack={step > 0}
+              />
+            )}
 
-        {step === COMPUTING && <ComputingScreen />}
-      </motion.div>
-    </AnimatePresence>
+            {step === COMPUTING && <ComputingScreen />}
+          </motion.div>
+        </AnimatePresence>
+      )}
+    </div>
   );
 }
 
 function StartScreen({ kicker, onStart }: { kicker: string; onStart: () => void }) {
   return (
-    <div className="zone-doubt min-h-dvh px-5 py-8 sm:px-8 sm:py-10">
-      {/*
-        Логотип без навигации. Меню, тарифы и ссылки на странице диагностики
-        запрещены п.3 ТЗ: любой выход отсюда — это потерянное прохождение.
-      */}
-      <header className="mx-auto flex max-w-[68rem] items-center justify-between gap-4">
-        <Logo />
-        <ThemeToggle />
-      </header>
+    <div className="min-h-dvh py-8 sm:py-10">
+      <div className="wrap">
+        {/*
+          Логотип без навигации. Меню, тарифы и ссылки на странице диагностики
+          запрещены п.3 ТЗ: любой выход отсюда — это потерянное прохождение.
+        */}
+        <header className="flex items-center justify-between gap-4">
+          <Logo idPrefix="diagnostic" />
+          <ThemeToggle />
+        </header>
 
-      <main className="mx-auto mt-12 grid max-w-[68rem] gap-14 sm:mt-20 lg:grid-cols-[1fr_0.78fr] lg:items-start lg:gap-16">
-        <div>
-          <span className="label text-[var(--ink-faint)]">{kicker}</span>
+        <main className="mt-12 grid gap-14 sm:mt-20 lg:grid-cols-[1fr_0.78fr] lg:items-start lg:gap-16">
+          <div>
+            <span className="label text-[var(--ink-faint)]">{kicker}</span>
 
-          <h1 className="mt-6 max-w-[24ch] text-[30px] leading-[1.06] font-extrabold tracking-[-0.035em] sm:text-[46px]">
-            Узнайте, когда ожидание SEO-результата начинает разрушать доверие
-            клиента
-          </h1>
+            <h1 className="stk-h1 mt-6">
+              Узнайте, когда ожидание SEO-результата начинает разрушать доверие
+              клиента
+            </h1>
 
-          <p className="mt-6 max-w-[56ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[17px]">
-            За 3 минуты оцените своё «окно сомнения» — период, когда клиент уже
-            анализирует вашу работу, но ещё не получил убедительного
-            подтверждения, что выбрал правильного специалиста.
-          </p>
+            <p className="stk-lead mt-6">
+              За 3 минуты оцените своё «окно сомнения» — период, когда клиент уже
+              анализирует вашу работу, но ещё не получил убедительного
+              подтверждения, что выбрал правильного специалиста.
+            </p>
 
-          <div className="mt-8 border-t border-[var(--rule)] pt-6">
-            <p className="label text-[var(--ink-faint)]">после диагностики вы узнаете</p>
-            <ul className="mt-4 flex flex-col gap-2.5">
-              {PROMISES.map((p) => (
-                <li
-                  key={p}
-                  className="flex max-w-[54ch] gap-3 text-[15px] leading-snug text-[var(--ink-soft)]"
-                >
-                  <span aria-hidden="true" className="num shrink-0 text-[var(--accent)]">
-                    —
-                  </span>
-                  {p}
-                </li>
-              ))}
-            </ul>
+            <div className="mt-8 border-t border-[var(--rule)] pt-6">
+              <p className="label text-[var(--ink-faint)]">после диагностики вы узнаете</p>
+              <ul className="mt-4 flex flex-col gap-2.5">
+                {PROMISES.map((p) => (
+                  <li
+                    key={p}
+                    className="stk-p flex gap-3"
+                  >
+                    <span aria-hidden="true" className="num shrink-0 text-[var(--ink-faint)]">
+                      —
+                    </span>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <Button size="lg" arrow onClick={onStart} className="mt-9">
+              Начать диагностику
+            </Button>
+
+            <p className="stk-sm mt-4">
+              12 вопросов. Без регистрации. Результат сразу.
+            </p>
           </div>
 
-          <Button size="lg" arrow onClick={onStart} className="mt-9">
-            Начать диагностику
-          </Button>
+          <WindowFigure className="lg:mt-16" />
+        </main>
 
-          <p className="mt-4 text-[13px] text-[var(--ink-faint)]">
-            12 вопросов. Без регистрации. Результат сразу.
-          </p>
-        </div>
-
-        <WindowFigure className="lg:mt-16" />
-      </main>
-
-      <p className="mx-auto mt-16 max-w-[68rem] border-t border-[var(--rule-soft)] pt-5 text-[13px] leading-relaxed text-[var(--ink-faint)] sm:mt-24">
-        Диагностика не оценивает качество вашей SEO-работы. Она показывает,
-        насколько быстро клиент получает видимые доказательства её ценности.
-      </p>
+        <p className="stk-sm mt-16 border-t border-[var(--rule-soft)] pt-5 sm:mt-24">
+          Диагностика не оценивает качество вашей SEO-работы. Она показывает,
+          насколько быстро клиент получает видимые доказательства её ценности.
+        </p>
+      </div>
     </div>
   );
 }
 
 function BriefScreen({ onStart }: { onStart: () => void }) {
   return (
-    <div className="zone-doubt mx-auto flex min-h-dvh max-w-[42rem] flex-col justify-center px-5 py-12 sm:px-8">
-      <h1 className="max-w-[20ch] text-[28px] leading-[1.08] font-extrabold tracking-[-0.03em] sm:text-[40px]">
-        Отвечайте так, как происходит в реальных проектах
-      </h1>
+    <div className="wrap wrap-read flex min-h-dvh flex-col justify-center py-12">
+      <h1 className="stk-h1">Отвечайте так, как происходит в реальных проектах</h1>
 
-      <p className="mt-6 max-w-[54ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[17px]">
+      <p className="stk-lead mt-6">
         Здесь нет правильных и неправильных ответов. Результат будет точнее,
         если вы будете ориентироваться не на идеальный процесс, а на типичный
         клиентский проект.
@@ -284,12 +300,10 @@ function ComputingScreen() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="zone-doubt mx-auto flex min-h-dvh max-w-[42rem] flex-col justify-center px-5 py-12 sm:px-8">
-      <h1 className="text-[26px] leading-[1.08] font-extrabold tracking-[-0.03em] sm:text-[36px]">
-        Анализируем ваше окно сомнения
-      </h1>
+    <div className="wrap wrap-read flex min-h-dvh flex-col justify-center py-12">
+      <h1 className="stk-h1">Анализируем ваше окно сомнения</h1>
 
-      <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
+      <p className="stk-lead mt-5">
         Сопоставляем ваши ответы и определяем, насколько быстро клиент начинает
         сомневаться по сравнению со скоростью появления доказательств вашей
         экспертности.
@@ -312,7 +326,7 @@ function ComputingScreen() {
             <span className="num text-[11px] text-[var(--accent)]">
               {ordinal(i)}
             </span>
-            <span className="text-[15px] leading-snug text-[var(--ink-soft)]">{s}</span>
+            <span className="stk-p">{s}</span>
           </motion.li>
         ))}
       </ul>

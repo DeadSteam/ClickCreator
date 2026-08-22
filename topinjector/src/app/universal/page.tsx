@@ -5,7 +5,9 @@ import { UniversalHeroCtas } from "@/components/landing/universal-hero-cta";
 import { UniversalAnalytics } from "@/components/landing/universal-analytics";
 import { LandingFooter } from "@/components/landing/footer";
 import { SIGNUP_URL } from "@/components/landing/chrome";
-import { Appear, Cards, Section, Head, Steps } from "@/components/landing/sections";
+import { Appear, Cards, Steps } from "@/components/landing/sections";
+import { SectionHead } from "@/components/ui/section-head";
+import { Section } from "@/components/ui/section";
 import { Faq } from "@/components/landing/faq";
 import { Pricing } from "@/components/landing/pricing";
 import { CompareTable, ProductScreens, SuitabilityGrid } from "@/components/landing/universal-blocks";
@@ -62,7 +64,13 @@ export default async function UniversalPage({
   const hypothesis = Array.isArray(hyp) ? hyp[0] : hyp;
 
   return (
-    <div className="brand-flat">
+    /*
+      Шапка /universal на восемь пикселей ниже общей: у неё нет второй строки
+      меню. Значение объявлено здесь, у корня маршрута, а высоту шапки и
+      смещение липкой черты раздела обе стороны читают из него — см.
+      `--head-h` в `globals.css`.
+    */
+    <div className="brand-flat [--head-h:68px]">
       <UniversalAnalytics hypothesis={hypothesis} />
 
       <div className="zone-doubt">
@@ -71,8 +79,13 @@ export default async function UniversalPage({
 
       <main id="main" tabIndex={-1}>
         {/* Блок 1. Hero. */}
-        <section className="zone-doubt px-5 pt-12 pb-8 sm:px-8 sm:pt-20">
-          <div className="mx-auto max-w-[54rem]">
+        <Section edge="none" className="zone-doubt">
+          {/*
+            Колонка героя уже листа, но начинается на его левом краю: логотип,
+            заголовки разделов и подвал стоят на одной вертикали, и центровка
+            только первого экрана читалась бы сбоем вёрстки, а не приёмом.
+          */}
+          <div className="max-w-[54rem]">
             <Appear>
               <p className="label text-[var(--ink-faint)]">SaaS для контролируемой проверки SEO-гипотез</p>
             </Appear>
@@ -107,12 +120,12 @@ export default async function UniversalPage({
               </ul>
             </Appear>
           </div>
-        </section>
+        </Section>
 
         {/* Блок 2. Что это за сервис. */}
-        <Section id="product" zone="zone-signal">
-          <Head
-            kicker="что это за сервис"
+        <Section id="product" edge="line" className="zone-signal">
+          <SectionHead
+            eyebrow="что это за сервис"
             title="Инструмент для контролируемой проверки SEO-гипотез"
             lead="Сервис помогает SEO-специалисту запускать продвижение выбранных запросов, отслеживать изменения и получать данные, необходимые для следующего профессионального решения."
           />
@@ -146,26 +159,38 @@ export default async function UniversalPage({
         </Section>
 
         {/* Блок 3. Сценарии применения. */}
-        <Section id="scenarios" zone="zone-signal">
-          <Head kicker="сценарии применения" title="В каких задачах использовать сервис" />
+        <Section id="scenarios" edge="line" className="zone-signal">
+          <SectionHead eyebrow="сценарии применения" title="В каких задачах использовать сервис" />
           <Cards items={SCENARIOS.map((s) => ({ t: s.t, d: s.d }))} cols={3} />
         </Section>
 
         {/* Блок 4. Как проходит проверка. */}
-        <Section id="how" zone="zone-signal">
-          <Head kicker="как проходит проверка" title="От проекта до профессионального вывода — по понятному сценарию" />
+        <Section id="how" edge="line" className="zone-signal">
+          <SectionHead eyebrow="как проходит проверка" title="От проекта до профессионального вывода — по понятному сценарию" />
           <Steps items={TEST_STEPS.map((s) => ({ t: s.t, d: s.d }))} />
         </Section>
 
         {/* Блок 5. Что получает специалист. */}
-        <Section zone="zone-signal">
-          <Head kicker="что вы получаете" title="Не ещё один кабинет. Новый набор данных для решения" />
+        <Section edge="line" className="zone-signal">
+          <SectionHead eyebrow="что вы получаете" title="Не ещё один кабинет. Новый набор данных для решения" />
           <Cards items={GETS.map((g) => ({ t: g.t, d: g.d }))} cols={3} />
         </Section>
 
         {/* Блок 6. Механика работы. */}
-        <Section zone="zone-signal">
-          <Head kicker="механика работы" title="Что происходит после запуска" lead="Не раскрываем чувствительные технические детали, которые составляют ноу-хау — но показываем весь путь данных." />
+        <Section edge="none" pad="top" className="zone-signal">
+          <SectionHead eyebrow="механика работы" title="Что происходит после запуска" />
+
+          {/*
+            Оговорка про ноу-хау вынесена из подводки в хайлайт: это не
+            пояснение к разделу, а условие, на котором раздел вообще
+            существует. Приём взят со /stack — см. `.claim` в globals.css.
+          */}
+          <Appear delay={0.06}>
+            <p className="claim mt-9">
+              Не раскрываем чувствительные технические детали, которые составляют
+              ноу-хау — но показываем весь путь данных.
+            </p>
+          </Appear>
 
           <Appear delay={0.08}>
             <ol className="mt-12 flex flex-col">
@@ -194,8 +219,8 @@ export default async function UniversalPage({
         </Section>
 
         {/* Блок 7. Кейсы. */}
-        <Section id="cases" zone="zone-proof">
-          <Head kicker="доказательства" title="Как проходит проверка на реальных проектах" />
+        <Section id="cases" edge="none" pad="top" className="zone-proof">
+          <SectionHead eyebrow="доказательства" title="Как проходит проверка на реальных проектах" />
           <FeaturedCase data={FEATURED_CASE} />
           <Appear delay={0.1}>
             <h3 className="mt-20 text-[22px] font-extrabold tracking-[-0.03em] sm:text-[28px]">
@@ -211,9 +236,9 @@ export default async function UniversalPage({
         </Section>
 
         {/* Блок 8. Ограничения и условия. */}
-        <Section zone="zone-settled" className="pb-24 sm:pb-32">
-          <Head
-            kicker="ограничения и условия"
+        <Section edge="none" pad="top" className="zone-settled pb-24 sm:pb-32">
+          <SectionHead
+            eyebrow="ограничения и условия"
             title="Где сервис может быть полезен — и где не стоит ждать одинакового результата"
             lead="Мы не предлагаем считать сервис универсальным решением. Этот блок должен повышать доверие, а не снижать его."
           />
@@ -221,14 +246,14 @@ export default async function UniversalPage({
         </Section>
 
         {/* Блок 9. Сравнение с текущим процессом. */}
-        <Section zone="zone-proof">
-          <Head kicker="сравнение" title="Не «мы против вашего SaaS». Два рабочих сценария по одинаковым критериям" />
+        <Section edge="line" className="zone-proof">
+          <SectionHead eyebrow="сравнение" title="Не «мы против вашего SaaS». Два рабочих сценария по одинаковым критериям" />
           <CompareTable rows={COMPARE_ROWS} />
         </Section>
 
         {/* Блок 10. Интерфейс продукта. */}
-        <Section zone="zone-proof">
-          <Head kicker="интерфейс продукта" title="Все данные проверки — в одном рабочем пространстве" />
+        <Section edge="line" className="zone-proof">
+          <SectionHead eyebrow="интерфейс продукта" title="Все данные проверки — в одном рабочем пространстве" />
           <ProductScreens items={PRODUCT_SCREENS} />
           {PENDING && (
             <Appear delay={0.2}>
@@ -240,8 +265,8 @@ export default async function UniversalPage({
         </Section>
 
         {/* Блок 11. Тарифы. */}
-        <Section id="pricing" zone="zone-proof">
-          <Head kicker="тарифы" title="Выберите объём под первый осмысленный тест" />
+        <Section id="pricing" edge="line" className="zone-proof">
+          <SectionHead eyebrow="тарифы" title="Выберите объём под первый осмысленный тест" />
           <Pricing plans={UNIVERSAL_PLANS} ctaHref="#start" trackEvent="universal_plan_select" />
           {PENDING && (
             <Appear delay={0.2}>
@@ -251,8 +276,8 @@ export default async function UniversalPage({
         </Section>
 
         {/* Блок 12. Снижение риска. */}
-        <Section zone="zone-proof">
-          <Head kicker="снижение риска" title="Проверка должна быть контролируемой на каждом этапе" />
+        <Section edge="line" className="zone-proof">
+          <SectionHead eyebrow="снижение риска" title="Проверка должна быть контролируемой на каждом этапе" />
           <Cards items={RISK_ITEMS.map((r) => ({ t: r.t, d: r.d }))} cols={3} />
 
           <Appear delay={0.16}>
@@ -271,13 +296,13 @@ export default async function UniversalPage({
         </Section>
 
         {/* Блок 13. FAQ. */}
-        <Section id="faq" zone="zone-proof">
-          <Head kicker="вопросы" title="Вопросы, которые задаёт профессиональный SEO" />
+        <Section id="faq" edge="none" pad="top" className="zone-proof">
+          <SectionHead eyebrow="вопросы" title="Вопросы, которые задаёт профессиональный SEO" />
           <Faq items={UNIVERSAL_FAQ.map((f) => ({ q: f.q, a: f.a }))} />
         </Section>
 
         {/* Блок 14 + 21. Финальный CTA и форма заявки. */}
-        <Section id="start" zone="zone-settled" className="pb-28 sm:pb-36">
+        <Section id="start" edge="none" pad="top" className="zone-settled pb-32 sm:pb-40">
           <Appear>
             <p className="label text-[var(--ink-faint)]">финальный шаг</p>
             <h2 className="mt-7 max-w-[20ch] text-[30px] leading-[1.08] font-extrabold tracking-[-0.035em] sm:text-[44px]">

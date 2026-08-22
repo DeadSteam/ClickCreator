@@ -14,14 +14,21 @@ import { Flow, Rise } from "./primitives";
 */
 export function StoryCta({ query = "" }: { query?: string }) {
   return (
-    <section className="zone-settled px-5 pb-28 sm:px-8 sm:pb-36">
-      <div className="mx-auto max-w-[47rem]">
+    /*
+      Переход возвращается на землю страницы. Прежняя графитовая зона здесь
+      больше не нужна и была бы вредна: прямо над кнопкой стоит утопленная
+      полоса «Эврики», и вторая полоса подряд слилась бы с ней в один длинный
+      тёмный кусок — пауза перестала бы быть паузой. Отступ сверху заменил
+      границу зоны: линию раздела даёт край самой полосы.
+    */
+    <section className="pt-24 pb-28 sm:pt-32 sm:pb-36">
+      <div className="wrap wrap-read">
         <Rise>
           <p className="label text-[var(--ink-faint)]">следующий шаг</p>
         </Rise>
 
         <Rise delay={0.1}>
-          <p className="mt-7 text-[19px] leading-[1.6] text-[var(--ink-soft)] sm:text-[21px]">
+          <p className="stk-lead mt-7">
             Именно пытаясь решить эту проблему, мы создали SaaS-сервис для
             SEO-специалистов: он помогает получать раннюю измеримую динамику по
             подходящим целевым запросам и показывать клиенту результат уже в
@@ -30,7 +37,7 @@ export function StoryCta({ query = "" }: { query?: string }) {
         </Rise>
 
         <Rise delay={0.16}>
-          <p className="mt-5 text-[17px] leading-[1.65] text-[var(--ink-soft)]">
+          <p className="stk-p mt-5">
             Сервис не заменяет вашу стратегию. Он добавляет к ней то, чего обычно
             не хватает в начале сотрудничества: быстрое и понятное
             доказательство, что клиент выбрал правильного специалиста.
@@ -49,7 +56,7 @@ export function StoryCta({ query = "" }: { query?: string }) {
         />
 
         <Rise delay={0.2}>
-          <p className="mt-12 text-[15px] leading-relaxed text-[var(--ink-faint)]">
+          <p className="stk-sm mt-12 max-w-[64ch]">
             На следующей странице: как работает сервис, для каких проектов он
             подходит, как выбираются запросы, какие результаты получали другие
             специалисты, какие существуют ограничения и как начать бесплатный

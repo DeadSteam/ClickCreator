@@ -50,12 +50,11 @@ export function Block({
   );
 }
 
+/* Заголовок раздела — общий `.h-sec`: та же ступень, что на всех маршрутах. */
 export function H2({ children }: { children: ReactNode }) {
   return (
     <Rise>
-      <h2 className="max-w-[20ch] text-[27px] leading-[1.1] font-extrabold tracking-[-0.03em] sm:text-[38px]">
-        {children}
-      </h2>
+      <h2 className="h-sec">{children}</h2>
     </Rise>
   );
 }
@@ -63,15 +62,7 @@ export function H2({ children }: { children: ReactNode }) {
 export function P({ children, lead = false }: { children: ReactNode; lead?: boolean }) {
   return (
     <Rise>
-      <p
-        className={`mt-5 text-[var(--ink-soft)] ${
-          lead
-            ? "text-[19px] leading-[1.6] sm:text-[21px]"
-            : "text-[17px] leading-[1.65] sm:text-[18px]"
-        }`}
-      >
-        {children}
-      </p>
+      <p className={`mt-5 ${lead ? "stk-lead" : "stk-p"}`}>{children}</p>
     </Rise>
   );
 }
@@ -80,7 +71,7 @@ export function P({ children, lead = false }: { children: ReactNode; lead?: bool
 export function Line({ children }: { children: ReactNode }) {
   return (
     <Rise>
-      <p className="mt-4 border-l-2 border-[var(--rule)] pl-5 text-[17px] leading-[1.5] text-[var(--ink)] sm:text-[19px]">
+      <p className="mt-4 border-l-2 border-[var(--rule)] pl-5 text-[18px] leading-[1.5] text-[var(--ink)] sm:text-[19px]">
         {children}
       </p>
     </Rise>
@@ -92,7 +83,7 @@ export function List({ items }: { items: string[] }) {
     <ul className="mt-6 flex flex-col gap-2.5">
       {items.map((t, i) => (
         <Rise key={t} delay={Math.min(i, 6) * 0.05}>
-          <li className="flex gap-3.5 text-[17px] leading-[1.55] text-[var(--ink-soft)]">
+          <li className="stk-p flex gap-3.5">
             <span aria-hidden="true" className="num shrink-0 text-[var(--ink-faint)]">
               —
             </span>
@@ -188,7 +179,12 @@ export function Split({
 }) {
   return (
     <div className="mt-9">
-      <div className="grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+      {/*
+        Сравнение — одна поверхность, разделённая волосяной чертой, а не две
+        плитки встык: прямой угол стоял бы рядом с поверхностями статьи,
+        скруглёнными на 14 px, и читался бы куском чужой системы.
+      */}
+      <div className="surf-split grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
         <Rise className="bg-[var(--inset)]">
           <div className="h-full p-6 sm:p-7">
             <p className="label text-[var(--ink-faint)]">{left.title}</p>
@@ -244,7 +240,7 @@ export function Thoughts({ items, who }: { items: string[]; who: string }) {
   return (
     <div className="mt-9">
       <p className="label text-[var(--ink-faint)]">{who}</p>
-      <div className="mt-5 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+      <div className="surf-split mt-5 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
         {items.map((t, i) => (
           <Rise key={t} delay={i * 0.12} className="bg-[var(--inset)]">
             <p className="h-full p-6 text-[17px] leading-snug text-[var(--ink)] sm:text-[18px]">
@@ -272,10 +268,22 @@ export function Pull({
   size?: "normal" | "huge";
 }) {
   return (
-    <div className="zone-settled mt-[92px] w-screen -translate-x-1/2 px-5 py-24 sm:mt-[128px] sm:px-8 sm:py-36"
-      style={{ marginLeft: "50%" }}
-    >
-      <div className="mx-auto max-w-[48rem]">
+    /*
+      Полоса стоит на утопленной земле системы, а не на графитовой зоне прежней.
+      `.stk` зоны обнуляет, и `zone-settled` здесь оставался бы прозрачным — от
+      паузы, ради которой этот разворот существует, не осталось бы ничего.
+      Разница со землёй мала намеренно: чтение должно почувствовать смену
+      уровня, а не упереться во второй фон.
+
+      Прорыва из колонки (`w-screen` со сдвигом на половину) больше нет. Обе
+      цитаты статьи и так стоят прямыми потомками корня, то есть уже во всю
+      ширину, а `100vw` считает вместе с полосой прокрутки: полоса выходила на
+      7 px шире листа, съезжала на те же 7 px влево вместе со своей колонкой, и
+      на 390 px цитата вставала не по левому краю текста (13 px против 20 px).
+      Обычный блок берёт ширину родителя ровно и совпадает с ней всегда.
+    */
+    <div className="stk-sink mt-[92px] border-y border-[var(--rule-soft)] py-24 sm:mt-[128px] sm:py-36">
+      <div className="wrap wrap-read">
         {/*
           Строки появляются последовательно с интервалом 140мс, а не блоком:
           так задано в [ANIMATION], и в этом весь смысл экрана. Цитата
@@ -331,11 +339,11 @@ export function Note({ children, tone = "accent" }: { children: ReactNode; tone?
 export function Checks({ title, items }: { title: string; items: string[] }) {
   return (
     <Rise>
-      <div className="mt-9 border border-[var(--rule-soft)] bg-[var(--inset)] p-6 sm:p-8">
-        <h3 className="text-[19px] font-semibold tracking-[-0.02em] sm:text-[21px]">{title}</h3>
+      <div className="surf mt-9 p-6 sm:p-8">
+        <h3 className="stk-h3">{title}</h3>
         <ul className="mt-6 flex flex-col gap-3.5">
           {items.map((t) => (
-            <li key={t} className="flex gap-3.5 text-[16px] leading-snug text-[var(--ink-soft)]">
+            <li key={t} className="stk-sm flex gap-3.5">
               <span
                 aria-hidden="true"
                 className="num shrink-0"

@@ -39,11 +39,11 @@ export function Nav({
         меню открывалось, а закрыть его нажатием было нечем.
       */}
       <header
-        className={`relative px-5 sm:px-8 ${open ? "z-50" : "z-30"}`}
+        className={`relative ${open ? "z-50" : "z-30"}`}
       >
-        <nav className="mx-auto flex max-w-[76rem] items-center justify-between gap-6 border-b border-[var(--rule-soft)] py-5">
+        <nav className="wrap flex items-center justify-between gap-6 border-b border-[var(--rule-soft)] py-5">
           <Link href="/" aria-label="TopInjector, на главную">
-            <Logo />
+            <Logo idPrefix="nav" />
           </Link>
 
           <div className="hidden items-center gap-8 lg:flex">

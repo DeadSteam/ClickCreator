@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { Logo } from "@/components/logo";
@@ -13,7 +13,17 @@ import { botLink } from "@/landing/config";
 import { EASE_HAPTIC } from "@/motion/tokens";
 import { ordinal } from "@/format";
 
-const NAV = [
+/** Пункт навигации шапки. Якорь обязан существовать на той странице, куда шапку поставили. */
+export type NavLink = { label: string; href: string };
+
+/*
+  Набор /service. Он же остаётся значением по умолчанию — но именно как
+  значение по умолчанию, а не как единственно возможный список: у /stack
+  разделы другие, и раньше шапка вела оттуда на `#how`, которого на странице
+  нет вовсе. Молчаливо мёртвая ссылка в шапке — это потерянный переход, а не
+  косметика, поэтому список пришёл в пропсы.
+*/
+const NAV: readonly NavLink[] = [
   { label: "Как работает", href: "#how" },
   { label: "Кейсы", href: "#cases" },
   { label: "Возможности", href: "#product" },
@@ -29,7 +39,18 @@ export const SIGNUP_URL = "https://lk.topinjector.ru/register";
   на первом экране она отнимала бы высоту у заголовка ровно там, где ТЗ требует
   показать результат сразу.
 */
-export function LandingNav() {
+export function LandingNav({
+  links = NAV,
+  cta,
+}: {
+  links?: readonly NavLink[];
+  /**
+   * Кнопка шапки. Страницам со сквозной атрибуцией (/stack, разд. 25.6 ТЗ)
+   * нужна своя: общая уходит в Telegram по `?start=nav`, без
+   * `attribution_id`, и рекламная цепочка на ней обрывается.
+   */
+  cta?: ReactNode;
+} = {}) {
   const [stuck, setStuck] = useState(false);
   const { open, setOpen, toggle } = useMenuState();
   const reduce = useReducedMotion();
@@ -44,19 +65,19 @@ export function LandingNav() {
   return (
     <>
       <header
-        className={`sticky top-0 px-5 sm:px-8 ${open ? "z-50" : "z-40"} ${
+        className={`sticky top-0 ${open ? "z-50" : "z-40"} ${
           stuck
             ? "border-b border-[var(--rule-soft)] bg-[color-mix(in_oklab,var(--page-bg)_88%,transparent)] backdrop-blur-md"
             : ""
         } [transition:background-color_var(--t-panel)_var(--ease-micro),border-color_var(--t-panel)_var(--ease-micro)]`}
       >
-        <nav className="mx-auto flex max-w-[76rem] items-center justify-between gap-6 py-4">
+        <nav className="wrap flex h-[var(--head-h)] items-center justify-between gap-6">
           <Link href="/service" aria-label="TopInjector, наверх">
-            <Logo />
+            <Logo idPrefix="landing-nav" />
           </Link>
 
           <div className="hidden items-center gap-7 lg:flex">
-            {NAV.map((l) => (
+            {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
@@ -75,18 +96,20 @@ export function LandingNav() {
               Войти
             </a>
 
-            <Button
-              size="sm"
-              href={botLink("nav")}
-              target="_blank"
-              rel="noopener"
-              onClick={() => {
-                track("tg_cta_click", { place: "nav" });
-                track("tg_bot_open", { place: "nav" });
-              }}
-            >
-              Получить лимиты
-            </Button>
+            {cta ?? (
+              <Button
+                size="sm"
+                href={botLink("nav")}
+                target="_blank"
+                rel="noopener"
+                onClick={() => {
+                  track("tg_cta_click", { place: "nav" });
+                  track("tg_bot_open", { place: "nav" });
+                }}
+              >
+                Получить лимиты
+              </Button>
+            )}
 
             <ThemeToggle />
           </div>
@@ -110,7 +133,7 @@ export function LandingNav() {
               px-5 pt-24 pb-28 lg:hidden"
           >
             <ul className="flex flex-col">
-              {NAV.map((l, i) => (
+              {links.map((l, i) => (
                 <li key={l.href}>
                   <a
                     href={l.href}
@@ -154,7 +177,17 @@ export function LandingNav() {
  * наблюдать нечего — панель ведёт себя по старому правилу «после 80% первого
  * экрана», чтобы не потерять кнопку там, где размётки ещё нет.
  */
-export function MobileCta() {
+export function MobileCta({
+  cta,
+}: {
+  /**
+   * Кнопка панели. По той же причине, что и у шапки: на /stack общая кнопка
+   * уводила в Telegram по `?start=mobile_bar` без `attribution_id`, а разд.
+   * 25.17 ТЗ прямо требует, чтобы рекламная идентичность дожила до передачи
+   * в бота. Плюс разд. 21 задаёт там свою подпись.
+   */
+  cta?: ReactNode;
+} = {}) {
   const [everSeenCta, setEverSeenCta] = useState(false);
   const [ctaInView, setCtaInView] = useState(false);
 
@@ -203,18 +236,20 @@ export function MobileCta() {
       получали ни одного их изменения.
     */
     <div className="zone-settled fixed inset-x-0 bottom-0 z-30 border-t border-[var(--rule-soft)] p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
-      <Button
-        block
-        href={botLink("mobile_bar")}
-        target="_blank"
-        rel="noopener"
-        onClick={() => {
-          track("tg_cta_click", { place: "mobile_bar" });
-          track("tg_bot_open", { place: "mobile_bar" });
-        }}
-      >
-        Получить бесплатные лимиты
-      </Button>
+      {cta ?? (
+        <Button
+          block
+          href={botLink("mobile_bar")}
+          target="_blank"
+          rel="noopener"
+          onClick={() => {
+            track("tg_cta_click", { place: "mobile_bar" });
+            track("tg_bot_open", { place: "mobile_bar" });
+          }}
+        >
+          Получить бесплатные лимиты
+        </Button>
+      )}
     </div>
   );
 }

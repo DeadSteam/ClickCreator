@@ -46,7 +46,12 @@ export default async function StoryPage({
   };
 
   return (
-    <div className="zone-doubt min-h-dvh bg-[var(--reading-bg)]">
+    /*
+      Земля системы объявлена на всю страницу, а не на статью: полосы во всю
+      ширину — вынесенные цитаты и переход в конце — выходят из колонки
+      отрицательным полем и должны стоять на том же основании, что и текст.
+    */
+    <div className="stk min-h-dvh">
       <StoryAnalytics />
 
       {/*
@@ -54,15 +59,15 @@ export default async function StoryPage({
         меню, боковые панели, рекомендации и любые ссылки: всё внимание
         принадлежит тексту, а единственный выход стоит в конце.
       */}
-      <header className="mx-auto flex max-w-[47rem] items-center justify-between gap-4 px-5 pt-8 sm:px-8">
-        <Logo />
+      <header className="wrap wrap-read flex items-center justify-between gap-4 pt-8">
+        <Logo idPrefix="story-nav" />
         <ThemeToggle />
       </header>
 
       <main
         id="main"
         tabIndex={-1}
-        className="mx-auto max-w-[47rem] overflow-x-clip px-5 pb-32 sm:px-8"
+        className="wrap wrap-read overflow-x-clip pb-32"
       >
         {/* 1. Заголовок и захват внимания. Первый экран — только текст. */}
         <article>
@@ -73,14 +78,19 @@ export default async function StoryPage({
           </Rise>
 
           <Rise delay={0.12}>
-            <h1 className="mt-7 text-[32px] leading-[1.06] font-extrabold tracking-[-0.035em] sm:text-[52px]">
+            {/*
+              Мера снята: у заголовка системы она равна 20 знакам и рассчитана
+              на узкую колонку первого экрана /stack. Здесь заголовок стоит один
+              во всю полосу чтения, и 20 знаков ломали бы его в шесть строк.
+            */}
+            <h1 className="stk-h1 stk-h1-col mt-7">
               Почему сильные SEO теряют клиентов ещё до того, как стратегия
               успевает сработать
             </h1>
           </Rise>
 
           <Rise delay={0.24}>
-            <p className="mt-7 text-[19px] leading-[1.5] text-[var(--ink-soft)] sm:text-[23px]">
+            <p className="stk-lead mt-7">
               И что на самом деле происходит в первые недели после старта
               проекта
             </p>
@@ -93,7 +103,7 @@ export default async function StoryPage({
           />
 
           <Rise delay={0.36}>
-            <p className="mt-12 text-[18px] leading-[1.65] text-[var(--ink-soft)] sm:text-[19px]">
+            <p className="stk-p mt-12">
               Вы можете правильно собрать семантику, провести глубокий аудит,
               найти технические ошибки, подготовить структуру и поставить задачи
               разработчикам. Сделать всё так, как должен делать сильный
@@ -199,7 +209,7 @@ export default async function StoryPage({
             />
 
             <Rise>
-              <p className="mt-6 max-w-[58ch] text-[15px] leading-relaxed text-[var(--ink-faint)]">
+              <p className="stk-sm mt-6 max-w-[58ch]">
                 Большинство специалистов считают, что клиент оценивает качество
                 SEO. На самом деле клиент сначала оценивает правильность
                 собственного выбора.
@@ -266,7 +276,7 @@ export default async function StoryPage({
       </main>
 
       {/* 4. Окно сомнения. Главный смысловой центр статьи. */}
-      <div className="mx-auto max-w-[47rem] px-5 sm:px-8">
+      <div className="wrap wrap-read">
         <Block>
           <H2>Окно сомнения</H2>
 
@@ -374,7 +384,7 @@ export default async function StoryPage({
         caption="Именно это ощущают многие сильные SEO-специалисты."
       />
 
-      <div className="mx-auto max-w-[47rem] px-5 sm:px-8">
+      <div className="wrap wrap-read">
         <Block>
           <P>
             В агентстве сомнения клиента распределяются между брендом, командой и
@@ -497,7 +507,12 @@ export default async function StoryPage({
             чтобы оно отвечало трём условиям.
           </P>
 
-          <div className="mt-9 grid gap-px bg-[var(--rule-soft)]">
+          {/*
+            Три условия — три отдельные поверхности, а не ячейки волосяной
+            сетки. Сетка склеивает однородные строки одного перечня; здесь же
+            каждое условие самостоятельно и проверяется отдельно от соседних.
+          */}
+          <div className="mt-9 flex flex-col gap-3">
             {[
               {
                 t: "Понятно клиенту",
@@ -512,7 +527,7 @@ export default async function StoryPage({
                 d: "Смысл раннего доказательства в том, чтобы опередить вопрос «а мы точно движемся правильно?».",
               },
             ].map((c, i) => (
-              <Rise key={c.t} delay={i * 0.1} className="bg-[var(--inset)]">
+              <Rise key={c.t} delay={i * 0.1} className="surf">
                 <div className="flex gap-5 p-6 sm:p-7">
                   <span
                     aria-hidden="true"
@@ -522,12 +537,8 @@ export default async function StoryPage({
                     ✓
                   </span>
                   <div>
-                    <h3 className="text-[19px] font-semibold tracking-[-0.02em] sm:text-[21px]">
-                      {c.t}
-                    </h3>
-                    <p className="mt-2.5 max-w-[54ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
-                      {c.d}
-                    </p>
+                    <h3 className="stk-h3">{c.t}</h3>
+                    <p className="stk-sm mt-2.5 max-w-[54ch]">{c.d}</p>
                   </div>
                 </div>
               </Rise>
@@ -610,19 +621,15 @@ export default async function StoryPage({
           <P>Представьте два сценария.</P>
 
           <Rise>
-            <div className="mt-9 border border-[var(--rule-soft)] bg-[var(--inset)] p-6 sm:p-7">
+            <div className="surf mt-9 p-6 sm:p-7">
               <p className="label text-[var(--ink-faint)]">до</p>
-              <p className="mt-5 text-[16px] leading-snug text-[var(--ink-soft)]">
-                Клиент: «Когда будут результаты?»
-              </p>
-              <p className="mt-3 text-[16px] leading-snug text-[var(--ink-soft)]">
+              <p className="stk-sm mt-5">Клиент: «Когда будут результаты?»</p>
+              <p className="stk-sm mt-3">
                 Вы: «Завершили аудит, исправляем технические ошибки, ждём
                 переобход. Обычно заметная динамика появляется через два-три
                 месяца».
               </p>
-              <p className="mt-3 text-[16px] leading-snug text-[var(--ink-soft)]">
-                Клиент: «Хорошо, будем ждать».
-              </p>
+              <p className="stk-sm mt-3">Клиент: «Хорошо, будем ждать».</p>
               <p className="mt-5 text-[14px] text-[var(--ink-faint)]">
                 Ответ профессиональный. Но разговор строится вокруг ожидания.
               </p>
@@ -630,12 +637,11 @@ export default async function StoryPage({
           </Rise>
 
           <Rise delay={0.14}>
-            <div className="mt-4 border-l-2 border-[var(--accent)] bg-[var(--inset)] p-6 sm:p-7">
+            {/* Вторая карточка отвечает первой, и вес ей даёт акцентное ребро. */}
+            <div className="surf surf-a mt-4 p-6 sm:p-7">
               <p className="label text-[var(--accent)]">после</p>
-              <p className="mt-5 text-[16px] leading-snug text-[var(--ink-soft)]">
-                Клиент: «Как идут дела?»
-              </p>
-              <p className="mt-3 text-[16px] leading-snug text-[var(--ink-soft)]">
+              <p className="stk-sm mt-5">Клиент: «Как идут дела?»</p>
+              <p className="stk-sm mt-3">
                 Вы: «Основная стратегия идёт по плану. Дополнительно: по
                 согласованным запросам появилась первая измеримая динамика. Вот
                 исходные позиции, вот текущие, вот дата запуска».

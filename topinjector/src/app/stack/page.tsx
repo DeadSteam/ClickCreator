@@ -4,7 +4,9 @@ import type { ReactNode } from "react";
 import { plural } from "@/format";
 import { Appear } from "@/motion/appear";
 import { Schema } from "@/components/schema";
-import { LandingNav, MobileCta, SIGNUP_URL } from "@/components/landing/chrome";
+import { Section } from "@/components/ui/section";
+import { SectionHead } from "@/components/ui/section-head";
+import { LandingNav, MobileCta, SIGNUP_URL, type NavLink } from "@/components/landing/chrome";
 import { LandingFooter } from "@/components/landing/footer";
 import { CompareTable } from "@/components/landing/universal-blocks";
 import { AppPreview } from "@/components/landing/app-preview";
@@ -14,10 +16,12 @@ import { HeroPanel } from "@/components/stack/hero-panel";
 import { StackCalculator } from "@/components/stack/calculator";
 import { StackAnalytics } from "@/stack/analytics";
 import { StackFaq } from "@/components/stack/faq";
-import { resolveHeroVariant, HERO_MICRO } from "@/stack/hero-variants";
+import { resolveHeroVariant, HERO_MICRO, HERO_SECONDARY_LABEL } from "@/stack/hero-variants";
+import { audienceHero, resolveAudience } from "@/stack/audience";
 import {
   STACK_CASES,
   STACK_CASES_CONCLUSION,
+  STACK_CASES_PENDING,
   STACK_COMPARE_ROWS,
   STACK_ECONOMICS_INTRO,
   STACK_FAQ,
@@ -79,59 +83,21 @@ export const metadata: Metadata = {
 
 const STACK_FAQ_FOR_SCHEMA = STACK_FAQ.slice(0, 6);
 
-/* ─────────────────────────── ФОРМЫ СТРАНИЦЫ ─────────────────────────── */
-
 /*
-  Секция. `data-pf-block` инертен везде, кроме предфрейминговых маршрутов:
-  там `usePredframingAnalytics` слушает этот атрибут, чтобы мерить просмотр и
-  время по блокам. Ставится по `id`, а не отдельным пропсом — второй источник
-  правды для одного идентификатора расходится быстрее, чем успевает
-  пригодиться.
+  Навигация шапки под разделы этой страницы. Общий набор /service вёл отсюда
+  на `#how` — раздела с таким якорем на /stack нет, и пункт «Как работает»
+  просто ничего не делал. Здесь тот же смысл отдаёт блок контрольного теста.
 */
-function Sec({
-  id,
-  sink,
-  className = "",
-  children,
-}: {
-  id?: string;
-  sink?: boolean;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section id={id} data-pf-block={id} className={`stk-sec ${sink ? "stk-sink" : ""} ${className}`}>
-      {/* Липнет под шапкой граница раздела, а не его заголовок. */}
-      <div className="stk-edge" aria-hidden="true" />
-      <div className="stk-w stk-sec-in">{children}</div>
-    </section>
-  );
-}
+const STACK_NAV: readonly NavLink[] = [
+  { label: "Как работает", href: "#controlled-test" },
+  { label: "Кейсы", href: "#cases" },
+  { label: "Возможности", href: "#product" },
+  { label: "Безопасность", href: "#safety" },
+  { label: "Тарифы", href: "#pricing" },
+  { label: "FAQ", href: "#faq" },
+];
 
-/**
- * Заголовок раздела.
- *
- * Мера заголовка задана в `.stk-h2` и равна 26 знакам в строке. Прежние
- * `max-w-[20ch]` в разметке ломали двенадцать заголовков в четыре рваные
- * строки: мера должна ограничивать длину строки, а не гнать заголовок вниз.
- * `col` снимает меру там, где ширину и без того держит узкая колонка.
- */
-function Head({
-  eyebrow,
-  title,
-  col,
-}: {
-  eyebrow?: string;
-  title: string;
-  col?: boolean;
-}) {
-  return (
-    <Appear>
-      {eyebrow && <p className="stk-eyebrow mb-6">{eyebrow}</p>}
-      <h2 className={`stk-h2 ${col ? "stk-h2-col" : ""}`}>{title}</h2>
-    </Appear>
-  );
-}
+/* ─────────────────────────── ФОРМЫ СТРАНИЦЫ ─────────────────────────── */
 
 /**
  * Показание: подпись, крупное число, названная величина вплотную к нему.
@@ -211,6 +177,16 @@ export default async function StackPage({
   const rawAngle = typeof sp.angle === "string" ? sp.angle : undefined;
   const v = resolveHeroVariant(rawAngle);
 
+  /*
+    Аудитория читается на сервере тем же способом, что и angle (разд. 24.11).
+    Клиентское чтение дало бы вспышку стандартной копии перед audience-версией
+    на каждой загрузке — ровно то расхождение SSR/CSR, ради отсутствия
+    которого угол и читается из `searchParams`.
+  */
+  const audience = resolveAudience(typeof sp.audience === "string" ? sp.audience : undefined);
+  const aud = audience.copy;
+  const hero = audienceHero(audience, v);
+
   return (
     <div className="stk">
       <Schema
@@ -223,13 +199,27 @@ export default async function StackPage({
         }}
       />
 
-      <StackAnalytics landingVariant={v.angle} />
+      <StackAnalytics landingVariant={v.angle} audience={audience.raw} />
       <ReadingProgress />
-      <LandingNav />
+      {/*
+        Обе кнопки шапки и липкой панели идут через `StackCta`: разд. 25.6/25.17
+        ТЗ требуют, чтобы `attribution_id` и `cta_id` доезжали до Telegram с
+        любой точки страницы, а общие кнопки уходят по `?start=nav`
+        и `?start=mobile_bar` без них. `marker={false}` — чтобы липкая панель не
+        считала настоящим CTA ни себя, ни всегда доступную шапку.
+      */}
+      <LandingNav
+        links={STACK_NAV}
+        cta={
+          <StackCta ctaId="nav" size="sm" marker={false}>
+            Получить лимиты
+          </StackCta>
+        }
+      />
 
       <main id="main" tabIndex={-1}>
         {/* ─────────────────── 1. ПЕРВЫЙ ЭКРАН ─────────────────── */}
-        <section className="stk-hero stk-w pt-10 pb-12 sm:pt-12 sm:pb-14">
+        <section className="stk-hero wrap pt-10 pb-12 sm:pt-12 sm:pb-14">
           <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
             <div>
               <Appear>
@@ -239,15 +229,27 @@ export default async function StackPage({
                   узнаваемый почерк шаблонного лендинга, а назвать раздел
                   строчная метка умеет ничуть не хуже.
                 */}
-                <p className="stk-eyebrow mb-5">{v.eyebrow.toLowerCase()}</p>
+                <p className="eyebrow mb-5">{v.eyebrow.toLowerCase()}</p>
                 <h1 className="stk-h1">{v.h1}</h1>
                 <p className="stk-lead mt-6">{v.subtitle}</p>
+
+                {/*
+                  Audience supporting copy (разд. 24.4/24.5) — не второй
+                  заголовок, а строка контекста: она набрана мельче лида и
+                  отделена от него только полем, чтобы читалась как реплика в
+                  ответ на уже прочитанное, а не как новый тезис.
+                */}
+                {hero && (
+                  <p className="stk-sm mt-5 max-w-[52ch] text-[17px] leading-relaxed">
+                    {hero.supporting}
+                  </p>
+                )}
               </Appear>
 
               <Appear delay={0.08}>
                 <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                   <StackCta ctaId="hero" event="hero_cta_click">
-                    {v.cta}
+                    {hero?.cta ?? v.cta}
                   </StackCta>
                   <a
                     href="#controlled-test"
@@ -255,10 +257,13 @@ export default async function StackPage({
                       decoration-[var(--hair-2)] underline-offset-[6px] transition-colors
                       hover:text-[var(--t-0)] hover:decoration-[var(--t-2)]"
                   >
-                    Посмотреть, как проходит тест
+                    {/* Дословная формулировка Secondary CTA из разд. «Блок 1. Hero» ТЗ, вместе со стрелкой вниз: она указывает, куда ведёт якорь. */}
+                    {HERO_SECONDARY_LABEL}
                   </a>
                 </div>
-                <p className="stk-sm mt-5 max-w-[44ch] text-[17px] leading-relaxed">{HERO_MICRO}</p>
+                <p className="stk-sm mt-5 max-w-[44ch] text-[17px] leading-relaxed">
+                  {hero?.micro ?? HERO_MICRO}
+                </p>
 
                 {/*
                   Выделенная мысль конкретного angle (есть у prove_it) стоит
@@ -285,9 +290,30 @@ export default async function StackPage({
 
         </section>
 
+        {/* ─────────────────── EARLY AUDIENCE CONFIRMATION ─────────────────── */}
+        {/*
+          Разд. 24.6: короткий блок сразу после Hero и только для
+          competitor_communities. Не нумерованная секция, а полоса на общей
+          линейке страницы — иначе шестнадцать блоков сценария превратились бы
+          в семнадцать у одной аудитории и в шестнадцать у остальных, и
+          нумерация разошлась бы между версиями одной и той же страницы.
+        */}
+        {aud && (
+          <section className="wrap pb-12 sm:pb-14">
+            <Appear>
+              <div className="border-t border-[var(--hair)] pt-9">
+                <p className="claim max-w-[42ch]">{aud.earlyConfirmation[0]}</p>
+                <p className="stk-sm mt-6 max-w-[62ch] text-[17px] leading-relaxed">
+                  {aud.earlyConfirmation.slice(1).join(" ")}
+                </p>
+              </div>
+            </Appear>
+          </section>
+        )}
+
         {/* ─────────────────── 2. НОВЫЙ КРИТЕРИЙ ─────────────────── */}
-        <Sec id="new-criterion" sink>
-          <Head
+        <Section edge="sticky" id="new-criterion" className="stk-sink">
+          <SectionHead
             eyebrow="новый критерий"
             title="Вопрос не в том, какой ПФ «лучший». Вопрос — какой полезен в вашем сценарии."
           />
@@ -326,7 +352,7 @@ export default async function StackPage({
             <Appear delay={0.12}>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="surf p-7">
-                  <p className="stk-eyebrow mb-7">один инструмент</p>
+                  <p className="eyebrow mb-7">один инструмент</p>
                   <ol className="rail flex flex-col gap-5">
                     {[
                       "Один известный сценарий",
@@ -342,7 +368,7 @@ export default async function StackPage({
                 </div>
 
                 <div className="surf p-7">
-                  <p className="stk-eyebrow mb-7">несколько проверенных</p>
+                  <p className="eyebrow mb-7">несколько проверенных</p>
                   <ol className="rail flex flex-col gap-5">
                     {[
                       "Есть выбор",
@@ -373,15 +399,15 @@ export default async function StackPage({
               </p>
             </Appear>
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 3. ЧТО ДАЁТ ВТОРОЙ СЦЕНАРИЙ ─────────────────── */}
-        <Sec id="practical-consequence">
+        <Section edge="sticky" id="practical-consequence">
           <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
             {/* Заголовок держится, пока идёт перечень: видно, к чему относится
                 то, что читаешь. Точка закрепления общая для всей страницы. */}
             <div className="stk-stick">
-              <Head eyebrow="что даёт второй сценарий" title="Вы получаете не ещё один кабинет, а больше вариантов действия" col />
+              <SectionHead eyebrow="что даёт второй сценарий" title="Вы получаете не ещё один кабинет, а больше вариантов действия" full />
               <Appear delay={0.06}>
                 <p className="claim mt-9">
                   Хороший стек не обещает, что один инструмент решит всё. Он даёт специалисту больше
@@ -425,14 +451,25 @@ export default async function StackPage({
               ))}
             </ol>
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 4. ПРОВЕРИТЬ, А НЕ ПЕРЕХОДИТЬ ─────────────────── */}
-        <Sec id="product-bridge" sink>
-          <Head
+        <Section edge="sticky" id="product-bridge" className="stk-sink">
+          <SectionHead
             eyebrow="проверить, а не переходить"
             title="Сервис сначала должен заслужить место в вашем стеке"
           />
+
+          {/*
+            Усиленный teaser для competitor_communities (разд. 24.7). Обычная
+            версия того же тезиса — сам заголовок блока, поэтому строка
+            добавляется, а не подменяет его.
+          */}
+          {aud && (
+            <Appear delay={0.04}>
+              <p className="stk-lead mt-10 max-w-[64ch] text-[var(--t-0)]">{aud.productBridge}</p>
+            </Appear>
+          )}
 
           {/* Обе колонки выровнены по верхней линии: раньше правая карточка
               центрировалась по высоте левой и её верхний край висел ниже
@@ -461,7 +498,7 @@ export default async function StackPage({
 
             <Appear delay={0.12}>
               <div className="surf p-7 sm:p-9">
-                <p className="stk-eyebrow mb-8">как выглядит логика</p>
+                <p className="eyebrow mb-8">как выглядит логика</p>
                 <ol className="rail flex flex-col gap-6">
                   {[
                     "Выберите измеримый запрос",
@@ -486,11 +523,11 @@ export default async function StackPage({
               </div>
             </Appear>
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 5. ЧТО ИМЕННО ДАЁТ СЕРВИС ─────────────────── */}
-        <Sec id="product">
-          <Head eyebrow="что именно даёт сервис" title="Второй ПФ-инструмент в вашем рабочем стеке" />
+        <Section edge="sticky" id="product">
+          <SectionHead eyebrow="что именно даёт сервис" title="Второй ПФ-инструмент в вашем рабочем стеке" />
           <Appear delay={0.06}>
             <p className="stk-p mt-8">{STACK_PRODUCT_INTRO}</p>
           </Appear>
@@ -515,21 +552,19 @@ export default async function StackPage({
               </Appear>
             ))}
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 6. КОНТРОЛЬНЫЙ ТЕСТ ─────────────────── */}
-        <Sec id="controlled-test" sink>
+        <Section edge="sticky" id="controlled-test" className="stk-sink">
           <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
             <div className="stk-stick">
-              <Head
+              <SectionHead
                 eyebrow="контрольный тест"
                 title="Сначала создайте условия, в которых результат можно оценить"
-                col
+                full
               />
               <Appear delay={0.06}>
-                {/* Тире из исходной фразы убрано: на этой мере оно вставало в
-                    конец строки и разрывало утверждение пополам. */}
-                <p className="claim mt-9">{STACK_MECHANIC_HIGHLIGHT.replace(" — ", ". ")}</p>
+                <p className="claim mt-9">{STACK_MECHANIC_HIGHLIGHT}</p>
                 <p className="todo mt-8">{STACK_MECHANIC_PENDING}</p>
               </Appear>
             </div>
@@ -540,13 +575,23 @@ export default async function StackPage({
                   <RailItem key={s.t} n={i + 1} t={s.t} d={s.d} />
                 ))}
               </ol>
+
+              {/*
+                CTA 3 разд. 17 ТЗ. Стоит после протокола, а не рядом с
+                заголовком: предложение запустить тест имеет смысл только
+                когда прочитано, из чего этот тест состоит. В левой колонке
+                кнопке места нет — колонка липкая и ездит вместе с экраном.
+              */}
+              <div className="mt-12">
+                <StackCta ctaId="controlled_test">Запустить собственный тест</StackCta>
+              </div>
             </Appear>
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 7. ИНТЕРФЕЙС ─────────────────── */}
-        <Sec id="interface">
-          <Head
+        <Section edge="sticky" id="interface">
+          <SectionHead
             eyebrow="рабочий инструмент"
             title="Посмотрите на сервис до того, как запускать тест"
           />
@@ -573,7 +618,7 @@ export default async function StackPage({
               <AppPreview />
             </Appear>
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 8. 3000 КЛИКОВ ─────────────────── */}
         {/*
@@ -593,10 +638,10 @@ export default async function StackPage({
           самому. Под ней действие. Ниже — три шага плотной строкой и то, что
           тест даёт на самом деле, двумя колонками равной высоты.
         */}
-        <Sec id="free-clicks">
+        <Section edge="sticky" id="free-clicks">
           <Appear>
             <div className="offer p-8 sm:p-10 lg:p-14">
-              <p className="stk-eyebrow mb-8">первый запуск без оплаты</p>
+              <p className="eyebrow mb-8">первый запуск без оплаты</p>
 
               <p
                 className="rd"
@@ -620,6 +665,13 @@ export default async function StackPage({
                   Через Telegram-бота, после проверки подписки на канал {TELEGRAM.channelName}.
                 </p>
               </div>
+
+              {/* Audience-aware CTA microcopy, разд. 24.9. */}
+              {aud && (
+                <p className="stk-sm mt-6 max-w-[52ch] text-[17px] leading-relaxed">
+                  {aud.ctaMicro}
+                </p>
+              )}
 
               {/* Три шага плотной строкой: номер и заголовок в одну линию,
                   пояснение под ними. Прежние ячейки с большими полями
@@ -674,7 +726,7 @@ export default async function StackPage({
               </div>
             </div>
           </Appear>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 9. ПАРАЛЛЕЛЬНОЕ ИСПОЛЬЗОВАНИЕ ─────────────────── */}
         {/*
@@ -686,10 +738,10 @@ export default async function StackPage({
           ярлыком, приклеенным сбоку. Здесь врезки нет: выделение делает кегль,
           вес и основные чернила, и вся секция стоит на одной вертикальной оси.
         */}
-        <Sec id="parallel-use" sink>
+        <Section edge="sticky" id="parallel-use" className="stk-sink">
           <div className="mx-auto flex max-w-[60ch] flex-col items-center text-center">
             <Appear>
-              <h2 className="stk-h2 stk-h2-col">
+              <h2 className="h-sec h-sec-full">
                 Текущий ПФ может остаться там, где уже работает
               </h2>
               <p className="stk-p mx-auto mt-9 max-w-[58ch]">{STACK_PARALLEL_INTRO}</p>
@@ -703,11 +755,11 @@ export default async function StackPage({
               </div>
             </Appear>
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 10. КОНТРОЛЬ И ОГРАНИЧЕНИЯ ─────────────────── */}
-        <Sec id="safety">
-          <Head
+        <Section edge="sticky" id="safety">
+          <SectionHead
             eyebrow="вопрос до запуска, а не после"
             title="До запуска нужно понимать не только результат, но и ограничения"
           />
@@ -733,7 +785,7 @@ export default async function StackPage({
               Формулировки согласуются с продуктовой командой — мы публикуем их только тогда, когда
               за каждой стоит проверенное поведение сервиса.
             </p>
-            <dl className="mt-8 border-t border-[var(--hair-2)]">
+            <dl className="spec-list mt-8 border-t border-[var(--hair-2)]">
               {STACK_SAFETY_QUESTIONS.map((q, i) => (
                 <div key={q} className="spec">
                   <dt className="spec-k">
@@ -742,7 +794,7 @@ export default async function StackPage({
                       {q}
                     </span>
                   </dt>
-                  <dd className="stk-sm text-[15px] text-[var(--amb)]">формулируем</dd>
+                  <dd className="spec-v text-[var(--amb)]">формулируем</dd>
                 </div>
               ))}
             </dl>
@@ -751,11 +803,11 @@ export default async function StackPage({
           <Appear delay={0.18}>
             <p className="claim mt-12">{STACK_SAFETY_HIGHLIGHT}</p>
           </Appear>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 11. НАБЛЮДАЕМЫЕ РЕЗУЛЬТАТЫ ─────────────────── */}
-        <Sec id="cases" sink>
-          <Head
+        <Section edge="sticky" id="cases" className="stk-sink">
+          <SectionHead
             eyebrow="контекст важнее красивой цифры"
             title="Результаты, которые мы уже наблюдали"
           />
@@ -765,6 +817,13 @@ export default async function StackPage({
               показать, что сервис способен давать значимую динамику в реальных задачах. Дальше
               нужны ваши собственные данные.
             </p>
+            {/*
+              Что именно в кейсах ещё не подтверждено — той же ⚠-заметкой, что
+              и у механики теста. Раньше эта строка существовала в `sale.ts`, но
+              на странице не выводилась: перечень недостающих данных был
+              написан и никому не показан.
+            */}
+            <p className="todo mt-8">{STACK_CASES_PENDING}</p>
           </Appear>
 
           {/*
@@ -840,15 +899,15 @@ export default async function StackPage({
             <div className="mt-12 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
               <p className="stk-p max-w-[52ch]">{STACK_CASES_CONCLUSION}</p>
               <div className="shrink-0">
-                <StackCta ctaId="cases">Получить 3000 кликов для своего теста</StackCta>
+                <StackCta ctaId="cases">Получить 3000 кликов для собственного теста</StackCta>
               </div>
             </div>
           </Appear>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 12. ЭКОНОМИКА ─────────────────── */}
-        <Sec id="calculator">
-          <Head
+        <Section edge="sticky" id="calculator">
+          <SectionHead
             eyebrow="оплата за клик"
             title="Считайте не «цену сервиса», а стоимость собственного сценария"
           />
@@ -878,12 +937,17 @@ export default async function StackPage({
 
           <Appear delay={0.18}>
             <div className="mt-12">
-              <StackCta ctaId="calculator" above="Сначала протестировать бесплатно">
-                Получить 3000 тестовых кликов
-              </StackCta>
+              {/*
+                Текст ровно из разд. 17 ТЗ (CTA 6). Раньше здесь стояли две
+                строки: условие «Сначала протестировать бесплатно» подписью и
+                «Получить 3000 тестовых кликов» — формулировка CTA 7 — крупно.
+                Читалось это как два разных предложения на одной клавише, а по
+                ТЗ у калькулятора одно.
+              */}
+              <StackCta ctaId="calculator">Сначала протестировать бесплатно</StackCta>
             </div>
           </Appear>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 13. ТАРИФНАЯ ЛОГИКА ─────────────────── */}
         {/*
@@ -892,8 +956,8 @@ export default async function StackPage({
           столбец с «единицей оплаты» читался подписью к первой строке
           таблицы, а не отдельным утверждением.
         */}
-        <Sec id="pricing" sink>
-          <Head eyebrow="тарифы" title="Понимайте заранее, за что платите после теста" />
+        <Section edge="sticky" id="pricing" className="stk-sink">
+          <SectionHead eyebrow="тарифы" title="Понимайте заранее, за что платите после теста" />
 
           <Appear delay={0.06}>
             <p className="claim mt-9">{STACK_TARIFF_UNIT}</p>
@@ -901,7 +965,7 @@ export default async function StackPage({
           </Appear>
 
           <Appear delay={0.12}>
-            <dl className="mt-12 border-t border-[var(--hair-2)]">
+            <dl className="spec-list mt-12 border-t border-[var(--hair-2)]">
               {STACK_TARIFF_PENDING_FIELDS.map((f, i) => (
                 <div key={f} className="spec">
                   <dt className="spec-k">
@@ -910,12 +974,12 @@ export default async function StackPage({
                       {f}
                     </span>
                   </dt>
-                  <dd className="stk-sm text-[15px] text-[var(--amb)]">уточняется</dd>
+                  <dd className="spec-v text-[var(--amb)]">уточняется</dd>
                 </div>
               ))}
             </dl>
           </Appear>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 14. ДЛЯ КОГО ─────────────────── */}
         {/*
@@ -924,10 +988,10 @@ export default async function StackPage({
           вёрстке. Нечётное число пунктов — это свойство содержимого, и проще
           принять его, чем растягивать последний пункт на две колонки.
         */}
-        <Sec id="fit">
+        <Section edge="sticky" id="fit">
           <div className="grid gap-12 lg:grid-cols-[0.66fr_1.34fr] lg:gap-16">
             <div className="stk-stick">
-              <Head title="Кому этот сценарий подходит" col />
+              <SectionHead title="Кому этот сценарий подходит" full />
             </div>
 
             <div>
@@ -950,17 +1014,27 @@ export default async function StackPage({
               </Appear>
             </div>
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 15. FAQ ─────────────────── */}
-        <Sec id="faq" sink>
+        <Section edge="sticky" id="faq" className="stk-sink">
           <div className="grid gap-12 lg:grid-cols-[0.66fr_1.34fr] lg:gap-16">
             <div className="stk-stick">
-              <Head eyebrow="вопросы" title="Перед первым тестом" col />
+              <SectionHead eyebrow="вопросы" title="Перед первым тестом" full />
             </div>
-            <StackFaq items={STACK_FAQ.map((f) => ({ q: f.q, a: f.a }))} />
+            {/*
+              Разд. 24.10: состав FAQ единый, но для competitor_communities
+              три вопроса про «у меня уже есть сервис» поднимаются наверх —
+              они и есть первое возражение этой аудитории.
+            */}
+            <StackFaq
+              items={[
+                ...(aud?.faq ?? []),
+                ...STACK_FAQ.map((f) => ({ q: f.q, a: f.a })),
+              ]}
+            />
           </div>
-        </Sec>
+        </Section>
 
         {/* ─────────────────── 16. ФИНАЛ ─────────────────── */}
         {/*
@@ -974,10 +1048,10 @@ export default async function StackPage({
           середины абзаца, и между ними и заголовком висела пустая половина
           полосы.
         */}
-        <Sec id="final" className="pb-32 sm:pb-40">
-          <div className="mx-auto flex max-w-[46rem] flex-col items-center text-center">
+        <Section edge="sticky" id="final" className="pb-32 sm:pb-40">
+          <div className="wrap-read mx-auto flex flex-col items-center text-center">
             <Appear>
-              <p className="stk-eyebrow mb-7">не миграция. собственный тест.</p>
+              <p className="eyebrow mb-7">не миграция. собственный тест.</p>
               <h2 className="stk-h1 stk-h1-col">
                 Новый инструмент должен доказать, что заслуживает места в стеке
               </h2>
@@ -1004,6 +1078,13 @@ export default async function StackPage({
               <p className="stk-sm mx-auto mt-8 max-w-[52ch] text-[17px] leading-relaxed">
                 {STACK_FINAL_HIGHLIGHT}
               </p>
+
+              {/* Второй разрешённый вариант audience-микрокопии, разд. 24.9. */}
+              {aud && (
+                <p className="stk-sm mx-auto mt-5 max-w-[52ch] text-[17px] leading-relaxed">
+                  {aud.ctaMicroAlt}
+                </p>
+              )}
             </Appear>
           </div>
 
@@ -1014,11 +1095,18 @@ export default async function StackPage({
               </p>
             </Appear>
           )}
-        </Sec>
+        </Section>
       </main>
 
       <LandingFooter signupUrl={SIGNUP_URL} />
-      <MobileCta />
+      {/* Подпись задана разд. 21 ТЗ дословно. */}
+      <MobileCta
+        cta={
+          <StackCta ctaId="mobile_bar" marker={false} className="btn-block">
+            Получить 3000 кликов
+          </StackCta>
+        }
+      />
     </div>
   );
 }

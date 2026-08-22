@@ -129,20 +129,29 @@ export type DiagnosticEvent =
   | "payment_start"
   | "first_payment"
   /*
-    /stack — «второй ПФ-инструмент» (ТЗ на лендинг ЦА ПФ-щики, разд. 24/27).
-    Страница с динамическим Hero по параметру ?angle= требует сквозной
-    атрибуции до оплаты: имена события здесь заданы ТЗ дословно и не
-    переиспользуют близкие по смыслу события выше (`parallel_test_view` и
-    `parallel_use_view` — разные страницы, разные ТЗ, путать нельзя). Каждое
-    событие несёт `angle`/`creative`/`landing_variant`/`session_id`/`cta_id`
-    из `@/stack/attribution` — без них десять входов неразличимы.
+    /stack — «второй ПФ-инструмент» (ТЗ на лендинг ЦА ПФ-щики, разд. 25/28 и
+    глава «ИНТЕГРАЦИЯ ЛЕНДИНГА С MASTER-АНАЛИТИКОЙ»). Страница с динамическим
+    Hero по параметрам ?angle=/?audience= требует сквозной атрибуции до
+    оплаты: имена события здесь заданы ТЗ дословно и не переиспользуют близкие
+    по смыслу события выше (`parallel_test_view` и `parallel_use_view` —
+    разные страницы, разные ТЗ, путать нельзя). Каждое событие несёт
+    `attribution_id`/`audience`/`angle`/`creative`/`landing_variant`/
+    `session_id`/`cta_id` из `@/stack/attribution` — без них десять входов
+    неразличимы. Мастер-аналитика знает те же события под своими именами
+    (`landing_viewed` и далее) — таблица соответствия в `@/stack/metriqa`.
   */
   | "controlled_test_view"
   | "parallel_use_view"
+  | "free_clicks_cta_click"
   | "telegram_open"
+  /*
+    Продуктовая часть той же воронки. Лендинг эти события не отправляет и
+    отправить не может — их фиксирует backend/SaaS по `attribution_id`
+    (глава master-аналитики, п.8). Объявлены здесь, чтобы словарь воронки
+    оставался единым и имена не разошлись между фронтендом и бэкендом.
+  */
   | "subscription_confirmed"
   | "free_clicks_issued"
-  | "free_clicks_cta_click"
   | "product_open"
   | "first_launch"
   | "first_click_used"

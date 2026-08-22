@@ -29,19 +29,26 @@ export function CompareTable({ rows }: { rows: readonly CompareRow[] }) {
         мелкими, либо превращаются в горизонтальный скролл без сигнала, что
         он вообще есть. Карточка передаёт то же сравнение как вертикальную
         последовательность «критерий → текущий процесс → проверяемый процесс».
+
+        Подпись стоит НАД значением, а не слева от него. Строкой
+        «подпись — значение по правому краю» карточка ломалась на узких
+        экранах: на 320 px внутри карточки остаётся 159 px, а одна только
+        подпись «проверяемый процесс» занимает ~155 px, и значение целиком
+        выезжало за карточку. Ставить подписи в колонку — единственный способ
+        отдать значению всю ширину карточки на любом телефоне.
       */}
       <div className="grid gap-px bg-[var(--rule-soft)] sm:hidden">
         {rows.map((r) => (
           <div key={r.criterion} className="cell p-5">
             <p className="text-[15px] font-medium text-[var(--ink)]">{r.criterion}</p>
-            <dl className="mt-3 flex flex-col gap-2">
-              <div className="flex items-baseline justify-between gap-4">
-                <dt className="label shrink-0 text-[var(--ink-faint)]">текущий процесс</dt>
-                <dd className="text-right text-[14px] text-[var(--ink-soft)]">{r.current}</dd>
+            <dl className="mt-3 flex flex-col gap-3">
+              <div>
+                <dt className="label text-[var(--ink-faint)]">текущий процесс</dt>
+                <dd className="mt-1 text-[14px] text-[var(--ink-soft)]">{r.current}</dd>
               </div>
-              <div className="flex items-baseline justify-between gap-4">
-                <dt className="label shrink-0 text-[var(--accent)]">проверяемый процесс</dt>
-                <dd className="text-right text-[14px] font-medium text-[var(--ink)]">{r.tested}</dd>
+              <div>
+                <dt className="label text-[var(--accent)]">проверяемый процесс</dt>
+                <dd className="mt-1 text-[14px] font-medium text-[var(--ink)]">{r.tested}</dd>
               </div>
             </dl>
           </div>

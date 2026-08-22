@@ -14,7 +14,7 @@ import { resolveHeroVariant } from "@/stack/hero-variants";
   страницы отдельно ⚠ не подтверждён (разд. 8/31 ТЗ) — до подтверждения
   используется тот же бот, что и у остальной воронки.
 
-  Разд. 27 ТЗ называет только два клика по CTA: `hero_cta_click` (Hero,
+  Разд. 28 ТЗ называет только два клика по CTA: `hero_cta_click` (Hero,
   формулировка меняется по angle) и `free_clicks_cta_click` (все остальные
   шесть точек CTA-архитектуры из разд. 17 — Product Bridge, Controlled Test,
   Parallel Use, Кейсы, Калькулятор, Финал). Поэтому у компонента одно и то же
@@ -26,9 +26,9 @@ import { resolveHeroVariant } from "@/stack/hero-variants";
   markup разошлись бы на первом же кадре, и React пометил бы это как
   hydration mismatch (что и происходило до этой правки). Поэтому первый рендер
   — что на сервере, что на клиенте до монтирования — всегда один и тот же
-  нейтральный `start=stack_{ctaId}` без сессии; реальная, сессия-осознанная
-  ссылка подставляется `useEffect`-ом уже после монтирования, где расхождение
-  с сервером не отслеживается.
+  нейтральный `start=stack_{ctaId}` без идентификатора; реальная,
+  attribution-осознанная ссылка подставляется `useEffect`-ом уже после
+  монтирования, где расхождение с сервером не отслеживается.
 */
 function neutralHref(ctaId: string): string {
   return `${TELEGRAM.bot}?start=stack_${ctaId}`;
@@ -39,27 +39,34 @@ export function StackCta({
   children,
   event = "free_clicks_cta_click",
   size = "lg",
-  above,
+  marker = true,
   className = "",
 }: {
-  /** Разд. 24.13 ТЗ: каждый CTA обязан нести свой `cta_id` (hero, product_bridge, controlled_test, cases, calculator, final...). */
+  /** Разд. 24.13/25.13 ТЗ: каждый CTA обязан нести свой `cta_id` (hero, product_bridge, controlled_test, cases, calculator, final...). */
   ctaId: string;
   children: ReactNode;
   event?: DiagnosticEvent;
   size?: "sm" | "md" | "lg";
-  /** Короткая подпись над кнопкой — как у `TrialCta`. */
-  above?: string;
+  /**
+   * Метка `data-cta-marker` для липкой мобильной панели. Снимается у самой
+   * панели и у кнопки в шапке: панель считает по этой метке, показалась ли
+   * пользователю настоящая кнопка в потоке страницы, и считать саму себя
+   * (или всегда доступную шапку) она не должна.
+   */
+  marker?: boolean;
   className?: string;
 }) {
   const [href, setHref] = useState(() => neutralHref(ctaId));
-  /** Вариант, реально показанный на этой загрузке — см. комментарий в `stack/analytics.tsx` о том, почему это не то же самое, что замороженный на first touch `attribution.landingVariant`. */
-  const [currentVariant, setCurrentVariant] = useState<string | null>(null);
+  /** Вариант и аудитория, реально показанные на этой загрузке — см. комментарий в `stack/analytics.tsx` о том, почему это не то же самое, что замороженные на first touch значения. */
+  const [current, setCurrent] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const angle = new URLSearchParams(window.location.search).get("angle");
-    const variant = resolveHeroVariant(angle).angle;
+    const p = new URLSearchParams(window.location.search);
+    const variant = resolveHeroVariant(p.get("angle")).angle;
+    const audience = p.get("audience");
+
     ensureAttribution(variant);
-    setCurrentVariant(variant);
+    setCurrent(audience ? { landing_variant: variant, audience } : { landing_variant: variant });
     setHref(attributionBotLink(ctaId));
   }, [ctaId]);
 
@@ -68,30 +75,18 @@ export function StackCta({
       href={href}
       target="_blank"
       rel="noopener"
-      data-cta-marker=""
-      aria-label={above ? `${above} в Telegram` : undefined}
+      data-cta-marker={marker ? "" : undefined}
       onClick={() => {
-        const extra = currentVariant ? { landing_variant: currentVariant } : {};
-        stackTrack(event, ctaId, extra);
-        stackTrack("telegram_open", ctaId, extra);
+        stackTrack(event, ctaId, current);
+        stackTrack("telegram_open", ctaId, current);
       }}
       /*
         Без стрелки: она стояла на всех семи кнопках страницы одинаково,
         независимо от того, куда ведёт нажатие, — то есть была декорацией в
         единственном месте, где декорации быть не должно.
       */
-      className={`btn btn-primary btn-${size} ${above ? "btn-stack" : ""} ${className}`}
+      className={`btn btn-primary btn-${size} ${className}`}
     >
-      {/*
-        Условие оффера набрано ВНУТРИ кнопки, а не строкой над ней.
-
-        Раньше «Сначала протестировать бесплатно» стояло отдельным заголовком
-        с янтарной чертой, и рядом с кнопкой получались два разных объекта:
-        подпись со своим левым краем и кнопка со своим. Читатель видел два
-        призыва вместо одного. Условие — часть предложения, поэтому оно и
-        стоит на самой клавише, первой строкой и потише.
-      */}
-      {above && <span className="btn-sub">{above}</span>}
       <span>{children}</span>
     </a>
   );

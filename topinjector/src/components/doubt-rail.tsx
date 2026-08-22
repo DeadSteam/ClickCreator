@@ -153,9 +153,9 @@ export function DoubtRail({
 
           <Link
             href={ctaHref}
-            className="flex flex-1 items-center justify-center bg-[var(--color-green)]
-              px-4 py-3.5 text-[15px] font-semibold text-[var(--btn-ink)]
-              [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)] active:scale-[0.99] active:bg-[var(--color-green-lit)]"
+            className="flex flex-1 items-center justify-center bg-[var(--settled-btn-bg)]
+              px-4 py-3.5 text-[15px] font-semibold text-[var(--settled-btn-ink)]
+              [transition:background-color_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)] active:scale-[0.99] active:bg-[var(--settled-btn-sheen)]"
           >
             {ctaLabel}
           </Link>

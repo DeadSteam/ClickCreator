@@ -7,7 +7,9 @@ import { AppPreview } from "@/components/landing/app-preview";
 import { DemoLink } from "@/components/landing/demo-link";
 import { LossCalc } from "@/components/landing/loss-calc";
 import { Faq } from "@/components/landing/faq";
-import { Appear, Cards, Chain, Contrast, Head, Section, Steps } from "@/components/landing/sections";
+import { Appear, Cards, Chain, Contrast, Steps } from "@/components/landing/sections";
+import { SectionHead } from "@/components/ui/section-head";
+import { Section } from "@/components/ui/section";
 import { LandingFooter } from "@/components/landing/footer";
 import { TrialCta } from "@/components/landing/trial-cta";
 import { ChannelValue, TelegramPath, TelegramSteps } from "@/components/landing/telegram";
@@ -156,7 +158,14 @@ export default async function ServiceLanding({
   const outcomes = orderOutcomes(personal.goal);
 
   return (
-    <div className="brand-flat">
+    /*
+      Страница стоит на системе `.stk` (`src/app/stack.css`) — тёмная земля,
+      поверхности с толщиной, ритм чередующихся полос. Прежняя светлая
+      система с зонами `zone-*` и бумажной текстурой `brand-flat` снята:
+      сайт не может показывать одному и тому же SEO-специалисту два разных
+      материала на соседних маршрутах.
+    */
+    <div className="stk">
       <Schema
         faq={FAQ_FOR_SCHEMA}
         service={{
@@ -169,116 +178,122 @@ export default async function ServiceLanding({
 
       <LandingAnalytics personal={personalParams(personal)} />
 
-      <div className="zone-doubt">
-        <LandingNav />
-      </div>
+      {/*
+        Шапка стоит без обёртки, как на /stack. Прежняя `zone-doubt` вокруг
+        неё была не заливкой раздела, а коробкой ровно в её собственную
+        высоту: липкая шапка внутри такой коробки прилипает и тут же
+        уезжает вместе с ней, то есть не работает вовсе (ClickCreator-um5).
+      */}
+      <LandingNav />
 
       <main id="main" tabIndex={-1}>
         {/* ЭКРАН 1. Результат, боль и следующий шаг сразу. */}
-        <section className="zone-doubt px-5 pt-12 pb-8 sm:px-8 sm:pt-20">
-          <div className="mx-auto grid max-w-[76rem] items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-            <div>
-              <Appear>
-                <p className="label text-[var(--ink-faint)]">
-                  SaaS-сервис для частных SEO-специалистов
+        <Section
+          edge="none"
+          innerClassName="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16"
+        >
+          <div>
+            <Appear>
+              <p className="label text-[var(--ink-faint)]">
+                SaaS-сервис для частных SEO-специалистов
+              </p>
+            </Appear>
+
+            <Appear delay={0.08}>
+              {/* Кегль и мера — общие для системы (`.stk-h1`), а не набранные заново произвольными значениями: на /stack тот же заголовок держит ту же шкалу. */}
+              <h1 className="stk-h1 mt-7">
+                Покажите клиенту измеримый SEO-результат уже в первые дни
+                работы
+              </h1>
+            </Appear>
+
+            <Appear delay={0.14}>
+              <p className="mt-7 max-w-[52ch] text-[17px] leading-relaxed text-[var(--ink-soft)] sm:text-[19px]">
+                Продвигайте подходящие целевые запросы в ТОП-3 Яндекса и
+                делайте свою экспертность видимой раньше, чем ожидание
+                превратится в сомнение.
+              </p>
+            </Appear>
+
+            {/*
+              Уточнение стоит вплотную к обещанию, а не в сноске внизу
+              страницы: п.24 мастер-документа разрешает эту формулировку
+              только рядом с условиями применения.
+            */}
+            <Appear delay={0.18}>
+              <p className="mt-4 max-w-[52ch] text-[14px] leading-relaxed text-[var(--ink-faint)]">
+                Для проектов и запросов, соответствующих условиям сервиса.
+                Срок и результат зависят от исходных данных.
+              </p>
+            </Appear>
+
+            {line && (
+              <Appear delay={0.22}>
+                <p className="mt-7 border-l-2 border-[var(--accent)] py-1 pl-5 text-[15px] leading-snug text-[var(--ink-soft)]">
+                  {line}
                 </p>
               </Appear>
+            )}
 
-              <Appear delay={0.08}>
-                <h1 className="mt-7 max-w-[18ch] text-[34px] leading-[1.05] font-extrabold tracking-[-0.035em] sm:text-[52px] lg:text-[60px]">
-                  Покажите клиенту измеримый SEO-результат уже в первые дни
-                  работы
-                </h1>
-              </Appear>
-
-              <Appear delay={0.14}>
-                <p className="mt-7 max-w-[52ch] text-[17px] leading-relaxed text-[var(--ink-soft)] sm:text-[19px]">
-                  Продвигайте подходящие целевые запросы в ТОП-3 Яндекса и
-                  делайте свою экспертность видимой раньше, чем ожидание
-                  превратится в сомнение.
-                </p>
-              </Appear>
-
+            <Appear delay={0.26}>
               {/*
-                Уточнение стоит вплотную к обещанию, а не в сноске внизу
-                страницы: п.24 мастер-документа разрешает эту формулировку
-                только рядом с условиями применения.
+                Выравнивание по низу: у основной кнопки сверху появилась
+                подпись, и при растяжке по умолчанию вторичная вытягивалась
+                на всю её высоту и переставала читаться как кнопка.
               */}
-              <Appear delay={0.18}>
-                <p className="mt-4 max-w-[52ch] text-[14px] leading-relaxed text-[var(--ink-faint)]">
-                  Для проектов и запросов, соответствующих условиям сервиса.
-                  Срок и результат зависят от исходных данных.
-                </p>
-              </Appear>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-end">
+                <TrialCta
+                  event="hero_trial_click"
+                  place="hero"
+                  above="Получить бесплатные лимиты"
+                >
+                  Telegram
+                </TrialCta>
+                <DemoLink place="hero">Посмотреть, как это работает</DemoLink>
+              </div>
+            </Appear>
 
-              {line && (
-                <Appear delay={0.22}>
-                  <p className="mt-7 border-l-2 border-[var(--accent)] py-1 pl-5 text-[15px] leading-snug text-[var(--ink-soft)]">
-                    {line}
-                  </p>
-                </Appear>
-              )}
+            <Appear delay={0.3}>
+              <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
+                Подпишитесь на канал для SEO-специалистов, подтвердите подписку
+                в боте и получите тестовые лимиты сервиса.
+              </p>
+            </Appear>
 
-              <Appear delay={0.26}>
-                {/*
-                  Выравнивание по низу: у основной кнопки сверху появилась
-                  подпись, и при растяжке по умолчанию вторичная вытягивалась
-                  на всю её высоту и переставала читаться как кнопка.
-                */}
-                <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-end">
-                  <TrialCta
-                    event="hero_trial_click"
-                    place="hero"
-                    above="Получить бесплатные лимиты"
-                  >
-                    Telegram
-                  </TrialCta>
-                  <DemoLink place="hero">Посмотреть, как это работает</DemoLink>
-                </div>
-              </Appear>
+            {/*
+              Путь показывается до нажатия, а не после. Человек должен видеть,
+              что доступ выдаётся через Telegram, заранее — иначе переход в
+              мессенджер читается как подмена обещанной регистрации.
+            */}
+            <Appear delay={0.34}>
+              <div className="mt-8 border-t border-[var(--rule)] pt-6">
+                <TelegramPath />
+              </div>
+            </Appear>
 
-              <Appear delay={0.3}>
-                <p className="mt-4 max-w-[52ch] text-[13px] leading-relaxed text-[var(--ink-faint)]">
-                  Подпишитесь на канал для SEO-специалистов, подтвердите подписку
-                  в боте и получите тестовые лимиты сервиса.
-                </p>
-              </Appear>
-
-              {/*
-                Путь показывается до нажатия, а не после. Человек должен видеть,
-                что доступ выдаётся через Telegram, заранее — иначе переход в
-                мессенджер читается как подмена обещанной регистрации.
-              */}
-              <Appear delay={0.34}>
-                <div className="mt-8 border-t border-[var(--rule)] pt-6">
-                  <TelegramPath />
-                </div>
-              </Appear>
-
-              <Appear delay={0.38}>
-                <ul className="mt-8 grid gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-6 sm:grid-cols-3">
-                  {[
-                    "Ранний измеримый результат",
-                    "Контроль динамики запросов",
-                    "Не заменяет системное SEO",
-                  ].map((t) => (
-                    <li key={t} className="text-[14px] leading-snug text-[var(--ink-soft)]">
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              </Appear>
-            </div>
-
-            <Appear delay={0.2}>
-              <AppPreview />
+            <Appear delay={0.38}>
+              <ul className="mt-8 grid gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-6 sm:grid-cols-3">
+                {[
+                  "Ранний измеримый результат",
+                  "Контроль динамики запросов",
+                  "Не заменяет системное SEO",
+                ].map((t) => (
+                  <li key={t} className="text-[14px] leading-snug text-[var(--ink-soft)]">
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </Appear>
           </div>
-        </section>
+
+          <Appear delay={0.2}>
+            <AppPreview />
+          </Appear>
+        </Section>
 
         {/* ЭКРАН 2. Продолжение «Эврики». */}
-        <Section zone="zone-doubt">
-          <Head
+        <Section edge="none" pad="top">
+          <SectionHead
             title="Клиент не видит всей сложности вашей работы. Он видит момент, когда появился результат."
             lead="Вы можете провести аудит, собрать семантику, исправить технические ошибки и подготовить сильную стратегию. Но пока клиент не видит измеримого изменения, ваша ценность остаётся для него обещанием будущего."
           />
@@ -322,9 +337,9 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 3. Что это за продукт. */}
-        <Section id="product" zone="zone-signal">
-          <Head
-            kicker="что это за продукт"
+        <Section id="product" edge="sticky" className="stk-sink">
+          <SectionHead
+            eyebrow="что это за продукт"
             title="Профессиональный инструмент раннего SEO-результата"
             lead="Сервис помогает частным SEO-специалистам продвигать подходящие ключевые запросы в Яндексе, отслеживать динамику и показывать клиенту измеримый результат уже в начале сотрудничества. Вы сохраняете контроль над стратегией, выбираете проекты и запросы и решаете, где масштабировать применение."
           />
@@ -340,9 +355,9 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 4. Как это работает. */}
-        <Section id="how" zone="zone-signal">
-          <Head
-            kicker="как это работает"
+        <Section id="how" edge="sticky">
+          <SectionHead
+            eyebrow="как это работает"
             title="От первого проекта до измеримого результата — четыре шага"
           />
 
@@ -366,18 +381,18 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 5. Основной результат. Порядок карточек зависит от диагностики. */}
-        <Section zone="zone-signal">
-          <Head
-            kicker="что вы получаете"
+        <Section edge="none" pad="top">
+          <SectionHead
+            eyebrow="что вы получаете"
             title="Вы получаете больше, чем изменение позиций"
           />
           <Cards items={outcomes} />
         </Section>
 
         {/* ЭКРАНЫ 6 и 7. Кейс и серия доказательств. */}
-        <Section id="cases" zone="zone-proof">
-          <Head
-            kicker="доказательства"
+        <Section id="cases" edge="sticky" className="stk-sink">
+          <SectionHead
+            eyebrow="доказательства"
             title="Как частный SEO показал клиенту первую измеримую динамику в начале проекта"
           />
           <CaseStudy />
@@ -385,9 +400,9 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 8. Демонстрация интерфейса. */}
-        <Section zone="zone-proof">
-          <Head
-            kicker="демонстрация"
+        <Section edge="sticky">
+          <SectionHead
+            eyebrow="демонстрация"
             title="Вся динамика — в одном рабочем кабинете"
           />
 
@@ -428,9 +443,9 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 9. Для кого подходит. */}
-        <Section zone="zone-proof">
-          <Head
-            kicker="для кого"
+        <Section edge="none" pad="top">
+          <SectionHead
+            eyebrow="для кого"
             title="Сервис создан для SEO-специалистов, которые отвечают перед клиентом лично"
           />
 
@@ -460,9 +475,9 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 10. Безопасность и ограничения. */}
-        <Section id="safety" zone="zone-settled" className="pb-24 sm:pb-32">
-          <Head
-            kicker="условия и ограничения"
+        <Section id="safety" edge="none" pad="top" className="stk-sink pb-24 sm:pb-32">
+          <SectionHead
+            eyebrow="условия и ограничения"
             title="Сильное обещание требует прозрачных условий"
             lead="Мы не предлагаем применять сервис вслепую. Перед запуском важно оценить проект, запросы и сценарий использования."
           />
@@ -516,12 +531,23 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 11. Сохранение экспертности. */}
-        <Section zone="zone-proof">
-          <Head
-            kicker="ваша роль"
+        <Section edge="sticky">
+          <SectionHead
+            eyebrow="ваша роль"
             title="Сервис делает вашу экспертизу заметнее, а не заменяет её"
-            lead="Клиент платит не за нажатие кнопки. Он платит за решения."
           />
+
+          {/*
+            Главная фраза страницы для этой аудитории набрана хайлайтом, а не
+            подводкой: в потоке 17-го кегля она читалась пояснением к
+            заголовку, хотя это и есть ответ на возражение «инструмент
+            обесценит мою работу». Приём взят со /stack — `.claim`.
+          */}
+          <Appear delay={0.06}>
+            <p className="claim mt-9">
+              Клиент платит не за нажатие кнопки. Он платит за решения.
+            </p>
+          </Appear>
 
           <Appear delay={0.1}>
             <ul className="mt-12 grid gap-x-10 gap-y-3 sm:grid-cols-2">
@@ -552,9 +578,9 @@ export default async function ServiceLanding({
           прямой ответ на то, что происходит при отписке. Умолчание об этом
           превращает обязательную подписку из условия в ловушку.
         */}
-        <Section id="trial" zone="zone-proof">
-          <Head
-            kicker="бесплатные лимиты"
+        <Section id="trial" edge="sticky" className="stk-sink">
+          <SectionHead
+            eyebrow="бесплатные лимиты"
             title="Получите бесплатные лимиты за 3 шага"
             lead="Подпишитесь на профессиональный Telegram-канал и получите тестовый пакет в сервисе. Проверку подписки и начисление бот выполняет автоматически."
           />
@@ -605,27 +631,27 @@ export default async function ServiceLanding({
           понимает, что получает в канале, обязательная подписка читается как
           лишнее препятствие.
         */}
-        <Section zone="zone-proof">
-          <Head
-            kicker="зачем канал"
+        <Section edge="sticky">
+          <SectionHead
+            eyebrow="зачем канал"
             title="Канал — не рекламная рассылка, а рабочая база для SEO"
           />
           <ChannelValue />
         </Section>
 
         {/* ЭКРАН 13. Тарифы. */}
-        <Section id="pricing" zone="zone-proof">
-          <Head
-            kicker="тарифы"
+        <Section id="pricing" edge="none" pad="top">
+          <SectionHead
+            eyebrow="тарифы"
             title="Выберите объём под количество ваших проектов"
           />
           <Pricing />
         </Section>
 
         {/* ЭКРАН 14. Экономика продукта. */}
-        <Section zone="zone-proof">
-          <Head
-            kicker="экономика"
+        <Section edge="sticky" className="stk-sink">
+          <SectionHead
+            eyebrow="экономика"
             title="Сколько стоит ещё один непродлённый SEO-проект?"
             lead="Стоимость сервиса стоит сравнивать не только с другими инструментами, но и с последствиями периода, в котором клиент не видит результата: потерянный ежемесячный платёж, время на поиск нового заказчика, бесплатные дополнительные работы, снижение стоимости услуги и отсутствие рекомендаций."
           />
@@ -641,9 +667,9 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 15. Отзывы. */}
-        <Section zone="zone-proof">
-          <Head
-            kicker="отзывы"
+        <Section edge="sticky">
+          <SectionHead
+            eyebrow="отзывы"
             title="Что говорят частные SEO-специалисты"
           />
 
@@ -673,9 +699,9 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 16. FAQ. */}
-        <Section id="faq" zone="zone-proof">
-          <Head
-            kicker="вопросы"
+        <Section id="faq" edge="sticky" className="stk-sink">
+          <SectionHead
+            eyebrow="вопросы"
             title="Вопросы, которые задаёт профессиональный SEO"
           />
           <Faq />
@@ -687,9 +713,9 @@ export default async function ServiceLanding({
           кейсами и ограничениями, и остаётся назвать то, ради чего всё это
           нужно. Формулировки взяты из бренд-слоя дословно.
         */}
-        <Section zone="zone-proof">
-          <Head
-            kicker="что меняется на самом деле"
+        <Section edge="none" pad="top">
+          <SectionHead
+            eyebrow="что меняется на самом деле"
             title="Не только позиции"
           />
 
@@ -715,7 +741,7 @@ export default async function ServiceLanding({
         </Section>
 
         {/* ЭКРАН 17. Финальный оффер. */}
-        <Section zone="zone-settled settle-in" className="pb-28 sm:pb-36">
+        <Section edge="none" pad="top" className="pb-32 sm:pb-40">
           <Appear>
             <p className="label text-[var(--ink-faint)]">ваша экспертность уже есть</p>
             <h2 className="mt-7 max-w-[20ch] text-[34px] leading-[1.06] font-extrabold tracking-[-0.035em] sm:text-[54px]">

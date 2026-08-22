@@ -1,15 +1,40 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
-import { Kicker } from "@/components/cta";
-import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/reveal";
+import { WipeReveal } from "@/components/wipe-reveal";
+import { Section } from "@/components/ui/section";
+import { Eyebrow, Head } from "@/components/instrument/head";
+import { NumberedRows } from "@/components/instrument/numbered-rows";
+import { Faq } from "@/components/instrument/faq";
 import { MarginCalc } from "@/components/margin-calc";
 import { DoubtRail } from "@/components/doubt-rail";
 import { CLAIM } from "@/brand/brand";
 import { ordinal } from "@/format";
+
+/*
+  СТРАНИЦА ДЛЯ ПАРТНЁРОВ. Набрана той же системой `instrument.css`, что и
+  главная: почти-чёрная земля, янтарь на данные, зелёный на действие,
+  волосяная линия вместо подложек.
+
+  Три правила системы действуют здесь без исключений.
+
+  ПЕРВОЕ: ни одной карточки. Раздел «границы» раньше стоял тремя плашками
+  `p-7` в ряд — та самая карточка, ради ухода от которой всё затевалось. Здесь
+  это решётка, где сам зазор в пиксель и есть линейка.
+
+  ВТОРОЕ: ни одной равной раскладки. `lg:grid-cols-3` под границами заявлял,
+  что все три предупреждения весят одинаково, — но первое из них решает исход
+  разговора с заказчиком, а третье уточняет формальность. Доли неравны.
+
+  ТРЕТЬЕ: числа набраны как величины. «0 новых сотрудников в штат» — это
+  показание, а не подпись: подпись сверху, число под ней.
+
+  Кегль между разделами не меняется: вес даёт композиция, а не размер шрифта.
+  Поэтому самый заметный участок страницы — границы применимости — получает
+  не крупный заголовок, а самую широкую структуру.
+*/
 
 export const metadata: Metadata = {
   title: "Партнёрам: продвижение под вашим брендом",
@@ -22,6 +47,17 @@ const NAV_LINKS = [
   { label: "Инструменты", href: "#tools" },
   { label: "Границы", href: "#limits" },
   { label: "Вопросы", href: "#faq" },
+];
+
+/*
+  Здесь стояла крупная «68 % средняя маржа партнёра». Подтвердить эту величину
+  нечем, а маржу вообще задаёт сам партнёр своей ценой, так что цифра была не
+  показанием, а обещанием. Осталась механика расчёта — она верна всегда.
+*/
+const MARGIN_FORMULA = [
+  { t: "ваша цена", d: "задаёте вы" },
+  { t: "минус закупка", d: "по объёму" },
+  { t: "равно маржа", d: "остаётся у вас", result: true },
 ];
 
 /*
@@ -112,269 +148,215 @@ const FAQ = [
 
 export default function ProLanding() {
   return (
-    <div className="brand-ramp">
+    <div className="inst inst-ground">
       <DoubtRail ctaHref="#start" ctaLabel="Стать партнёром" />
 
-      <div className="zone-doubt">
-        <Nav
-          links={NAV_LINKS}
-          crossLink={{ label: "Для бизнеса", href: "/" }}
-          ctaLabel="Стать партнёром"
-          ctaHref="#start"
-        />
-      </div>
+      <Nav
+        links={NAV_LINKS}
+        crossLink={{ label: "Для бизнеса", href: "/" }}
+        ctaLabel="Стать партнёром"
+        ctaHref="#start"
+      />
 
       <main id="main" tabIndex={-1}>
-        {/* Открытие на типографике, сознательно непохожее на страницу для бизнеса. */}
-        <section className="zone-doubt px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
-          <div className="mx-auto max-w-[76rem]">
-            <Reveal>
-              <Kicker>партнёрская программа</Kicker>
-            </Reveal>
+        {/*
+          ПЕРВЫЙ ЭКРАН. Слово ведёт семь колонок, формула маржи занимает пять.
 
-            <Reveal delay={0.06}>
-              <h1 className="mt-7 max-w-[15ch] text-[42px] sm:text-[64px] lg:text-[80px]">
-                Продавайте результат <span className="text-[var(--accent)]">под своим</span> брендом
-              </h1>
-            </Reveal>
+          На главной справа стоит панель продукта — снимок кабинета. Здесь
+          продукт другой: партнёр покупает не интерфейс, а разницу между двумя
+          ценами. Поэтому справа не окно программы, а сама формула, набранная
+          тремя строками на волосяных линиях. Рамки у неё нет намеренно:
+          плашка вернула бы карточку в первый же экран.
+        */}
+        <Section pad="tight" ruled>
+          <div className="grid grid-cols-12 items-end gap-x-8 gap-y-12">
+            <div className="col-span-12 lg:col-span-7">
+              <Reveal>
+                <Eyebrow>партнёрская программа</Eyebrow>
+              </Reveal>
 
-            <div className="mt-12 grid gap-10 border-t border-[var(--rule)] pt-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+              <WipeReveal delay={0.08}>
+                <h1 className="inst-d1 mt-7 max-w-[15ch]">
+                  Продавайте результат{" "}
+                  <span className="text-[var(--amber)]">под своим</span> брендом
+                </h1>
+              </WipeReveal>
+
               <Reveal delay={0.12}>
-                <p className="max-w-[46ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
+                <p className="inst-lead mt-7 max-w-[46ch]">
                   Закупаете по оптовой цене, продаёте по своей. Клиент видит ваш
                   отчёт и ваш логотип, а не наш.
                 </p>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Button href="#start" size="lg" arrow>
+              </Reveal>
+
+              <Reveal delay={0.16}>
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                  <a href="#start" className="inst-btn inst-btn-primary">
                     Стать партнёром
-                  </Button>
-                  <Button href="#economics" size="lg" variant="secondary">
+                    <span aria-hidden="true">→</span>
+                  </a>
+                  <a href="#economics" className="inst-btn inst-btn-ghost">
                     Посчитать маржу
-                  </Button>
+                  </a>
                 </div>
               </Reveal>
+            </div>
 
-              {/*
-                Здесь стояла крупная «68 % средняя маржа партнёра». Подтвердить
-                эту величину нечем, а маржу вообще задаёт сам партнёр своей
-                ценой, так что цифра была не показанием, а обещанием. Осталась
-                механика расчёта — она верна всегда.
-              */}
-              <Reveal delay={0.18} className="shrink-0">
-                <dl className="border-t border-[var(--rule)] pt-4">
-                  <div className="flex items-baseline justify-between gap-8 border-b border-[var(--rule-soft)] py-2.5">
-                    <dt className="label text-[var(--ink-faint)]">ваша цена</dt>
-                    <dd className="num text-[15px] text-[var(--ink-soft)]">задаёте вы</dd>
-                  </div>
-                  <div className="flex items-baseline justify-between gap-8 border-b border-[var(--rule-soft)] py-2.5">
-                    <dt className="label text-[var(--ink-faint)]">минус закупка</dt>
-                    <dd className="num text-[15px] text-[var(--ink-soft)]">по объёму</dd>
-                  </div>
-                  <div className="flex items-baseline justify-between gap-8 py-2.5">
-                    <dt className="label text-[var(--accent)]">равно маржа</dt>
-                    <dd className="num text-[15px] font-semibold text-[var(--ink)]">
-                      остаётся у вас
+            <Reveal delay={0.2} className="col-span-12 lg:col-span-5">
+              <dl>
+                {MARGIN_FORMULA.map((row) => (
+                  <div
+                    key={row.t}
+                    className="flex items-baseline justify-between gap-8 border-t border-[var(--line)] py-4 last:border-b"
+                  >
+                    <dt className={row.result ? "inst-label inst-label-amber" : "inst-label"}>
+                      {row.t}
+                    </dt>
+                    <dd
+                      className={
+                        row.result
+                          ? "text-[15px] leading-snug font-medium text-[var(--paper)]"
+                          : "text-[15px] leading-snug text-[var(--paper-2)]"
+                      }
+                    >
+                      {row.d}
                     </dd>
                   </div>
-                </dl>
+                ))}
+              </dl>
+            </Reveal>
+          </div>
+        </Section>
+
+        {/*
+          РОЛИ. Величина стоит в конце строки, как цена в прайсе.
+
+          На главной номер такта висит слева от текста; здесь показание —
+          итог роли, а не её порядковый номер, поэтому оно уходит вправо и
+          читается после того, как роль названа.
+        */}
+        <Section ruled>
+          <Head title="Кому это считается" />
+
+          <div className="wrap-bleed mt-14 border-t border-[var(--line)]">
+            {AUDIENCE.map((a, i) => (
+              <Reveal key={a.role} delay={i * 0.06}>
+                <article className="inst-row grid grid-cols-12 items-start gap-x-8 gap-y-6 border-b border-[var(--line)] px-6 py-10 sm:px-10">
+                  <h3 className="inst-d3 col-span-12 lg:col-span-4">{a.role}</h3>
+                  <p className="inst-body col-span-12 max-w-[52ch] lg:col-span-5">{a.body}</p>
+                  <div className="inst-metric col-span-12 lg:col-span-3 lg:justify-items-end lg:text-right">
+                    <span className="inst-label max-w-[24ch]">{a.note}</span>
+                    <span className="inst-metric-body">
+                      <span className="inst-metric-n">{a.figure}</span>
+                    </span>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </Section>
+
+        <Section id="economics" ruled>
+          <Head
+            eyebrow="экономика"
+            title="Сколько остаётся у вас"
+            lede="Мы не диктуем вашу цену для заказчика. Вы платите за фактические переходы, а разницу между закупкой и своим чеком оставляете себе."
+          />
+
+          <Reveal delay={0.1} className="mt-12 block">
+            <MarginCalc />
+          </Reveal>
+        </Section>
+
+        <Section id="tools" ruled>
+          <Reveal>
+            <h2 className="inst-d2 max-w-[20ch]">Что видит клиент, и чего он не видит</h2>
+          </Reveal>
+
+          <NumberedRows items={TOOLS} className="mt-16" />
+        </Section>
+
+        {/*
+          ГРАНИЦЫ ПРИМЕНИМОСТИ. Самый широкий участок страницы: именно
+          границы, а не обещания, дают профессиональному перепродавцу
+          основание доверять офферу.
+
+          Доли неравны и это значит ровно то, что написано: первое
+          предупреждение решает исход разговора с заказчиком, два других
+          уточняют условия.
+        */}
+        <Section id="limits" ruled>
+          <Head
+            eyebrow="границы и ответственность"
+            title="Что сказать клиенту, если спросит"
+            lede="Вы перепродаёте инструмент с понятной механикой и понятными ограничениями. Вопрос о методе всё равно возникнет, и лучше, если ответ будет готов заранее."
+          />
+
+          <div className="inst-grid wrap-bleed mt-14 grid-cols-1 lg:grid-cols-[4fr_3fr_3fr]">
+            {LIMITS.map((r, i) => (
+              <Reveal key={r.t} delay={0.06 + i * 0.06}>
+                <span className="inst-label inst-label-amber">{ordinal(i)}</span>
+                <h3 className="inst-d3 mt-5">{r.t}</h3>
+                <p className="inst-body mt-3 max-w-[42ch] text-[14px]">{r.d}</p>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={0.24}>
+            <ul className="mt-14 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+              {CLAIM.limits.map((l) => (
+                <li
+                  key={l}
+                  className="inst-body flex gap-3 border-t border-[var(--line)] pt-3 text-[14px]"
+                >
+                  <span aria-hidden="true" className="text-[var(--paper-4)]">
+                    —
+                  </span>
+                  {l}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </Section>
+
+        <Section id="faq" ruled>
+          <Head title="Вопросы партнёров" />
+
+          <Faq items={FAQ} className="mt-14" />
+        </Section>
+
+        {/*
+          Одно обещание, одно действие. Закрытие получает единственный на
+          странице кегль первого экрана: после него читать больше нечего.
+        */}
+        <Section id="start" ruled className="settle-in">
+          <div className="grid grid-cols-12 gap-x-6 gap-y-10">
+            <div className="col-span-12 lg:col-span-8">
+              <Reveal>
+                <h2 className="inst-d1 max-w-[16ch]">Заведите первый проект бесплатно</h2>
+                <p className="inst-lead mt-7 max-w-[48ch]">
+                  Тест на одном клиенте, без договора и предоплаты. Оптовую сетку
+                  открываем после первого объёма.
+                </p>
+              </Reveal>
+
+              <Reveal delay={0.12}>
+                <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href="https://lk.topinjector.ru/register"
+                    className="inst-btn inst-btn-primary"
+                  >
+                    Стать партнёром
+                    <span aria-hidden="true">→</span>
+                  </a>
+                  <a href="https://t.me/topinjector" className="inst-btn inst-btn-ghost">
+                    Обсудить объёмы в Telegram
+                  </a>
+                </div>
               </Reveal>
             </div>
           </div>
-        </section>
-
-        {/* Роли как банк показаний. */}
-        <section className="zone-signal px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[76rem]">
-            <Reveal>
-              <h2 className="max-w-[16ch] text-[32px] sm:text-[46px]">Кому это считается</h2>
-            </Reveal>
-
-            <div className="mt-16 border-t border-[var(--rule)]">
-              {AUDIENCE.map((a, i) => (
-                <Reveal key={a.role} delay={i * 0.06}>
-                  <article className="grid items-baseline gap-4 border-b border-[var(--rule-soft)] py-8 sm:grid-cols-[auto_1fr_1.5fr] sm:gap-10">
-                    <div>
-                      <span className="num text-[34px] leading-none font-semibold sm:text-[42px]">
-                        {a.figure}
-                      </span>
-                      <p className="label mt-2 max-w-[16ch] text-[var(--ink-faint)]">
-                        {a.note}
-                      </p>
-                    </div>
-                    <h3 className="text-[20px] font-semibold tracking-[-0.02em] sm:text-[22px]">
-                      {a.role}
-                    </h3>
-                    <p className="max-w-[52ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
-                      {a.body}
-                    </p>
-                  </article>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="economics" className="zone-signal scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[76rem]">
-            <Reveal>
-              <Kicker>экономика</Kicker>
-              <h2 className="mt-7 max-w-[18ch] text-[32px] sm:text-[46px]">
-                Сколько остаётся у вас
-              </h2>
-              <p className="mt-6 max-w-[54ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
-                Мы не диктуем вашу цену для заказчика. Вы платите за фактические
-                переходы, а разницу между закупкой и своим чеком оставляете себе.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.1} className="mt-12">
-              <MarginCalc />
-            </Reveal>
-          </div>
-        </section>
-
-        <section id="tools" className="zone-proof scroll-mt-8 px-5 pt-24 sm:px-8 sm:pt-32">
-          <div className="mx-auto max-w-[76rem]">
-            <Reveal>
-              <h2 className="max-w-[20ch] text-[32px] sm:text-[46px]">
-                Что видит клиент, и чего он не видит
-              </h2>
-            </Reveal>
-
-            <div className="mt-16 border-t border-[var(--rule)]">
-              {TOOLS.map((t, i) => (
-                <Reveal key={t.t} delay={i * 0.06}>
-                  <div className="grid gap-3 border-b border-[var(--rule-soft)] py-8 sm:grid-cols-[auto_1fr_1.5fr] sm:gap-10">
-                    <span className="num text-[11px] text-[var(--ink-soft)]">
-                      {ordinal(i)}
-                    </span>
-                    <h3 className="text-[19px] leading-snug font-semibold tracking-[-0.02em]">
-                      {t.t}
-                    </h3>
-                    <p className="max-w-[56ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
-                      {t.d}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/*
-          Границы применимости получают самый заметный участок страницы: именно
-          они, а не обещания, дают профессиональному перепродавцу основание
-          доверять офферу.
-        */}
-        <section id="limits" className="zone-proof scroll-mt-8 px-5 pt-24 pb-24 sm:px-8 sm:pt-32 sm:pb-32">
-          <div className="mx-auto max-w-[76rem]">
-            <Reveal>
-              <Kicker>границы и ответственность</Kicker>
-              <h2 className="mt-7 max-w-[18ch] text-[36px] sm:text-[58px]">
-                Что сказать клиенту, если спросит
-              </h2>
-              <p className="mt-7 max-w-[56ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-                Вы перепродаёте инструмент с понятной механикой и понятными
-                ограничениями. Вопрос о методе всё равно возникнет, и лучше,
-                если ответ будет готов заранее.
-              </p>
-            </Reveal>
-
-            <div className="mt-16 grid gap-px border-t border-[var(--rule-soft)] bg-[var(--rule-soft)] lg:grid-cols-3">
-              {LIMITS.map((r, i) => (
-                <Reveal
-                  key={r.t}
-                  delay={i * 0.06}
-                  className="zone-settled"
-                >
-                  <div className="h-full p-7 lg:p-8">
-                    <span className="num text-[11px] text-[var(--accent)]">
-                      {ordinal(i)}
-                    </span>
-                    <h3 className="mt-5 text-[19px] leading-snug font-semibold tracking-[-0.02em]">
-                      {r.t}
-                    </h3>
-                    <p className="mt-3 max-w-[42ch] text-[14px] leading-relaxed text-[var(--ink-soft)]">
-                      {r.d}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal delay={0.2}>
-              <ul className="mt-12 grid gap-x-10 gap-y-3 sm:grid-cols-2">
-                {CLAIM.limits.map((l) => (
-                  <li
-                    key={l}
-                    className="flex gap-3 border-t border-[var(--rule-soft)] pt-3 text-[14px] leading-snug text-[var(--ink-soft)]"
-                  >
-                    <span aria-hidden="true" className="num text-[var(--ink-faint)]">
-                      —
-                    </span>
-                    {l}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
-        </section>
-
-        <section
-          id="faq"
-          className="zone-settled settle-in scroll-mt-8 px-5 pt-24 pb-16 sm:px-8 sm:pt-32 sm:pb-20"
-        >
-          <div className="mx-auto max-w-[76rem]">
-            <Reveal>
-              <h2 className="text-[28px] sm:text-[36px]">Вопросы партнёров</h2>
-            </Reveal>
-
-            <div className="mt-12 border-t border-[var(--rule-soft)]">
-              {FAQ.map((item, i) => (
-                <Reveal key={item.q} delay={i * 0.04}>
-                  <details className="group border-b border-[var(--rule-soft)]">
-                    <summary className="flex cursor-pointer list-none items-baseline gap-5 py-6">
-                      <span className="num shrink-0 text-[11px] text-[var(--ink-faint)]">
-                        {ordinal(i)}
-                      </span>
-                      <span className="flex-1 text-[17px] leading-snug font-semibold tracking-[-0.02em] [transition:color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),border-color_var(--t-hover)_var(--ease-micro)] group-hover:text-[var(--accent)] sm:text-[19px]">
-                        {item.q}
-                      </span>
-                      <span className="num shrink-0 text-[16px] text-[var(--ink-faint)] [transition:transform_var(--t-hover)_var(--ease-micro)] group-open:rotate-45">
-                        +
-                      </span>
-                    </summary>
-                    <p className="max-w-[68ch] pb-7 pl-9 text-[15px] leading-relaxed text-[var(--ink-soft)]">
-                      {item.a}
-                    </p>
-                  </details>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="start" className="zone-settled scroll-mt-8 px-5 pb-28 sm:px-8 sm:pb-36">
-          <div className="mx-auto max-w-[76rem] border-t border-[var(--rule)] pt-16">
-            <Reveal>
-              <h2 className="max-w-[16ch] text-[34px] sm:text-[52px]">
-                Заведите первый проект бесплатно
-              </h2>
-              <p className="mt-6 max-w-[48ch] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-                Тест на одном клиенте, без договора и предоплаты. Оптовую сетку
-                открываем после первого объёма.
-              </p>
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Button href="https://lk.topinjector.ru/register" size="lg" arrow>
-                  Стать партнёром
-                </Button>
-                <Button href="https://t.me/topinjector" size="lg" variant="secondary">
-                  Обсудить объёмы в Telegram
-                </Button>
-              </div>
-            </Reveal>
-          </div>
-        </section>
+        </Section>
       </main>
 
       <Footer

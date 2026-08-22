@@ -14,11 +14,17 @@ export function HeroFrame({
   children: ReactNode;
 }) {
   return (
-    <div className="surf hp p-6">
+    /*
+      `figure`, а не секция с заголовком: это иллюстрация к первому экрану.
+      Подпись панели была размечена `h2` и вставала первым подзаголовком всего
+      документа — раньше названия первого смыслового блока. Класс и вид
+      прежние, меняется только то, чем эта строка считается в структуре.
+    */
+    <figure className="surf hp p-6">
       <header className="hp-head">
         <div className="hp-head-in">
           <p className="hp-kicker">{kicker}</p>
-          <h2 className="hp-title">{title}</h2>
+          <p className="hp-title">{title}</p>
         </div>
         <span className="tag tag-mute shrink-0">{tag}</span>
       </header>
@@ -26,7 +32,7 @@ export function HeroFrame({
       <div className="hp-offer">
         <HeroOfferFooter />
       </div>
-    </div>
+    </figure>
   );
 }
 
@@ -146,18 +152,33 @@ export function LayerStack({
   );
 }
 
+/*
+  Шапка таблицы называет проект и регион словами читателя, а не выдуманным
+  доменом.
+
+  Раньше здесь были захардкожены `stjazhka-kazan.ru` и `казань`. Панель первого
+  экрана из-за них выглядела снимком реального кабинета с чужими данными —
+  ровно то, что критерий приёмки разд. 31 ТЗ запрещает («Нет fake UI»).
+  Остальные ячейки той же таблицы уже говорили «ваш запрос»; теперь так же
+  говорит и шапка. Значения приходят пропсами, потому что примитив, который
+  строки берёт снаружи, а мету держит внутри себя, параметризован наполовину.
+*/
 export function QueryTable({
+  project = "ваш проект",
+  region = "ваш регион",
   rows,
 }: {
+  project?: string;
+  region?: string;
   rows: { q: string; baseline: string; status: string; state: "active" | "muted" | "crossed" }[];
 }) {
   return (
     <div className="hp-table">
       <div className="hp-table-meta">
         <span className="hp-table-meta-k">проект</span>
-        <span className="hp-table-meta-v">stjazhka-kazan.ru</span>
+        <span className="hp-table-meta-v">{project}</span>
         <span className="hp-table-meta-k ml-auto">регион</span>
-        <span className="hp-table-meta-v">казань</span>
+        <span className="hp-table-meta-v">{region}</span>
       </div>
       <div className="hp-table-head">
         <span>запрос</span>

@@ -27,7 +27,14 @@ export function CaseStudy() {
           регулярно спрашивал о сроках.
         </p>
 
-        <dl className="mt-8 flex flex-col border-t border-[var(--rule-soft)] pt-5">
+        {/*
+          Обязательные поля кейса набраны строками спецификации (`.spec` в
+          globals.css, приём взят с тарифов /stack): точечная линейка ведёт
+          глаз от названия к значению через пустоту карточки. Прежде пара
+          держалась одним `justify-between`, и на широкой колонке «Регион» и
+          его значение читались двумя оторванными краями, а не парой.
+        */}
+        <dl className="spec-list mt-8 border-t border-[var(--rule)]">
           {[
             ["Специалист", `${c.author}, ${c.experience}`],
             ["Регион", c.region],
@@ -36,12 +43,11 @@ export function CaseStudy() {
             ["Дата запуска", c.launched],
             ["Период наблюдения", c.watched],
           ].map(([k, v]) => (
-            <div
-              key={k}
-              className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-[var(--rule-soft)] py-2.5 first:border-t-0 first:pt-0"
-            >
-              <dt className="label text-[var(--ink-faint)]">{k}</dt>
-              <dd className="max-w-[24ch] text-right text-[14px] text-[var(--ink-soft)]">{v}</dd>
+            <div key={k} className="spec">
+              <dt className="spec-k">
+                <span>{k}</span>
+              </dt>
+              <dd className="spec-v">{v}</dd>
             </div>
           ))}
         </dl>

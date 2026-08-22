@@ -4,6 +4,7 @@ import "./globals.css";
 import "./instrument.css";
 import "./stack.css";
 import { THEME_SCRIPT, ThemeSync } from "@/components/ui/theme-toggle";
+import { SITE_ORIGIN } from "@/site";
 
 /*
   ОДНА ГАРНИТУРА НА ВЕСЬ САЙТ — ШВЕЙЦАРСКИЙ ГРОТЕСК.
@@ -33,7 +34,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://topinjector.ru"),
+  metadataBase: new URL(SITE_ORIGIN),
   /*
     Обещание в заголовке названо ровно так, как разрешает п.24 мастер-документа:
     возможность, а не гарантия, и рядом с условиями применения. Прежний

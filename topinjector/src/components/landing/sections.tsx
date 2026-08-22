@@ -13,59 +13,6 @@ import { ordinal } from "@/format";
 */
 export { Appear };
 
-export function Section({
-  id,
-  zone = "",
-  children,
-  className = "",
-}: {
-  id?: string;
-  zone?: string;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <section
-      id={id}
-      /*
-        Атрибут инертен везде, кроме предфрейминговых страниц: там
-        `usePredframingAnalytics` слушает `[data-pf-block]`, чтобы мерить
-        просмотр и время по блокам. Ставится автоматически по `id`, а не
-        отдельным пропсом — второй источник правды для одного и того же
-        идентификатора расходится быстрее, чем успевает пригодиться.
-      */
-      data-pf-block={id}
-      className={`scroll-mt-20 px-5 pt-24 sm:px-8 sm:pt-32 ${zone} ${className}`}
-    >
-      <div className="mx-auto max-w-[76rem]">{children}</div>
-    </section>
-  );
-}
-
-export function Head({
-  kicker,
-  title,
-  lead,
-}: {
-  kicker?: string;
-  title: string;
-  lead?: string;
-}) {
-  return (
-    <Appear>
-      {kicker && <p className="label text-[var(--ink-faint)]">{kicker}</p>}
-      <h2 className={`max-w-[22ch] text-[30px] leading-[1.08] font-extrabold tracking-[-0.03em] sm:text-[44px] ${kicker ? "mt-6" : ""}`}>
-        {title}
-      </h2>
-      {lead && (
-        <p className="mt-6 max-w-[62ch] text-[17px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-          {lead}
-        </p>
-      )}
-    </Appear>
-  );
-}
-
 export type Card = { t: string; d: string; id?: string };
 
 /**

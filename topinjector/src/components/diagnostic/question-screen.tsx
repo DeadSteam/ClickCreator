@@ -79,7 +79,7 @@ export function QuestionScreen({
   const progress = ((step + 1) / total) * 100;
 
   return (
-    <div className="zone-doubt mx-auto flex min-h-dvh w-full max-w-[46rem] flex-col px-5 pt-6 pb-10 sm:px-8">
+    <div className="wrap wrap-read flex min-h-dvh flex-col pt-6 pb-10">
       {/* Прогресс всегда виден — требование мобильной версии из ТЗ. */}
       <div>
         <div className="flex items-baseline justify-between gap-4">
@@ -120,17 +120,13 @@ export function QuestionScreen({
       </div>
 
       <div className="flex flex-1 flex-col justify-center py-10">
-        <h1 className="max-w-[22ch] text-[28px] leading-[1.08] font-extrabold tracking-[-0.03em] sm:text-[40px]">
-          {question.title}
-        </h1>
+        <h1 className="stk-h1">{question.title}</h1>
 
         {question.multiple && (
-          <p className="mt-4 text-[14px] text-[var(--ink-faint)]">
-            Можно выбрать несколько вариантов
-          </p>
+          <p className="stk-sm mt-4">Можно выбрать несколько вариантов</p>
         )}
 
-        <ul className="mt-8 flex flex-col gap-2">
+        <ul className="mt-8 flex flex-col gap-3">
           {question.answers.map((a) => {
             const on = picked.includes(a.id);
             return (
@@ -140,15 +136,10 @@ export function QuestionScreen({
                   onClick={() => choose(a.id)}
                   aria-pressed={on}
                   disabled={revealed && !on}
-                  className={`flex w-full items-center gap-4 rounded-[var(--radius-panel)] border
-                    px-5 py-4 text-left text-[16px] leading-snug
-                    [transition:border-color_var(--t-hover)_var(--ease-micro),background-color_var(--t-hover)_var(--ease-micro),opacity_var(--t-hover)_var(--ease-micro),transform_var(--t-press)_var(--ease-out)]
-                    active:scale-[0.995] disabled:opacity-35
-                    ${
-                      on
-                        ? "border-[var(--ink)] bg-[var(--inset)] font-semibold"
-                        : "border-[var(--rule)] hover:border-[var(--ink)]"
-                    }`}
+                  className={`stk-pick flex w-full items-center gap-4 px-5 py-4
+                    text-left text-[17px] leading-snug text-[var(--ink)]
+                    [transition:transform_var(--t-press)_var(--ease-out)]
+                    active:scale-[0.995] ${on ? "font-semibold" : ""}`}
                 >
                   {/*
                     Метка выбора — квадрат для множественного и круг для
@@ -158,9 +149,8 @@ export function QuestionScreen({
                   */}
                   <span
                     aria-hidden="true"
-                    className={`block h-[18px] w-[18px] shrink-0 border
-                      ${question.multiple ? "rounded-[2px]" : "rounded-full"}
-                      ${on ? "border-[var(--ink)] bg-[var(--ink)]" : "border-[var(--rule)]"}`}
+                    className={`stk-pick-mark block h-[18px] w-[18px] shrink-0
+                      ${question.multiple ? "rounded-[3px]" : "rounded-full"}`}
                   />
                   {a.label}
                 </button>
@@ -203,15 +193,13 @@ export function QuestionScreen({
             transition={{ duration: 0.32, ease: EASE_OUT }}
             className="mt-8 border-t border-[var(--rule)] pt-5"
           >
-            <p className="max-w-[62ch] text-[15px] leading-relaxed text-[var(--ink-soft)]">
-              {insight}
-            </p>
+            <p className="stk-p">{insight}</p>
             <Button
               variant="quiet"
               size="sm"
               arrow
               onClick={advanceNow}
-              className="label mt-4 -ml-2 px-2 text-[var(--accent)]"
+              className="label mt-4 -ml-2 px-2 text-[var(--grn)]"
             >
               Дальше
             </Button>

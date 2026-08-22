@@ -1,5 +1,5 @@
 /*
-  Матрица динамических Hero — разд. 8/9/19/25 ТЗ «ЦА ПФ-щики».
+  Матрица динамических Hero — разд. 8/9/19/26 ТЗ «ЦА ПФ-щики».
 
   Десять рекламных гипотез (angle) ведут на одну страницу и отличаются только
   первым экраном (разд. 6 ТЗ: «Страница одна. Меняется только входной Hero»).
@@ -136,8 +136,8 @@ export const HERO_SECONDARY_LABEL = "Посмотреть, как проходи
 /**
  * Разрешает `angle` из URL в вариант Hero. Неизвестный/отсутствующий/битый
  * параметр обязан вести на fallback, а не на пустой экран (разд. 8 ТЗ,
- * критерий приёмки разд. 24.16 «Неизвестный angle приводит к fallback Hero, а
- * не к ошибке» и разд. 25/26 «Frontend config» — `heroVariants['default']`).
+ * критерий приёмки разд. 25.16 «Неизвестный angle приводит к fallback Hero, а
+ * не к ошибке» и разд. 26 «Frontend config» — `heroVariants['default']`).
  */
 export function resolveHeroVariant(rawAngle: string | undefined | null): HeroVariant {
   if (!rawAngle) return HERO_VARIANTS.default;

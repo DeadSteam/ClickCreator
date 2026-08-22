@@ -85,7 +85,17 @@ export function Pricing({
                   выше соседних — ряд разъезжался по диагонали.
                 */}
                 <div className="lg:min-h-[6.25rem]">
-                  <div className="flex min-h-[1.5rem] items-baseline justify-between gap-4">
+                  {/*
+                    Строка переносится. Бейдж стоял с `shrink-0` в нерастяжимой
+                    строке: «Профессиональный» (217 px) плюс «Оптимальный
+                    выбор» (144 px) требуют 377 px, а колонка тарифа даёт 319 px
+                    на 1440, 250 px на 1024 и 279 px на 390 — бейдж выезжал за
+                    правый край карточки на 25, 94 и 50 px соответственно.
+                    Сжимать его нельзя (подпись набрана в разрядку и рвётся по
+                    буквам), поэтому при нехватке места он уходит на свою
+                    строку под названием.
+                  */}
+                  <div className="flex min-h-[1.5rem] flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
                     <h3 className="text-[20px] font-semibold tracking-[-0.02em] sm:text-[22px]">
                       {p.name}
                     </h3>

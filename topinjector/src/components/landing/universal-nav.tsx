@@ -33,14 +33,14 @@ export function UniversalNav({ hypothesis }: { hypothesis?: string }) {
 
   return (
     <header
-      className={`sticky top-0 z-40 px-5 sm:px-8 ${
+      className={`sticky top-0 z-40 ${
         stuck
           ? "border-b border-[var(--rule-soft)] bg-[color-mix(in_oklab,var(--page-bg)_88%,transparent)] backdrop-blur-md"
           : ""
       } [transition:background-color_var(--t-panel)_var(--ease-micro),border-color_var(--t-panel)_var(--ease-micro)]`}
     >
-      <nav className="mx-auto flex h-[68px] max-w-[76rem] items-center justify-between gap-6">
-        <Logo />
+      <nav className="wrap flex h-[var(--head-h)] items-center justify-between gap-6">
+        <Logo idPrefix="universal-nav" />
 
         <div className="hidden items-center gap-7 lg:flex">
           {NAV.map((l) => (

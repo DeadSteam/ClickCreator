@@ -16,23 +16,21 @@ export const metadata: Metadata = {
 */
 export default function NotFound() {
   return (
-    <div className="zone-proof flex min-h-dvh flex-col px-5 py-8 sm:px-8">
-      <header>
+    <div className="stk flex min-h-dvh flex-col py-8">
+      <header className="wrap">
         <Link href="/" aria-label="TopInjector, на главную">
-          <Logo />
+          <Logo idPrefix="not-found" />
         </Link>
       </header>
 
-      <main className="mx-auto flex w-full max-w-[76rem] flex-1 flex-col justify-center py-16">
+      <main className="wrap flex flex-1 flex-col justify-center py-16">
         <span className="num text-[76px] leading-[0.85] font-semibold text-[var(--accent)] sm:text-[120px]">
           404
         </span>
 
-        <h1 className="mt-8 max-w-[16ch] text-[32px] sm:text-[48px]">
-          Такой страницы в выдаче нет
-        </h1>
+        <h1 className="stk-h1 mt-8">Такой страницы в выдаче нет</h1>
 
-        <p className="mt-6 max-w-[46ch] text-[16px] leading-relaxed text-[var(--ink-soft)]">
+        <p className="stk-p mt-6">
           Ссылка ведёт в никуда: адрес изменился или в нём опечатка. Позиции ваших
           страниц это никак не затрагивает.
         </p>
@@ -47,7 +45,7 @@ export default function NotFound() {
         </div>
       </main>
 
-      <footer className="mx-auto w-full max-w-[76rem] border-t border-[var(--rule-soft)] pt-6">
+      <footer className="wrap border-t border-[var(--rule-soft)] pt-6">
         <span className="num text-[11px] text-[var(--ink-faint)]">TOPINJECTOR 2026</span>
       </footer>
     </div>

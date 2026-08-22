@@ -19,11 +19,11 @@ export function Footer({
   cross: { label: string; href: string }[];
 }) {
   return (
-    <footer className="zone-settled px-5 pt-16 pb-28 sm:px-8 xl:pb-16">
-      <div className="mx-auto max-w-[76rem]">
+    <footer className="zone-settled pt-16 pb-28 xl:pb-16">
+      <div className="wrap">
         <div className="grid gap-10 border-t border-[var(--rule-soft)] pt-10 sm:grid-cols-[1.6fr_1fr_1fr]">
           <div className="max-w-sm">
-            <Logo />
+            <Logo idPrefix="footer" />
             <p className="mt-4 text-[13px] leading-relaxed text-[var(--ink-soft)]">
               Сервис раннего результата по целевым запросам в Яндексе.{" "}
               {BRAND.role}

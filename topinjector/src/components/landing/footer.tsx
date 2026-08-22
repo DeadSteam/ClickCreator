@@ -46,11 +46,11 @@ const COLUMNS = [
 
 export function LandingFooter({ signupUrl }: { signupUrl: string }) {
   return (
-    <footer className="zone-settled px-5 pt-16 pb-28 sm:px-8 lg:pb-16">
-      <div className="mx-auto max-w-[76rem]">
+    <footer className="zone-settled pt-16 pb-28 lg:pb-16">
+      <div className="wrap">
         <div className="grid gap-10 border-t border-[var(--rule-soft)] pt-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="max-w-sm">
-            <Logo />
+            <Logo idPrefix="landing-footer" />
             <p className="mt-4 text-[13px] leading-relaxed text-[var(--ink-soft)]">
               Сервис раннего результата по целевым запросам в Яндексе.{" "}
               {BRAND.role}

@@ -97,15 +97,11 @@ export default function DocsPage() {
           вшитая в предложение, требует прочитать всё предложение, чтобы
           понять, куда она ведёт; карточка отвечает на это заголовком.
         */}
-        <div className="mt-2 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-3">
+        <div className="surf-split mt-2 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-3">
           {READY.map((r) => (
             <Link key={r.href} href={r.href} className="cell block p-5">
-              <span className="block text-[15px] font-semibold tracking-[-0.01em]">
-                {r.t}
-              </span>
-              <span className="mt-1.5 block text-[13px] leading-snug text-[var(--ink-soft)]">
-                {r.d}
-              </span>
+              <span className="stk-h3 block">{r.t}</span>
+              <span className="stk-sm mt-1.5 block">{r.d}</span>
             </Link>
           ))}
         </div>
@@ -134,16 +130,13 @@ export default function DocsPage() {
           запуска до разговора с клиентом о результате.
         </Para>
 
-        <div className="mt-2 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
+        <div className="surf-split mt-2 grid gap-px bg-[var(--rule-soft)] sm:grid-cols-2">
           {SECTIONS.map((s) => (
             <div key={s.t} className="cell p-6">
-              <h3 className="text-[16px] font-semibold tracking-[-0.01em]">{s.t}</h3>
+              <h3 className="stk-h3">{s.t}</h3>
               <ul className="mt-4 flex flex-col gap-2.5">
                 {s.items.map((i) => (
-                  <li
-                    key={i}
-                    className="flex items-baseline gap-3 text-[14px] leading-snug text-[var(--ink-soft)]"
-                  >
+                  <li key={i} className="stk-sm flex items-baseline gap-3">
                     <span
                       aria-hidden="true"
                       className="mt-[7px] block h-[5px] w-[5px] shrink-0 rounded-full bg-[var(--rule)]"
